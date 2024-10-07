@@ -2,8 +2,9 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
-from app.serializers import LoginSerializer, RegistrationSerializer
+from rest_framework import generics
+from app.serializers import CustomerSerializer, LeadSerializer, LoginSerializer, RegistrationSerializer
+from app.models import Customer, Lead
 
 class RegistrationView(APIView):
     def post(self, request):
@@ -44,3 +45,11 @@ class Login(APIView):
                 'status': status.HTTP_500_INTERNAL_SERVER_ERROR,
                 'message': f'Something went wrong: {str(e)}'
             })
+class CustomerListCreate(generics.ListCreateAPIView):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+
+
+class LeadListCreate(generics.ListCreateAPIView):
+    queryset = Lead.objects.all()
+    serializer_class = LeadSerializer

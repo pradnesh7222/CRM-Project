@@ -3,12 +3,39 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
+from .models import Customer, Lead
+from rest_framework import serializers
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate
+import re
+from django.core.validators import EmailValidator
 
 class RegistrationSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=255)
-    email = serializers.EmailField(max_length=255)
+    email = serializers.EmailField(
+        max_length=255,
+        validators=[EmailValidator(message="Invalid email format")]  
+    )
     password = serializers.CharField(write_only=True)
     password_confirm = serializers.CharField(write_only=True)  
+
+    def validate_password(self, value):
+        """
+        Add custom validation for password strength
+        """
+        if len(value) < 8:
+            raise serializers.ValidationError("Password must be at least 8 characters long.")
+        if not re.search(r'[A-Z]', value):
+            raise serializers.ValidationError("Password must contain at least one uppercase letter.")
+        if not re.search(r'[a-z]', value):
+            raise serializers.ValidationError("Password must contain at least one lowercase letter.")
+        if not re.search(r'[0-9]', value):
+            raise serializers.ValidationError("Password must contain at least one digit.")
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', value):
+            raise serializers.ValidationError("Password must contain at least one special character.")
+        return value
 
     def validate(self, data):
         if User.objects.filter(username=data['username']).exists():
@@ -36,6 +63,7 @@ class RegistrationSerializer(serializers.Serializer):
             password=validated_data['password']
         )
         return user
+
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=255)
@@ -65,3 +93,18 @@ class LoginSerializer(serializers.Serializer):
                 'access': str(refresh.access_token)
             }
         }
+
+# crm/serializers.py
+
+
+
+class CustomerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Customer
+        fields = '__all__'
+
+
+class LeadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Lead
+        fields = '__all__'
