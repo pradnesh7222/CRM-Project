@@ -6,19 +6,34 @@ from django.contrib.auth import authenticate
 
 class RegistrationSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=255)
-    password = serializers.CharField(write_only=True)  # Hide password in response
+    email = serializers.EmailField(max_length=255)
+    password = serializers.CharField(write_only=True)
+    password_confirm = serializers.CharField(write_only=True)  
 
     def validate(self, data):
         if User.objects.filter(username=data['username']).exists():
             raise serializers.ValidationError({'username': 'Username already exists'})
+
+        # Check if the email already exists
+        if User.objects.filter(email=data['email']).exists():
+            raise serializers.ValidationError({'email': 'Email already exists'})
+
+        # Check if passwords match
+        if data['password'] != data['password_confirm']:
+            raise serializers.ValidationError({'password_confirm': 'Passwords do not match'})
+
         return data
     
     def create(self, validated_data):
+        # Remove password_confirm from validated_data as it's not needed for user creation
+        validated_data.pop('password_confirm')
+
         # Hash the password and create the user
         validated_data['password'] = make_password(validated_data['password'])
         user = User.objects.create(
             username=validated_data['username'],
-            password=validated_data['password']  # The password is already hashed
+            email=validated_data['email'],  # Save email
+            password=validated_data['password']
         )
         return user
 
