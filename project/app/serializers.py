@@ -98,13 +98,58 @@ class LoginSerializer(serializers.Serializer):
 
 
 
-class CustomerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Customer
-        fields = '__all__'
-
+# crm/serializers.py
+from rest_framework import serializers
+from .models import Lead, Customer, Product, Opportunity
 
 class LeadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lead
-        fields = '__all__'
+        fields = ['id', 'first_name', 'last_name', 'email', 'phone_number', 'company', 'status', 'created_at']
+
+
+class CustomerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Customer
+        fields = ['id', 'user', 'company_name', 'phone_number', 'address']
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'description', 'price', 'stock']
+
+
+class OpportunitySerializer(serializers.ModelSerializer):
+    lead = LeadSerializer()
+    customer = CustomerSerializer()
+    product = ProductSerializer()
+
+    class Meta:
+        model = Opportunity
+        fields = ['id', 'lead', 'customer', 'product', 'stage', 'expected_revenue', 'closing_date', 'created_at']
+
+    def create(self, validated_data):
+        # Extract nested data
+        lead_data = validated_data.pop('lead')
+        customer_data = validated_data.pop('customer')
+        product_data = validated_data.pop('product')
+
+        # Create or get Lead instance
+        lead, created = Lead.objects.get_or_create(**lead_data)
+
+        # Create or get Customer instance
+        customer, created = Customer.objects.get_or_create(**customer_data)
+
+        # Create or get Product instance
+        product, created = Product.objects.get_or_create(**product_data)
+
+        # Create the Opportunity instance
+        opportunity = Opportunity.objects.create(
+            lead=lead,
+            customer=customer,
+            product=product,
+            **validated_data
+        )
+
+        return opportunity

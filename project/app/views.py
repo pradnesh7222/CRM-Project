@@ -5,7 +5,12 @@ from rest_framework import status
 from rest_framework import generics
 from app.serializers import CustomerSerializer, LeadSerializer, LoginSerializer, RegistrationSerializer
 from app.models import Customer, Lead
-
+from rest_framework import viewsets
+from .models import Lead, Customer, Product, Opportunity
+from .serializers import LeadSerializer, CustomerSerializer, ProductSerializer, OpportunitySerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
+from rest_framework import filters
 class RegistrationView(APIView):
     def post(self, request):
         try:
@@ -45,11 +50,39 @@ class Login(APIView):
                 'status': status.HTTP_500_INTERNAL_SERVER_ERROR,
                 'message': f'Something went wrong: {str(e)}'
             })
-class CustomerListCreate(generics.ListCreateAPIView):
-    queryset = Customer.objects.all()
-    serializer_class = CustomerSerializer
-
-
-class LeadListCreate(generics.ListCreateAPIView):
+        
+class LeadViewSet(viewsets.ModelViewSet):
     queryset = Lead.objects.all()
     serializer_class = LeadSerializer
+    #permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['first_name', 'last_name', 'email', 'phone_number']
+    # Convert lead to customer
+    @action(detail=True, methods=['post'])
+    def convert_to_customer(self, request, pk=None):
+        lead = self.get_object()
+        user = User.objects.create(username=lead.email, email=lead.email)
+        customer = Customer.objects.create(user=user, phone_number=lead.phone_number)
+        return Response({'status': 'Lead converted to customer', 'customer_id': customer.id})
+
+class CustomerViewSet(viewsets.ModelViewSet):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+    #permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['user__username', 'company_name', 'phone_number', 'address']
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    #permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', 'description']
+
+class OpportunityViewSet(viewsets.ModelViewSet):
+    queryset = Opportunity.objects.all()
+    serializer_class = OpportunitySerializer
+    #permission_classes = [IsAuthenticated]
+
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['lead__first_name', 'lead__last_name', 'customer__company_name', 'product__name', 'stage']
