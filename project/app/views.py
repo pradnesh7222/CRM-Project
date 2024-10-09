@@ -10,13 +10,20 @@ from .models import Lead, Customer, Product, Opportunity
 from .serializers import LeadSerializer, CustomerSerializer,  PasswordResetSerializer, ProductSerializer, OpportunitySerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
-from rest_framework import filters
+from rest_framework import filters 
+from django.views.decorators.csrf import csrf_exempt
+
+
 class RegistrationView(APIView):
+    @csrf_exempt
     def post(self, request):
         try:
             data = request.data
+            print("1")
+            print(data)
             serializer = RegistrationSerializer(data=data)
             if not serializer.is_valid():
+                print("2")
                 return Response({
                     'status': status.HTTP_400_BAD_REQUEST,
                     'message': 'Invalid input',
@@ -24,11 +31,13 @@ class RegistrationView(APIView):
                 })
             serializer.save()
             return Response({
+                
                 'status': status.HTTP_201_CREATED,
                 'message': 'Your account has been created',
                 'data': serializer.data
             })
         except Exception as e:
+            print(e)
             return Response({
                 'status': status.HTTP_500_INTERNAL_SERVER_ERROR,
                 'message': f'Something went wrong: {str(e)}'

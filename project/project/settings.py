@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'crm_sample',  
+        'NAME': 'crm',  
         'USER': 'root',    
         'PASSWORD': 'SV01@joshi',  
         'HOST': 'localhost',           
@@ -134,14 +134,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # React frontend origin
 ]
-REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,  
-}
-# settings.py
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'smtp.gmail.com'  # or another email provider
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'svjoshi885@gmail.com'
-EMAIL_HOST_PASSWORD = 'qntt kmvv jres gzqp'
+EMAIL_HOST_USER = 'svjoshi885@gmail.com'  # Your email
+EMAIL_HOST_PASSWORD = 'nuzy jcfd gqiu znrm'  # Your email password
