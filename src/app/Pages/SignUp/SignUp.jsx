@@ -61,7 +61,7 @@ const SignUp = () => {
               name="User_Name"
               value={formData.User_Name}
               onChange={handleChange}
-              required
+              // required
             />
           </div>
           <div>
@@ -72,7 +72,7 @@ const SignUp = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              required
+              // required
             />
           </div>
           <div>
@@ -83,7 +83,7 @@ const SignUp = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              required
+              // required
             />
           </div>
           <div>
@@ -94,13 +94,15 @@ const SignUp = () => {
               placeholder="*************"
               value={formData.confirm_password}
               onChange={handleChange}
-              required
+              // required
             />
           </div>
 
           {error && <p style={{ color: 'red' }}>{error}</p>}
-
-          <button type="submit">Register</button>
+          <div className="button-cont">
+          <button type="submit">Sign Up</button>
+          <button type="submit">Login</button>
+          </div>
         </form>
         </legend>
       </div>
