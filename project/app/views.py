@@ -7,7 +7,7 @@ from app.serializers import CustomerSerializer, LeadSerializer, LoginSerializer,
 from app.models import Customer, Lead
 from rest_framework import viewsets
 from .models import Lead, Customer, Product, Opportunity
-from .serializers import LeadSerializer, CustomerSerializer, ProductSerializer, OpportunitySerializer
+from .serializers import LeadSerializer, CustomerSerializer,  PasswordResetSerializer, ProductSerializer, OpportunitySerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework import filters
@@ -50,7 +50,21 @@ class Login(APIView):
                 'status': status.HTTP_500_INTERNAL_SERVER_ERROR,
                 'message': f'Something went wrong: {str(e)}'
             })
-        
+class PasswordResetRequestView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = PasswordResetSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Password reset link has been sent."}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class PasswordResetConfirmView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = PasswordResetConfirmSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Password reset successful."}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)   
+
 class LeadViewSet(viewsets.ModelViewSet):
     queryset = Lead.objects.all()
     serializer_class = LeadSerializer

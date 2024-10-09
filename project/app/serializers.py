@@ -11,7 +11,16 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 import re
 from django.core.validators import EmailValidator
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.http import urlsafe_base64_decode
+# crm/serializers.py
+from rest_framework import serializers
+from .models import Lead, Customer, Product, Opportunity
+from django.contrib.auth.forms import PasswordResetForm
 class RegistrationSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=255)
     email = serializers.EmailField(
@@ -94,13 +103,32 @@ class LoginSerializer(serializers.Serializer):
             }
         }
 
-# crm/serializers.py
+class PasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField()
 
+    def validate_email(self, value):
+        """
+        Validate that the email exists in the database.
+        """
+        try:
+            user = User.objects.get(email=value)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("User with this email does not exist.")
+        return value
 
-
-# crm/serializers.py
-from rest_framework import serializers
-from .models import Lead, Customer, Product, Opportunity
+    def save(self):
+        request = self.context.get('request')
+        user_email = self.validated_data['email']
+        
+        # Use Django's built-in password reset functionality
+        form = PasswordResetForm({'email': user_email})
+        if form.is_valid():
+            form.save(
+                request=request,  # Pass request for building full URL
+                use_https=request.is_secure(),  # HTTPS check
+                from_email=None,  # Use the default from_email in settings
+                email_template_name='registration/password_reset_email.html'
+            )
 
 class LeadSerializer(serializers.ModelSerializer):
     class Meta:
