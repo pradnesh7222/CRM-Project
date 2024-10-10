@@ -10,16 +10,10 @@ const SignIn = () => {
     password_confirm: '',
   });
 
-<<<<<<< HEAD
   // State for error message
   const [error, setError] = useState('');
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-=======
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [loading, setLoading] = useState(false);
->>>>>>> abda1f60b89ad4da9b01019eed228ccbb45cd5d3
 
   // Handle form input change
   const handleInputChange = (e) => {
