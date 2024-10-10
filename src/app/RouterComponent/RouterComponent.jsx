@@ -1,7 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SignIn from "../Pages/SignIn/SignIn";
-import SignUp from '../Pages/SignUp/SignUp'
 import Navbar from "../components/navbar/NavBar";
 import Dashboard from "../Pages/Dashboard/Dashboard";
 import LeadForm from "../components/LeadForm/LeadForm";

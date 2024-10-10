@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 import './SignIn.scss';
 
 const SignIn = () => {
-  // State to handle the active class toggle
   const [isActive, setIsActive] = useState(false);
-
-  // State to handle form data for Sign In and Sign Up
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -13,10 +10,16 @@ const SignIn = () => {
     password_confirm: '',
   });
 
+<<<<<<< HEAD
   // State for error message
   const [error, setError] = useState('');
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+=======
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
+>>>>>>> abda1f60b89ad4da9b01019eed228ccbb45cd5d3
 
   // Handle form input change
   const handleInputChange = (e) => {
@@ -39,7 +42,7 @@ const SignIn = () => {
   };
 
   // Handle form submission for Sign Up
-  const handleSignUpSubmit = (e) => {
+  const handleSignUpSubmit = async (e) => {
     e.preventDefault();
 
     
@@ -62,10 +65,39 @@ const SignIn = () => {
   
 
   // Handle form submission for Sign In
-  const handleSignInSubmit = (e) => {
+  const handleSignInSubmit = async (e) => {
     e.preventDefault();
-    // Log the form data to the console
-    console.log('Sign In Data:', formData);
+    setLoading(true); // Start loading
+
+    try {
+      console.log('Sending sign-in request with data:', { username: formData.username, password: formData.password });
+      const response = await fetch('http://127.0.0.1:8000/login/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+        }),
+      });
+
+      console.log('API response status:', response.status);
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.message || 'Failed to sign in');
+        console.log('Error from API:', errorData);
+        return;
+      }
+
+      const data = await response.json();
+      console.log('Sign in successful, data:', data);
+      setSuccess('Sign in successful!');
+      setFormData({ email: '', password: '' });
+    } catch (error) {
+      console.error('Error during sign-in:', error);
+      setError('There was an error signing in. Please try again.');
+    } finally {
+      setLoading(false); // End loading
+    }
   };
 
   return (
