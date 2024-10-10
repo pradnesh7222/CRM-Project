@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from .models import Customer, Lead
+from .models import Customer, Order, ServiceRequest
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
@@ -12,14 +12,14 @@ from django.contrib.auth import authenticate
 import re
 from django.core.validators import EmailValidator
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-
+from django.contrib.auth import update_session_auth_hash
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_decode
 # crm/serializers.py
 from rest_framework import serializers
-from .models import Lead, Customer, Product, Opportunity
+from .models import  Customer, Product
 from django.contrib.auth.forms import PasswordResetForm
 class RegistrationSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=255)
@@ -81,9 +81,10 @@ class LoginSerializer(serializers.Serializer):
     def validate(self, data):
         username = data.get('username')
         password = data.get('password')
-
+        print(username)
         # Check if user exists and authenticate
         user = authenticate(username=username, password=password)
+        print(user)
         if user is None:
             raise serializers.ValidationError({'error': 'Invalid username or password'})
         
@@ -103,81 +104,30 @@ class LoginSerializer(serializers.Serializer):
             }
         }
 
-class PasswordResetSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-
-    def validate_email(self, value):
-        """
-        Validate that the email exists in the database.
-        """
-        try:
-            user = User.objects.get(email=value)
-        except User.DoesNotExist:
-            raise serializers.ValidationError("User with this email does not exist.")
-        return value
-
-    def save(self):
-        request = self.context.get('request')
-        user_email = self.validated_data['email']
-        
-        # Use Django's built-in password reset functionality
-        form = PasswordResetForm({'email': user_email})
-        if form.is_valid():
-            form.save(
-                request=request,  # Pass request for building full URL
-                use_https=request.is_secure(),  # HTTPS check
-                from_email=None,  # Use the default from_email in settings
-                email_template_name='registration/password_reset_email.html'
-            )
-
-class LeadSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Lead
-        fields = ['id', 'first_name', 'last_name', 'email', 'phone_number', 'company', 'status', 'created_at']
-
-
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
-        fields = ['id', 'user', 'company_name', 'phone_number', 'address']
-
+        fields = '__all__'
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['id', 'name', 'description', 'price', 'stock']
+        fields = '__all__'
 
-
-class OpportunitySerializer(serializers.ModelSerializer):
-    lead = LeadSerializer()
-    customer = CustomerSerializer()
-    product = ProductSerializer()
+class ServiceRequestSerializer(serializers.ModelSerializer):
+    customer_name = serializers.CharField(source='customer.first_name')  
+    customer_last_name = serializers.CharField(source='customer.last_name')  
+    product_name = serializers.CharField(source='product.name')  
 
     class Meta:
-        model = Opportunity
-        fields = ['id', 'lead', 'customer', 'product', 'stage', 'expected_revenue', 'closing_date', 'created_at']
+        model = ServiceRequest
+        fields = ['id', 'issue_description', 'status', 'created_at', 'updated_at', 'customer_name', 'customer_last_name', 'product_name']
 
-    def create(self, validated_data):
-        # Extract nested data
-        lead_data = validated_data.pop('lead')
-        customer_data = validated_data.pop('customer')
-        product_data = validated_data.pop('product')
+class OrderSerializer(serializers.ModelSerializer):
+    customer_name = serializers.CharField(source='service_request.customer.first_name')  # First name of the customer
+    customer_last_name = serializers.CharField(source='service_request.customer.last_name')  # Last name of the customer
+    product_name = serializers.CharField(source='service_request.product.name')  # Name of the product
 
-        # Create or get Lead instance
-        lead, created = Lead.objects.get_or_create(**lead_data)
-
-        # Create or get Customer instance
-        customer, created = Customer.objects.get_or_create(**customer_data)
-
-        # Create or get Product instance
-        product, created = Product.objects.get_or_create(**product_data)
-
-        # Create the Opportunity instance
-        opportunity = Opportunity.objects.create(
-            lead=lead,
-            customer=customer,
-            product=product,
-            **validated_data
-        )
-
-        return opportunity
+    class Meta:
+        model = Order
+        fields = ['id', 'total_cost', 'is_paid', 'created_at', 'service_request', 'customer_name', 'customer_last_name', 'product_name']

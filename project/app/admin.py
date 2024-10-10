@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from app.models import Customer, Lead
+from app.models import Customer
 
 # Register your models here.
-admin.site.register(Lead)
+
 admin.site.register(Customer)

@@ -17,21 +17,22 @@ Including another URLconf
 from django.contrib.auth import views as auth_views
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from app.views import  CustomerViewSet, LeadViewSet, OpportunityViewSet,  PasswordResetRequestView, ProductViewSet, RegistrationView,Login
+from app.views import RegistrationView,Login
+from .views import CustomerViewSet, ProductViewSet, ServiceRequestViewSet, OrderViewSet
+
 router = DefaultRouter()
-router.register(r'leads', LeadViewSet)
 router.register(r'customers', CustomerViewSet)
 router.register(r'products', ProductViewSet)
-router.register(r'opportunities', OpportunityViewSet)
+router.register(r'service-requests', ServiceRequestViewSet)
+router.register(r'orders', OrderViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('register/',RegistrationView.as_view()),
     path('login/',Login.as_view()),
-     path('password-reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
-    path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
-    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
-    path('password-reset/', PasswordResetRequestView.as_view(), name='password_reset_api'),
+    #path('api/protected/', ProtectedView.as_view(), name='protected'),
+
+    #path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    #path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 
 

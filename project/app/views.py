@@ -3,16 +3,17 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
-from app.serializers import CustomerSerializer, LeadSerializer, LoginSerializer, RegistrationSerializer
-from app.models import Customer, Lead
+from app.serializers import CustomerSerializer, LoginSerializer, RegistrationSerializer
+from app.models import Customer
 from rest_framework import viewsets
-from .models import Lead, Customer, Product, Opportunity
-from .serializers import LeadSerializer, CustomerSerializer,  PasswordResetSerializer, ProductSerializer, OpportunitySerializer
+from .models import  Customer, Order, Product, ServiceRequest
+from .serializers import  CustomerSerializer, OrderSerializer,  ProductSerializer, ServiceRequestSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework import filters 
 from django.views.decorators.csrf import csrf_exempt
-
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework import generics, permissions
 
 class RegistrationView(APIView):
     @csrf_exempt
@@ -44,10 +45,12 @@ class RegistrationView(APIView):
             })
 
 class Login(APIView):
+    #permission_classes = [IsAuthenticated]
     def post(self, request):
         try:
             data = request.data
             serializer = LoginSerializer(data=data)
+            print("data",data)
             if serializer.is_valid(raise_exception=True):
                 tokens = serializer.get_tokens_for_user()
                 return Response({
@@ -59,53 +62,29 @@ class Login(APIView):
                 'status': status.HTTP_500_INTERNAL_SERVER_ERROR,
                 'message': f'Something went wrong: {str(e)}'
             })
-class PasswordResetRequestView(APIView):
-    def post(self, request, *args, **kwargs):
-        serializer = PasswordResetSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "Password reset link has been sent."}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-class PasswordResetConfirmView(APIView):
-    def post(self, request, *args, **kwargs):
-        serializer = PasswordResetConfirmSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "Password reset successful."}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)   
-
-class LeadViewSet(viewsets.ModelViewSet):
-    queryset = Lead.objects.all()
-    serializer_class = LeadSerializer
-    #permission_classes = [IsAuthenticated]
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['first_name', 'last_name', 'email', 'phone_number']
-    # Convert lead to customer
-    @action(detail=True, methods=['post'])
-    def convert_to_customer(self, request, pk=None):
-        lead = self.get_object()
-        user = User.objects.create(username=lead.email, email=lead.email)
-        customer = Customer.objects.create(user=user, phone_number=lead.phone_number)
-        return Response({'status': 'Lead converted to customer', 'customer_id': customer.id})
-
+        
 class CustomerViewSet(viewsets.ModelViewSet):
+    #authentication_classes = [JWTAuthentication] 
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    #permission_classes = [IsAuthenticated]
     filter_backends = [filters.SearchFilter]
-    search_fields = ['user__username', 'company_name', 'phone_number', 'address']
+    search_fields = ['first_name', 'last_name', 'email']
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    #permission_classes = [IsAuthenticated]
     filter_backends = [filters.SearchFilter]
-    search_fields = ['name', 'description']
+    search_fields = ['name', 'category', 'description'] 
 
-class OpportunityViewSet(viewsets.ModelViewSet):
-    queryset = Opportunity.objects.all()
-    serializer_class = OpportunitySerializer
-    #permission_classes = [IsAuthenticated]
-
+class ServiceRequestViewSet(viewsets.ModelViewSet):
+    queryset = ServiceRequest.objects.all()
+    serializer_class = ServiceRequestSerializer
     filter_backends = [filters.SearchFilter]
-    search_fields = ['lead__first_name', 'lead__last_name', 'customer__company_name', 'product__name', 'stage']
+    search_fields = ['issue_description', 'status']  
+
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['total_cost']  
+    
