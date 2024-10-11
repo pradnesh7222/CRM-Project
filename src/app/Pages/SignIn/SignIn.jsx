@@ -13,30 +13,15 @@ const SignIn = () => {
     password_confirm: '',
   });
 
-  const [signInData, setSignInData] = useState({
-    email: '',
-    password: '',
-  });
-
   const [error, setError] = useState('');
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (isActive) {
-      setSignUpData({
-        ...signUpData,
-        [name]: value,
-      });
-    } else {
-      setSignInData({
-        ...signInData,
-        [name]: value,
-      });
-    }
-    setError('');
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
   const handleRegister = () => {
@@ -49,25 +34,40 @@ const SignIn = () => {
 
   const handleSignUpSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setLoading(true); // Start loading
 
-    if (signUpData.password !== signUpData.password_confirm) {
-      setError('Passwords do not match!');
-      setLoading(false);
-      return;
-    }
+    try {
+      console.log('Sending request with data:', formData);
+      const response = await fetch('http://127.0.0.1:8000/register/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
 
-    if (!passwordRegex.test(signUpData.password)) {
-      setError('Password should contain at least 8 characters, including 1 letter and 1 symbol');
-      setLoading(false);
-      return;
-    }
+      console.log('API response status:', response.status);
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.message || 'Network response was not ok');
+        console.log('Error from API:', errorData);
+        return;
+      }
 
-    if (!emailRegex.test(signUpData.email)) {
-      setError('Invalid email format!');
-      setLoading(false);
-      return;
+      const data = await response.json();
+      console.log('API response data:', data);
+      setSuccess('Registration successful!');
+      setFormData({ username: '', email: '', password: '', password_confirm: '' });
+    } catch (error) {
+      console.error('Error:', error);
+      setError('There was an error signing up. Please try again.');
+    } finally {
+      setLoading(false); // End loading
     }
+  };
+
+  // Handle form submission for Sign In
+  const handleSignInSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true); // Start loading
 
     // Sending signup data to the API
     try {
@@ -98,135 +98,103 @@ const SignIn = () => {
     }
   };
 
-  const handleSignInSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    // Sending signin data to the API
-    try {
-      const response = await fetch('http://127.0.0.1:8000/login/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(signInData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.message || 'Failed to login');
-        setLoading(false);
-        return;
-      }
-
-      const result = await response.json();
-      console.log('Login successful:', result);
-      setSuccess(true);
-      setError('');
-    } catch (error) {
-      console.error('Error during sign in:', error);
-      setError('An error occurred during login.');
-    } finally {
-      setLoading(false);
-    }
-  };
+ 
 
   return (
-    <main>
-      <div className={`container ${isActive ? 'active' : ''}`} id="container">
-        <div className="form-container sign-up">
-          <form onSubmit={handleSignUpSubmit}>
-            <h1>Create Account</h1>
-            <div className="social-icons">
-              <a href="#" className="icon"><i className="ri-google-fill"></i></a>
-              <a href="#" className="icon"><i className="ri-facebook-box-fill"></i></a>
-              <a href="#" className="icon"><i className="ri-github-fill"></i></a>
-              <a href="#" className="icon"><i className="ri-linkedin-box-fill"></i></a>
-            </div>
-            <span>or use your email for registration</span>
-            <input
-              type="text"
-              name="username"
-              placeholder="Name"
-              onChange={handleInputChange}
-              required
-            />
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              onChange={handleInputChange}
-              required
-            />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              onChange={handleInputChange}
-              required
-            />
-            <input
-              type="password"
-              name="password_confirm"
-              placeholder="Re-type Password"
-              onChange={handleInputChange}
-              required
-            />
-            {error && <p className='validpass' style={{ color: 'red' }}>{error}</p>}
-            <button type="submit" disabled={loading}>{loading ? 'Loading...' : 'Sign Up'}</button>
-          </form>
-        </div>
+    <div className={`container ${isActive ? 'active' : ''}`} id="container">
+      <div className="form-container sign-up">
+        <form onSubmit={handleSignUpSubmit}>
+          <h1>Create Account</h1>
+          <div className="social-icons">
+            <a href="#" className="icon"><i className="ri-google-fill"></i></a>
+            <a href="#" className="icon"><i className="ri-facebook-box-fill"></i></a>
+            <a href="#" className="icon"><i className="ri-github-fill"></i></a>
+            <a href="#" className="icon"><i className="ri-linkedin-box-fill"></i></a>
+          </div>
+          <span>or use your email for registration</span>
+          <input
+            type="text"
+            name="username"
+            placeholder="Name"
+            onChange={handleInputChange}
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            onChange={handleInputChange}
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            onChange={handleInputChange}
+          />
+          <input
+            type="password"
+            name="password_confirm"
+            placeholder="Re-type-password"
+            onChange={handleInputChange}
+          />
+          <button type="submit" disabled={loading}>
+            {loading ? 'Submitting...' : 'Sign Up'}
+          </button>
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+          {success && <p style={{ color: 'green' }}>{success}</p>}
+        </form>
+      </div>
 
-        <div className="form-container sign-in">
-          <form onSubmit={handleSignInSubmit}>
-            <h1>Sign In</h1>
-            <div className="social-icons">
-              <a href="#" className="icon"><i className="ri-google-fill "></i></a>
-              <a href="#" className="icon"><i className="ri-facebook-box-fill"></i></a>
-              <a href="#" className="icon"><i className="ri-github-fill"></i></a>
-              <a href="#" className="icon"><i className="ri-linkedin-box-fill"></i></a>
-            </div>
-            <span>or use your email for sign-in</span>
-            <input
-              type="username"
-              name="username"
-              placeholder="username"
-              onChange={handleInputChange}
-              required
-            />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              onChange={handleInputChange}
-              required
-            />
-            <a href="#">Forget Your Password?</a>
-            {error && <p className='validpass' style={{ color: 'red' }}>{error}</p>}
-            <button type="submit" disabled={loading}>{loading ? 'Loading...' : 'Sign In'}</button>
-          </form>
-        </div>
+      <div className="form-container sign-in">
+        <form onSubmit={handleSignInSubmit}>
+          <h1>Sign In</h1>
+          <div className="social-icons">
+            <a href="#" className="icon"><i className="ri-google-fill"></i></a>
+            <a href="#" className="icon"><i className="ri-facebook-box-fill"></i></a>
+            <a href="#" className="icon"><i className="ri-github-fill"></i></a>
+            <a href="#" className="icon"><i className="ri-linkedin-box-fill"></i></a>
+          </div>
+          <span>or use your name for sign-in</span>
+          <input
+            type="text"
+            name="username"
+            placeholder="Enter your name"
+            onChange={handleInputChange}
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            onChange={handleInputChange}
+          />
+          <a href="#">Forget Your Password?</a>
+          <button type="submit" disabled={loading}>
+            {loading ? 'Signing In...' : 'Sign In'}
+          </button>
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+          {success && <p style={{ color: 'green' }}>{success}</p>}
+        </form>
+      </div>
 
-        <div className="toggle-container">
-          <div className="toggle">
-            <div className="toggle-panel toggle-left">
-              <h1>Welcome Back!</h1>
-              <p>Enter your personal details to use all of the site's features</p>
-              <button className="hidden" id="login" onClick={handleLogin}>
-                Sign In
-              </button>
-            </div>
-            <div className="toggle-panel toggle-right">
-              <h1>Welcome, Friend!</h1>
-              <p>Enter your personal details to use all of the site's features</p>
-              <button className="hidden" id="register" onClick={handleRegister}>
-                Sign Up
-              </button>
-            </div>
+      <div className="toggle-container">
+        <div className="toggle">
+          <div className="toggle-panel toggle-left">
+            <h1>Welcome Back!</h1>
+            <p>Enter your personal details to use all of the site's features</p>
+            <button className="hidden" id="login" onClick={handleLogin}>
+              Sign In
+            </button>
+          </div>
+          <div className="toggle-panel toggle-right">
+            <h1>CRM Login</h1>
+            <h1>Welcome, Friend!</h1>
+            <p>Enter your personal details to use all of the site's features</p>
+            <button className="hidden" id="register" onClick={handleRegister}>
+              Sign Up
+            </button>
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 };
 
