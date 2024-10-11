@@ -6,8 +6,8 @@ from rest_framework import generics
 from app.serializers import CustomerSerializer, LoginSerializer, RegistrationSerializer
 from app.models import Customer
 from rest_framework import viewsets
-from .models import  Customer, Order, Product, ServiceRequest
-from .serializers import  CustomerSerializer, OrderSerializer,  ProductSerializer, ServiceRequestSerializer
+from .models import  Customer, Order, Product, Service, ServiceRequest
+from .serializers import  CustomerSerializer, OrderSerializer,  ProductSerializer, ServiceRequestSerializer, ServiceSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework import filters 
@@ -88,3 +88,6 @@ class OrderViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ['total_cost']  
     
+class ServiceViewSet(viewsets.ModelViewSet):
+    queryset =  Service.objects.all()
+    serializer_class =  ServiceSerializer

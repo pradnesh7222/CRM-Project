@@ -19,7 +19,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_decode
 # crm/serializers.py
 from rest_framework import serializers
-from .models import  Customer, Product
+from .models import  Customer, Product,Service
 from django.contrib.auth.forms import PasswordResetForm
 class RegistrationSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=255)
@@ -131,3 +131,8 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['id', 'total_cost', 'is_paid', 'created_at', 'service_request', 'customer_name', 'customer_last_name', 'product_name']
+
+class ServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = '__all__'

@@ -18,13 +18,14 @@ from django.contrib.auth import views as auth_views
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from app.views import RegistrationView,Login
-from .views import CustomerViewSet, ProductViewSet, ServiceRequestViewSet, OrderViewSet
+from .views import CustomerViewSet, ProductViewSet, ServiceRequestViewSet, OrderViewSet, ServiceViewSet
 
 router = DefaultRouter()
 router.register(r'customers', CustomerViewSet)
 router.register(r'products', ProductViewSet)
 router.register(r'service-requests', ServiceRequestViewSet)
 router.register(r'orders', OrderViewSet)
+router.register(r'services', ServiceViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('register/',RegistrationView.as_view()),

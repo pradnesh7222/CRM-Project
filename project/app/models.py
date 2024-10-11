@@ -13,7 +13,7 @@ class Customer(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=255)
-    category = models.CharField(max_length=100)
+    category = models.CharField(max_length=100,choices=[('Laptop', 'Laptop'), ('Mobile Phones', 'Mobile Phones')])
     description = models.TextField()
 
     def __str__(self):
@@ -37,3 +37,7 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order #{self.id} - Paid: {self.is_paid}"
+
+class Service(models.Model):
+    service_type=models.CharField(max_length=100)
+    
