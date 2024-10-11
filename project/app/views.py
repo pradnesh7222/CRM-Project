@@ -3,15 +3,28 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
-from app.serializers import CustomerSerializer, LeadSerializer, LoginSerializer, RegistrationSerializer
-from app.models import Customer, Lead
+from app.serializers import CustomerSerializer, LoginSerializer, RegistrationSerializer
+from app.models import Customer
+from rest_framework import viewsets
+from .models import  Customer, Order, Product, ServiceRequest
+from .serializers import  CustomerSerializer, OrderSerializer,  ProductSerializer, ServiceRequestSerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
+from rest_framework import filters 
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework import generics, permissions
 
 class RegistrationView(APIView):
+    @csrf_exempt
     def post(self, request):
         try:
             data = request.data
+            print("1")
+            print(data)
             serializer = RegistrationSerializer(data=data)
             if not serializer.is_valid():
+                print("2")
                 return Response({
                     'status': status.HTTP_400_BAD_REQUEST,
                     'message': 'Invalid input',
@@ -19,21 +32,25 @@ class RegistrationView(APIView):
                 })
             serializer.save()
             return Response({
+                
                 'status': status.HTTP_201_CREATED,
                 'message': 'Your account has been created',
                 'data': serializer.data
             })
         except Exception as e:
+            print(e)
             return Response({
                 'status': status.HTTP_500_INTERNAL_SERVER_ERROR,
                 'message': f'Something went wrong: {str(e)}'
             })
 
 class Login(APIView):
+    #permission_classes = [IsAuthenticated]
     def post(self, request):
         try:
             data = request.data
             serializer = LoginSerializer(data=data)
+            print("data",data)
             if serializer.is_valid(raise_exception=True):
                 tokens = serializer.get_tokens_for_user()
                 return Response({
@@ -45,11 +62,29 @@ class Login(APIView):
                 'status': status.HTTP_500_INTERNAL_SERVER_ERROR,
                 'message': f'Something went wrong: {str(e)}'
             })
-class CustomerListCreate(generics.ListCreateAPIView):
+        
+class CustomerViewSet(viewsets.ModelViewSet):
+    #authentication_classes = [JWTAuthentication] 
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['first_name', 'last_name', 'email']
 
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', 'category', 'description'] 
 
-class LeadListCreate(generics.ListCreateAPIView):
-    queryset = Lead.objects.all()
-    serializer_class = LeadSerializer
+class ServiceRequestViewSet(viewsets.ModelViewSet):
+    queryset = ServiceRequest.objects.all()
+    serializer_class = ServiceRequestSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['issue_description', 'status']  
+
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['total_cost']  
+    

@@ -2,74 +2,133 @@ import React, { useState } from 'react';
 import './SignIn.scss';
 
 const SignIn = () => {
-  // State to handle the active class toggle
   const [isActive, setIsActive] = useState(false);
-
-  // State to handle form data for Sign In and Sign Up
-  const [formData, setFormData] = useState({
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  
+  const [signUpData, setSignUpData] = useState({
     username: '',
     email: '',
     password: '',
     password_confirm: '',
   });
 
-  // State for error messages
+  const [signInData, setSignInData] = useState({
+    email: '',
+    password: '',
+  });
+
   const [error, setError] = useState('');
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
 
-  // Handle form input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-    setError(''); // Clear error message on input change
+    if (isActive) {
+      setSignUpData({
+        ...signUpData,
+        [name]: value,
+      });
+    } else {
+      setSignInData({
+        ...signInData,
+        [name]: value,
+      });
+    }
+    setError('');
   };
 
-  // Function to handle registration (add active class)
   const handleRegister = () => {
     setIsActive(true);
   };
 
-  // Function to handle login (remove active class)
   const handleLogin = () => {
     setIsActive(false);
   };
 
-  // Handle form submission for Sign Up
-  const handleSignUpSubmit = (e) => {
+  const handleSignUpSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    // Check if passwords match
-    if (formData.password !== formData.password_confirm) {
+    if (signUpData.password !== signUpData.password_confirm) {
       setError('Passwords do not match!');
+      setLoading(false);
       return;
     }
 
-    // Check if the password meets the criteria
-    if (!passwordRegex.test(formData.password)) {
-      setError('Password should contain 8 character and atleast 1 letter and symbol');
+    if (!passwordRegex.test(signUpData.password)) {
+      setError('Password should contain at least 8 characters, including 1 letter and 1 symbol');
+      setLoading(false);
       return;
     }
 
-    // Check if email is valid
-    if (!emailRegex.test(formData.email)) {
+    if (!emailRegex.test(signUpData.email)) {
       setError('Invalid email format!');
+      setLoading(false);
       return;
     }
 
-    // Log the form data to the console if all validations pass
-    console.log('Sign Up Data:', formData);
+    // Sending signup data to the API
+    try {
+      const response = await fetch('http://127.0.0.1:8000/register/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(signUpData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.message || 'Failed to register');
+        setLoading(false);
+        return;
+      }
+
+      const result = await response.json();
+      console.log('Registration successful:', result);
+      setSuccess(true);
+      setError('');
+    } catch (error) {
+      console.error('Error during sign up:', error);
+      setError('An error occurred during registration.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Handle form submission for Sign In
-  const handleSignInSubmit = (e) => {
+  const handleSignInSubmit = async (e) => {
     e.preventDefault();
-    // Log the form data to the console
-    console.log('Sign In Data:', formData);
+    setLoading(true);
+
+    // Sending signin data to the API
+    try {
+      const response = await fetch('http://127.0.0.1:8000/login/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(signInData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.message || 'Failed to login');
+        setLoading(false);
+        return;
+      }
+
+      const result = await response.json();
+      console.log('Login successful:', result);
+      setSuccess(true);
+      setError('');
+    } catch (error) {
+      console.error('Error during sign in:', error);
+      setError('An error occurred during login.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -113,8 +172,8 @@ const SignIn = () => {
               onChange={handleInputChange}
               required
             />
-            {error && <p className='validpass' style={{ color: 'red' }}>{error}</p>} {/* Display error message */}
-            <button type="submit">Sign Up</button>
+            {error && <p className='validpass' style={{ color: 'red' }}>{error}</p>}
+            <button type="submit" disabled={loading}>{loading ? 'Loading...' : 'Sign Up'}</button>
           </form>
         </div>
 
@@ -129,9 +188,9 @@ const SignIn = () => {
             </div>
             <span>or use your email for sign-in</span>
             <input
-              type="email"
-              name="email"
-              placeholder="Email"
+              type="username"
+              name="username"
+              placeholder="username"
               onChange={handleInputChange}
               required
             />
@@ -143,7 +202,8 @@ const SignIn = () => {
               required
             />
             <a href="#">Forget Your Password?</a>
-            <button type="submit">Sign In</button>
+            {error && <p className='validpass' style={{ color: 'red' }}>{error}</p>}
+            <button type="submit" disabled={loading}>{loading ? 'Loading...' : 'Sign In'}</button>
           </form>
         </div>
 
