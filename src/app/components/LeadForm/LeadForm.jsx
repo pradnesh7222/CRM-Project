@@ -1,19 +1,25 @@
 import React, { useState } from "react";
 import "./LeadForm.scss";
+import { useNavigate  } from "react-router-dom";
 
-const LeadForm = (isVisible,setIsVisible) => {
+const LeadForm = ({isVisible,setIsVisible}) => {
   const phoneRegex = /^[0-9]{10}$/;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 
- 
+  const close = (e) => {
+    e.preventDefault();
+    setIsVisible(!isVisible);
+  };
+
+  const navigate = useNavigate();
   // Separate state for handling errors
   const [error, setError] = useState({
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
-    company: "",
+    address: "",
     status: "",
   });
 
@@ -23,7 +29,7 @@ const LeadForm = (isVisible,setIsVisible) => {
     lastName: "",
     email: "",
     phone: "",
-    company: "",
+    address: "",
     status: "",
   });
 
@@ -51,13 +57,7 @@ const LeadForm = (isVisible,setIsVisible) => {
     let hasError = false;
 
     let newError = { 
-      firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    company: "",
-    status: "",
-      // ...error 
+      ...error 
     };
 
     // Check for empty fields
@@ -88,14 +88,18 @@ const LeadForm = (isVisible,setIsVisible) => {
 
     // Proceed if no errors
     console.log("Submit Data:", formData);
+    navigate('/Dashboard',{ state: { formData: formData  } });
   };
 
   return (
   
-    <div className="leadform" style={{ display: isVisible ? "block" : "none", position:"absolute" }}>
+    <div className="leadFormBg">
+      <div className="leadform" >
       <form onSubmit={handleSubmit} >
+        <div className="closebtn-cont">
         <h1>Enter Details</h1>
-
+        <button id='closebtn' onClick={()=>setIsVisible(!isVisible)}><i class="ri-close-line"></i></button>
+        </div>
         <span>First Name</span>
         <input
           type="text"
@@ -136,11 +140,11 @@ const LeadForm = (isVisible,setIsVisible) => {
         />
         <span style={{ color: "red" }}>{error.phone}</span>
 
-        <span>Company</span>
+        <span>Address</span>
         <input
-          type="text"
-          name="company"
-          placeholder="Company"
+          type="address"
+          name="address"
+          placeholder="Address"
           onChange={handleInputChange}
           required
         />
@@ -155,9 +159,14 @@ const LeadForm = (isVisible,setIsVisible) => {
           <option value="Lost">Lost</option>
         </select>
         <span style={{ color: "red" }}>{error.status}</span>
-
-        <button onClick={handleSubmit}>Submit</button>
+         
+        <button  type="submit" onClick={(e) => {
+              handleSubmit(e);
+              close(e);}
+              } >Submit </button>
       </form>
+    </div>
+   
     </div>
   );
 };

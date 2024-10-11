@@ -5,6 +5,8 @@ const SignIn = () => {
   const [isActive, setIsActive] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [formData,setFormData] = useState('');
+  
   
   const [signUpData, setSignUpData] = useState({
     username: '',

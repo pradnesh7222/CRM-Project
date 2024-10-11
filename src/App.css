@@ -14,3 +14,11 @@ html,body{
     box-sizing: border-box;
     font-family: 'Montserrat', sans-serif;
 }
+
+.App{
+    height: 100vh;
+    height:100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
