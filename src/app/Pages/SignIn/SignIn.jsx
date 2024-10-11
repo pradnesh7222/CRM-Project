@@ -37,6 +37,8 @@ const SignIn = () => {
   const handleSignUpSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // Start loading
+    setError(''); // Clear previous errors
+    setSuccess(''); // Clear previous success messages
 
     try {
       console.log('Sending request with data:', formData);
@@ -47,15 +49,17 @@ const SignIn = () => {
       });
 
       console.log('API response status:', response.status);
+      const responseData = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.message || 'Network response was not ok');
-        console.log('Error from API:', errorData);
+        // If the response is not ok, set the error message
+        const errors = responseData || { message: 'Network response was not ok' };
+        setError(Object.values(errors).flat().join(', ')); // Display error messages
+        console.log('Error from API:', errors);
         return;
       }
 
-      const data = await response.json();
-      console.log('API response data:', data);
+      console.log('API response data:', responseData);
       setSuccess('Registration successful!');
       setFormData({ username: '', email: '', password: '', password_confirm: '' });
     } catch (error) {
@@ -70,6 +74,8 @@ const SignIn = () => {
   const handleSignInSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // Start loading
+    setError(''); // Clear previous errors
+    setSuccess(''); // Clear previous success messages
 
     try {
       console.log('Sending sign-in request with data:', { username: formData.username, password: formData.password });
@@ -83,15 +89,17 @@ const SignIn = () => {
       });
 
       console.log('API response status:', response.status);
+      const responseData = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.message || 'Failed to sign in');
-        console.log('Error from API:', errorData);
+        // If the response is not ok, set the error message
+        const errors = responseData || { message: 'Failed to sign in' };
+        setError(Object.values(errors).flat().join(', ')); // Display error messages
+        console.log('Error from API:', errors);
         return;
       }
 
-      const data = await response.json();
-      console.log('Sign in successful, data:', data);
+      console.log('Sign in successful, data:', responseData);
       setSuccess('Sign in successful!');
       setFormData({ email: '', password: '' });
     } catch (error) {

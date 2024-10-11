@@ -15,53 +15,24 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import generics, permissions
 
-class RegistrationView(APIView):
-    @csrf_exempt
-    def post(self, request):
-        try:
-            data = request.data
-            print("1")
-            print(data)
-            serializer = RegistrationSerializer(data=data)
-            if not serializer.is_valid():
-                print("2")
-                return Response({
-                    'status': status.HTTP_400_BAD_REQUEST,
-                    'message': 'Invalid input',
-                    'errors': serializer.errors
-                })
-            serializer.save()
-            return Response({
-                
-                'status': status.HTTP_201_CREATED,
-                'message': 'Your account has been created',
-                'data': serializer.data
-            })
-        except Exception as e:
-            print(e)
-            return Response({
-                'status': status.HTTP_500_INTERNAL_SERVER_ERROR,
-                'message': f'Something went wrong: {str(e)}'
-            })
 
-class Login(APIView):
-    #permission_classes = [IsAuthenticated]
+class RegistrationView(APIView):
     def post(self, request):
-        try:
-            data = request.data
-            serializer = LoginSerializer(data=data)
-            print("data",data)
-            if serializer.is_valid(raise_exception=True):
-                tokens = serializer.get_tokens_for_user()
-                return Response({
-                    'status': status.HTTP_200_OK,
-                    **tokens
-                })
-        except Exception as e:
-            return Response({
-                'status': status.HTTP_500_INTERNAL_SERVER_ERROR,
-                'message': f'Something went wrong: {str(e)}'
-            })
+        serializer = RegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({"message": "User created successfully!"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class LoginView(APIView):
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            tokens = serializer.get_tokens_for_user()
+            return Response(tokens, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
         
 class CustomerViewSet(viewsets.ModelViewSet):
     #authentication_classes = [JWTAuthentication] 

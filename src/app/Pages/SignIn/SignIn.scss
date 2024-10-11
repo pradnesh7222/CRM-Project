@@ -24,7 +24,7 @@
   overflow: hidden;
   width: 768px;
   max-width: 100%;
-  min-height: 480px;
+  min-height: 495px;
 
   p {
     font-size: 14px;
@@ -33,15 +33,22 @@
     margin: 20px 0;
   }
 
-  span {
+  .validpass{
     font-size: 12px;
+    line-height: 15px;
+    letter-spacing: 0.3px;
+    margin: 10px 0;
+  }
+
+  span {
+    font-size: 14px;
   }
 
   a {
     color: #333;
-    font-size: 13px;
+    font-size: 15px;
     text-decoration: none;
-    margin: 15px 0 10px;
+    margin: 15px 0 15px;
   }
 
   button {
@@ -138,9 +145,10 @@
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    margin: 0 0;
-    width: 40px;
-    height: 40px;
+    margin: 0 3px;
+    width: 35px;
+    height: 35px;
+    font-size:22px ;
   }
 }
 
@@ -207,3 +215,5 @@
     }
   }
 }
+
+
