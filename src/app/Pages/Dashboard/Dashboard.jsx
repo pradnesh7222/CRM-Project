@@ -24,14 +24,19 @@ const Dashboard = () => {
         </div>
         <div className="dashboard_right">
         <div className="dashboard_right_upper">
-          <button onClick={() => setIsVisible(!isVisible)}>+ Create Lead</button>
+          <button onClick={() => setIsVisible(true)}>+ Create Lead</button>
           <div className="search-btn ">
           <input type="search"  placeholder='search'   />
           <i class="ri-search-line"></i>
           </div>
         </div>
          <div className="dashboard_right_table">
+
+          <h1>table heading</h1>
+            {
+              isVisible &&
               <LeadForm isVisible={isVisible} setIsVisible={setIsVisible}/>
+            }
          </div>
          </div>
     </div>

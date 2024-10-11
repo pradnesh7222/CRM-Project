@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import "./LeadForm.scss";
 
-const LeadForm = ({ isVisible, setIsVisible }) => {
+const LeadForm = (isVisible,setIsVisible) => {
   const phoneRegex = /^[0-9]{10}$/;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+
+ 
   // Separate state for handling errors
   const [error, setError] = useState({
     firstName: "",
@@ -38,6 +40,7 @@ const LeadForm = ({ isVisible, setIsVisible }) => {
       ...error,
       [name]: "", 
     });
+
   };
 
   // Handle form submission
@@ -46,7 +49,16 @@ const LeadForm = ({ isVisible, setIsVisible }) => {
 
     // Basic validation
     let hasError = false;
-    let newError = { ...error };
+
+    let newError = { 
+      firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    company: "",
+    status: "",
+      // ...error 
+    };
 
     // Check for empty fields
     for (const key in formData) {
@@ -79,8 +91,9 @@ const LeadForm = ({ isVisible, setIsVisible }) => {
   };
 
   return (
-    <div className="leadform">
-      <form>
+  
+    <div className="leadform" style={{ display: isVisible ? "block" : "none", position:"absolute" }}>
+      <form onSubmit={handleSubmit} >
         <h1>Enter Details</h1>
 
         <span>First Name</span>

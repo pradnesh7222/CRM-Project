@@ -13,10 +13,11 @@ const SignIn = () => {
     password_confirm: '',
   });
 
-  // State for error message
+  // State for error messages
   const [error, setError] = useState('');
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
 
   // Handle form input change
   const handleInputChange = (e) => {
@@ -42,24 +43,27 @@ const SignIn = () => {
   const handleSignUpSubmit = (e) => {
     e.preventDefault();
 
-    
-    
     // Check if passwords match
     if (formData.password !== formData.password_confirm) {
       setError('Passwords do not match!');
       return;
     }
 
-    // console.log('Sign Up Data:', formData);
+    // Check if the password meets the criteria
+    if (!passwordRegex.test(formData.password)) {
+      setError('Password should contain 8 character and atleast 1 letter and symbol');
+      return;
+    }
+
+    // Check if email is valid
     if (!emailRegex.test(formData.email)) {
       setError('Invalid email format!');
       return;
     }
-    // Log the form data to the console if passwords match
+
+    // Log the form data to the console if all validations pass
     console.log('Sign Up Data:', formData);
   };
-
-  
 
   // Handle form submission for Sign In
   const handleSignInSubmit = (e) => {
@@ -109,7 +113,7 @@ const SignIn = () => {
               onChange={handleInputChange}
               required
             />
-            {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error message */}
+            {error && <p className='validpass' style={{ color: 'red' }}>{error}</p>} {/* Display error message */}
             <button type="submit">Sign Up</button>
           </form>
         </div>
@@ -118,7 +122,7 @@ const SignIn = () => {
           <form onSubmit={handleSignInSubmit}>
             <h1>Sign In</h1>
             <div className="social-icons">
-              <a href="#" className="icon"><i className="ri-google-fill"></i></a>
+              <a href="#" className="icon"><i className="ri-google-fill "></i></a>
               <a href="#" className="icon"><i className="ri-facebook-box-fill"></i></a>
               <a href="#" className="icon"><i className="ri-github-fill"></i></a>
               <a href="#" className="icon"><i className="ri-linkedin-box-fill"></i></a>
