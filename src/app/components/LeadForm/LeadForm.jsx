@@ -1,18 +1,13 @@
 import React, { useState } from "react";
 import "./LeadForm.scss";
-import { useNavigate  } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const LeadForm = ({isVisible,setIsVisible}) => {
+const LeadForm = ({ isVisible, setIsVisible }) => {
   const phoneRegex = /^[0-9]{10}$/;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-
-  const close = (e) => {
-    e.preventDefault();
-    setIsVisible(!isVisible);
-  };
-
   const navigate = useNavigate();
+
   // Separate state for handling errors
   const [error, setError] = useState({
     firstName: "",
@@ -40,24 +35,23 @@ const LeadForm = ({isVisible,setIsVisible}) => {
       ...formData,
       [name]: value,
     });
-    
+
     // Clear the specific error if the user starts typing
     setError({
       ...error,
-      [name]: "", 
+      [name]: "",
     });
-
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Basic validation
     let hasError = false;
 
-    let newError = { 
-      ...error 
+    let newError = {
+      ...error,
     };
 
     // Check for empty fields
@@ -86,87 +80,119 @@ const LeadForm = ({isVisible,setIsVisible}) => {
       return;
     }
 
-    // Proceed if no errors
-    console.log("Submit Data:", formData);
-    navigate('/Dashboard',{ state: { formData: formData  } });
+    // Proceed if no errors and send the data to the backend API
+    try {
+      const response = await fetch("http://127.0.0.1:8000/customers/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          phone_number: formData.phone,
+          address: formData.address,
+          status: formData.status,
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Data successfully submitted:", result);
+
+        // Redirect to the dashboard
+        navigate("/Dashboard", { state: { formData: formData } });
+      } else {
+        console.error("Failed to submit data:", response.status);
+      }
+    } catch (error) {
+      console.error("Error during submission:", error);
+    }
   };
 
   return (
-  
     <div className="leadFormBg">
-      <div className="leadform" >
-      <form onSubmit={handleSubmit} >
-        <div className="closebtn-cont">
-        <h1>Enter Details</h1>
-        <button id='closebtn' onClick={()=>setIsVisible(!isVisible)}><i class="ri-close-line"></i></button>
-        </div>
-        <span>First Name</span>
-        <input
-          type="text"
-          name="firstName"
-          placeholder="First Name"
-          onChange={handleInputChange}
-          required
-        />
-        <span style={{ color: "red" }}>{error.firstName}</span>
+      <div className="leadform">
+        <form onSubmit={handleSubmit}>
+          <div className="closebtn-cont">
+            <h1>Enter Details</h1>
+            <button id="closebtn" onClick={() => setIsVisible(!isVisible)}>
+              <i className="ri-close-line"></i>
+            </button>
+          </div>
 
-        <span>Last Name</span>
-        <input
-          type="text"
-          name="lastName"
-          placeholder="Last Name"
-          onChange={handleInputChange}
-          required
-        />
-        <span style={{ color: "red" }}>{error.lastName}</span>
+          <span>First Name</span>
+          <input
+            type="text"
+            name="firstName"
+            placeholder="First Name"
+            onChange={handleInputChange}
+            required
+          />
+          <span style={{ color: "red" }}>{error.firstName}</span>
 
-        <span>Email</span>
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          onChange={handleInputChange}
-          required
-        />
-        <span style={{ color: "red" }}>{error.email}</span>
+          <span>Last Name</span>
+          <input
+            type="text"
+            name="lastName"
+            placeholder="Last Name"
+            onChange={handleInputChange}
+            required
+          />
+          <span style={{ color: "red" }}>{error.lastName}</span>
 
-        <span>Phone</span>
-        <input
-          type="text"
-          name="phone"
-          placeholder="Phone"
-          onChange={handleInputChange}
-          required
-        />
-        <span style={{ color: "red" }}>{error.phone}</span>
+          <span>Email</span>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            onChange={handleInputChange}
+            required
+          />
+          <span style={{ color: "red" }}>{error.email}</span>
 
-        <span>Address</span>
-        <input
-          type="address"
-          name="address"
-          placeholder="Address"
-          onChange={handleInputChange}
-          required
-        />
-        <span style={{ color: "red" }}>{error.company}</span>
+          <span>Phone</span>
+          <input
+            type="text"
+            name="phone"
+            placeholder="Phone"
+            onChange={handleInputChange}
+            required
+          />
+          <span style={{ color: "red" }}>{error.phone}</span>
 
-        <span>Status</span>
-        <select name="status" onChange={handleInputChange} required>
-          <option value="">--Select an option--</option>
-          <option value="New">New</option>
-          <option value="Connected">Connected</option>
-          <option value="Qualified">Qualified</option>
-          <option value="Lost">Lost</option>
-        </select>
-        <span style={{ color: "red" }}>{error.status}</span>
-         
-        <button  type="submit" onClick={(e) => {
+          <span>Address</span>
+          <input
+            type="text"
+            name="address"
+            placeholder="Address"
+            onChange={handleInputChange}
+            required
+          />
+          <span style={{ color: "red" }}>{error.address}</span>
+
+          <span>Status</span>
+          <select name="status" onChange={handleInputChange} required>
+            <option value="">--Select an option--</option>
+            <option value="New">New</option>
+            <option value="Connected">Connected</option>
+            <option value="Qualified">Qualified</option>
+            <option value="Lost">Lost</option>
+          </select>
+          <span style={{ color: "red" }}>{error.status}</span>
+
+          <button
+            type="submit"
+            onClick={(e) => {
               handleSubmit(e);
-              close(e);}
-              } >Submit </button>
-      </form>
-    </div>
-   
+              
+            }}
+          >
+            Submit
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

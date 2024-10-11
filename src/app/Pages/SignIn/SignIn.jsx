@@ -3,12 +3,7 @@ import './SignIn.scss';
 
 const SignIn = () => {
   const [isActive, setIsActive] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [formData,setFormData] = useState('');
-  
-  
-  const [signUpData, setSignUpData] = useState({
+  const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: '',
@@ -16,8 +11,10 @@ const SignIn = () => {
   });
 
   const [error, setError] = useState('');
-  
+  const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
 
+  // Handle form input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -26,17 +23,22 @@ const SignIn = () => {
     });
   };
 
+  // Function to handle registration (add active class)
   const handleRegister = () => {
     setIsActive(true);
   };
 
+  // Function to handle login (remove active class)
   const handleLogin = () => {
     setIsActive(false);
   };
 
+  // Handle form submission for Sign Up
   const handleSignUpSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // Start loading
+    setError(''); // Clear previous errors
+    setSuccess(''); // Clear previous success messages
 
     try {
       console.log('Sending request with data:', formData);
@@ -47,15 +49,17 @@ const SignIn = () => {
       });
 
       console.log('API response status:', response.status);
+      const responseData = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.message || 'Network response was not ok');
-        console.log('Error from API:', errorData);
+        // If the response is not ok, set the error message
+        const errors = responseData || { message: 'Network response was not ok' };
+        setError(Object.values(errors).flat().join(', ')); // Display error messages
+        console.log('Error from API:', errors);
         return;
       }
 
-      const data = await response.json();
-      console.log('API response data:', data);
+      console.log('API response data:', responseData);
       setSuccess('Registration successful!');
       setFormData({ username: '', email: '', password: '', password_confirm: '' });
     } catch (error) {
@@ -70,37 +74,41 @@ const SignIn = () => {
   const handleSignInSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // Start loading
+    setError(''); // Clear previous errors
+    setSuccess(''); // Clear previous success messages
 
-    // Sending signup data to the API
     try {
-      const response = await fetch('http://127.0.0.1:8000/register/', {
+      console.log('Sending sign-in request with data:', { username: formData.username, password: formData.password });
+      const response = await fetch('http://127.0.0.1:8000/login/', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(signUpData),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+        }),
       });
 
+      console.log('API response status:', response.status);
+      const responseData = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.message || 'Failed to register');
-        setLoading(false);
+        // If the response is not ok, set the error message
+        const errors = responseData || { message: 'Failed to sign in' };
+        setError(Object.values(errors).flat().join(', ')); // Display error messages
+        console.log('Error from API:', errors);
         return;
       }
 
-      const result = await response.json();
-      console.log('Registration successful:', result);
-      setSuccess(true);
-      setError('');
+      console.log('Sign in successful, data:', responseData);
+      setSuccess('Sign in successful!');
+      setFormData({ email: '', password: '' });
     } catch (error) {
-      console.error('Error during sign up:', error);
-      setError('An error occurred during registration.');
+      console.error('Error during sign-in:', error);
+      setError('There was an error signing in. Please try again.');
     } finally {
-      setLoading(false);
+      setLoading(false); // End loading
     }
   };
-
- 
 
   return (
     <div className={`container ${isActive ? 'active' : ''}`} id="container">

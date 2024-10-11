@@ -8,6 +8,17 @@ class Customer(models.Model):
     email = models.EmailField(unique=True,default='abc@example.com')
     phone_number = models.CharField(max_length=15)
     address = models.TextField()
+    status = models.CharField(
+    max_length=100,
+    choices=[
+        ('New', 'New'),
+        ('Connected', 'Connected'),
+        ('Qualified', 'Qualified'),
+        ('Lost', 'Lost')
+    ],
+    default='New'
+    )
+
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"

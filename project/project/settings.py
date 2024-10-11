@@ -143,7 +143,7 @@ EMAIL_HOST_USER = 'svjoshi885@gmail.com'  # Your email
 EMAIL_HOST_PASSWORD = 'nuzy jcfd gqiu znrm'  # Your email password
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 1,  # Set the page size
+    'PAGE_SIZE': 10,  # Set the page size
 }
 
 
