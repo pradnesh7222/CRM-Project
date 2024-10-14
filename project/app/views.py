@@ -14,8 +14,7 @@ from rest_framework import filters
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import generics, permissions
-
-
+from django.contrib.auth import logout
 class RegistrationView(APIView):
     def post(self, request):
         serializer = RegistrationSerializer(data=request.data)
@@ -31,8 +30,12 @@ class LoginView(APIView):
             tokens = serializer.get_tokens_for_user()
             return Response(tokens, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class LogoutView(APIView):
+    #permission_classes = [IsAuthenticated]  # Ensure the user is logged in
 
-
+    def post(self, request):
+        logout(request)  
+        return Response({"message": "Logout successful"}, status=status.HTTP_200_OK)
         
 class CustomerViewSet(viewsets.ModelViewSet):
     #authentication_classes = [JWTAuthentication] 
@@ -58,6 +61,22 @@ class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['total_cost']  
+    
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    def mark_paid(self, request, pk=None):
+        """
+        Custom action to mark an order as paid and update the customer status to 'Qualified'.
+        """
+        order = self.get_object()
+        order.is_paid = True
+        order.save()
+
+        # Update customer status to 'Qualified'
+        customer = order.service_request.customer
+        customer.status = 'Qualified'
+        customer.save()
+
+        return Response({'message': 'Order marked as paid and customer status updated'})
     
 class ServiceViewSet(viewsets.ModelViewSet):
     queryset =  Service.objects.all()

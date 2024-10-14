@@ -127,6 +127,7 @@ class OrderSerializer(serializers.ModelSerializer):
     customer_name = serializers.CharField(source='service_request.customer.first_name')  # First name of the customer
     customer_last_name = serializers.CharField(source='service_request.customer.last_name')  # Last name of the customer
     product_name = serializers.CharField(source='service_request.product.name')  # Name of the product
+    service_request = serializers.PrimaryKeyRelatedField(queryset=ServiceRequest.objects.all())
 
     class Meta:
         model = Order
