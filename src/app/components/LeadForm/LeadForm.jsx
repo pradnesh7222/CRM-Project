@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./LeadForm.scss";
 import { useNavigate } from "react-router-dom";
 
-const LeadForm = ({ isVisible, setIsVisible }) => {
+const LeadForm = ({ isVisible, setIsVisible, customer  }) => {
   const phoneRegex = /^[0-9]{10}$/;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -20,14 +20,15 @@ const LeadForm = ({ isVisible, setIsVisible }) => {
 
   // State for storing form data
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    address: "",
-    status: "",
+    firstName: customer?.first_name || "",
+    lastName: customer?.last_name || "",
+    email: customer?.email || "",
+    phone: customer?.phone_number || "",
+    address: customer?.address || "",
+    status: customer?.status || "",
   });
 
+ 
   // Handle input change and update formData
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -127,6 +128,7 @@ const LeadForm = ({ isVisible, setIsVisible }) => {
             type="text"
             name="firstName"
             placeholder="First Name"
+            value={formData.firstName}
             onChange={handleInputChange}
             required
           />
@@ -137,6 +139,7 @@ const LeadForm = ({ isVisible, setIsVisible }) => {
             type="text"
             name="lastName"
             placeholder="Last Name"
+            value={formData.lastName}
             onChange={handleInputChange}
             required
           />
@@ -147,6 +150,7 @@ const LeadForm = ({ isVisible, setIsVisible }) => {
             type="email"
             name="email"
             placeholder="Email"
+            value={formData.email}
             onChange={handleInputChange}
             required
           />
@@ -157,6 +161,7 @@ const LeadForm = ({ isVisible, setIsVisible }) => {
             type="text"
             name="phone"
             placeholder="Phone"
+            value={formData.phone}
             onChange={handleInputChange}
             required
           />
@@ -167,18 +172,20 @@ const LeadForm = ({ isVisible, setIsVisible }) => {
             type="text"
             name="address"
             placeholder="Address"
+            value={formData.address}
             onChange={handleInputChange}
             required
           />
           <span style={{ color: "red" }}>{error.address}</span>
 
           <span>Status</span>
-          <select name="status" onChange={handleInputChange} required>
+          <select name="status" onChange={handleInputChange} value={formData.status} required>
             <option value="">--Select an option--</option>
             <option value="New">New</option>
             <option value="Connected">Connected</option>
             <option value="Qualified">Qualified</option>
             <option value="Lost">Lost</option>
+
           </select>
           <span style={{ color: "red" }}>{error.status}</span>
 
@@ -186,7 +193,9 @@ const LeadForm = ({ isVisible, setIsVisible }) => {
             type="submit"
             onClick={(e) => {
               handleSubmit(e);
-              
+              if (!Object.values(error).some(e => e !== "")) {
+                setIsVisible(false);
+              }
             }}
           >
             Submit
