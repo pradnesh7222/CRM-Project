@@ -18,7 +18,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from app.views import RegistrationView,Login
-from .views import CustomerViewSet, ProductViewSet, ServiceRequestViewSet, OrderViewSet, ServiceViewSet
+from .views import CustomerViewSet, LogoutView, ProductViewSet, ServiceRequestViewSet, OrderViewSet, ServiceViewSet
 
 router = DefaultRouter()
 router.register(r'customers', CustomerViewSet)
@@ -31,7 +31,7 @@ urlpatterns = [
     path('register/',RegistrationView.as_view()),
     path('login/',Login.as_view()),
     #path('api/protected/', ProtectedView.as_view(), name='protected'),
-
+     path('logout/', LogoutView.as_view(), name='logout'),
     #path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     #path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
