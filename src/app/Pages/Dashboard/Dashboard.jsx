@@ -32,36 +32,34 @@ const Dashboard = () => {
     setIsVisible(true);
   };
 console.log("editingCustomer", editingCustomer)
-  const handleDelete = async (customerId) => {
-    if (window.confirm("Are you sure you want to delete this customer?")) {
-      try {
-        const response = await fetch(
-          `http://127.0.0.1:8000/customers/`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-              // Add any authentication headers if required
-            },
-          }
-        );
-        
-        
+const handleDelete = async (customerId) => {
+  // Show confirmation dialog
+  if (window.confirm("Are you sure you want to delete this customer?")) {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/customers/${customerId}/`, {
+        method: 'DELETE',
+        headers: {
+          "Content-Type": "application/json",
+          // Add any authentication headers if required
+        },
+      });
 
-        if (response.ok) {
-          // Remove the deleted customer from the state
-          setCustomers(
-            customers.filter((customer) => customer.id !== customerId)
-          );
-        } else {
-          console.error("Failed to delete customer");
-        }
-      } catch (error) {
-        console.error("Error deleting customer:", error);
+      if (response.ok) {
+        // Remove the deleted customer from the state
+        setCustomers(customers.filter((customer) => customer.id !== customerId));
+      } else {
+        console.error('Failed to delete customer');
       }
+    } catch (error) {
+      console.error('Error deleting customer:', error);
     }
-  };
+  }
+};
 
+        
+        
+
+   
   
   // Fetch customer data from the backend
   useEffect(() => {

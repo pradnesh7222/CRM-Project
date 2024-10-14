@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./LeadForm.scss";
 import { useNavigate } from "react-router-dom";
 
-const LeadForm = ({ isVisible, setIsVisible, customer  }) => {
+const LeadForm = ({ isVisible, setIsVisible, customer }) => {
   const phoneRegex = /^[0-9]{10}$/;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -28,7 +28,6 @@ const LeadForm = ({ isVisible, setIsVisible, customer  }) => {
     status: customer?.status || "",
   });
 
- 
   // Handle input change and update formData
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -81,10 +80,16 @@ const LeadForm = ({ isVisible, setIsVisible, customer  }) => {
       return;
     }
 
+    // Determine whether to create or update
+    const method = customer ? "PATCH" : "POST"; // Use PUT if editing
+    const url = customer
+      ? `http://127.0.0.1:8000/customers/${customer.id}/` // Update URL for edit
+      : "http://127.0.0.1:8000/customers/"; // URL for new customer
+
     // Proceed if no errors and send the data to the backend API
     try {
-      const response = await fetch("http://127.0.0.1:8000/customers/", {
-        method: "POST",
+      const response = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
         },
@@ -117,7 +122,7 @@ const LeadForm = ({ isVisible, setIsVisible, customer  }) => {
       <div className="leadform">
         <form onSubmit={handleSubmit}>
           <div className="closebtn-cont">
-            <h1>Enter Details</h1>
+            <h1>{customer ? "Edit Details" : "Enter Details"}</h1>
             <button id="closebtn" onClick={() => setIsVisible(!isVisible)}>
               <i className="ri-close-line"></i>
             </button>
@@ -185,7 +190,6 @@ const LeadForm = ({ isVisible, setIsVisible, customer  }) => {
             <option value="Connected">Connected</option>
             <option value="Qualified">Qualified</option>
             <option value="Lost">Lost</option>
-
           </select>
           <span style={{ color: "red" }}>{error.status}</span>
 
@@ -198,7 +202,7 @@ const LeadForm = ({ isVisible, setIsVisible, customer  }) => {
               }
             }}
           >
-            Submit
+            {customer ? "Update" : "Submit"}
           </button>
         </form>
       </div>
