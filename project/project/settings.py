@@ -25,7 +25,12 @@ SECRET_KEY = 'django-insecure-npq#e43%0+yh@l@yng&-h1brzjur69s753j0c7!b)6j8f7!dll
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',  # Allow localhost
+    '127.0.0.1',  # Allow local IP
+    'laptop-mnrtbv3b',  # Add your laptop hostname
+    # Optionally add more hosts
+]
 
 
 # Application definition

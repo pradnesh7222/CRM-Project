@@ -47,12 +47,8 @@ const LeadForm = ({ isVisible, setIsVisible, customer }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic validation
     let hasError = false;
-
-    let newError = {
-      ...error,
-    };
+    let newError = { ...error };
 
     // Check for empty fields
     for (const key in formData) {
@@ -81,7 +77,7 @@ const LeadForm = ({ isVisible, setIsVisible, customer }) => {
     }
 
     // Determine whether to create or update
-    const method = customer ? "PATCH" : "POST"; // Use PUT if editing
+    const method = customer ? "PATCH" : "POST"; // Use PATCH if editing
     const url = customer
       ? `http://127.0.0.1:8000/customers/${customer.id}/` // Update URL for edit
       : "http://127.0.0.1:8000/customers/"; // URL for new customer
@@ -107,7 +103,8 @@ const LeadForm = ({ isVisible, setIsVisible, customer }) => {
         const result = await response.json();
         console.log("Data successfully submitted:", result);
 
-        // Redirect to the dashboard
+        // Close modal only after successful submission
+        setIsVisible(false);
         navigate("/Dashboard", { state: { formData: formData } });
       } else {
         console.error("Failed to submit data:", response.status);
@@ -123,7 +120,7 @@ const LeadForm = ({ isVisible, setIsVisible, customer }) => {
         <form onSubmit={handleSubmit}>
           <div className="closebtn-cont">
             <h1>{customer ? "Edit Details" : "Enter Details"}</h1>
-            <button id="closebtn" onClick={() => setIsVisible(!isVisible)}>
+            <button id="closebtn" type="button" onClick={() => setIsVisible(!isVisible)}>
               <i className="ri-close-line"></i>
             </button>
           </div>
@@ -193,15 +190,7 @@ const LeadForm = ({ isVisible, setIsVisible, customer }) => {
           </select>
           <span style={{ color: "red" }}>{error.status}</span>
 
-          <button
-            type="submit"
-            onClick={(e) => {
-              handleSubmit(e);
-              if (!Object.values(error).some(e => e !== "")) {
-                setIsVisible(false);
-              }
-            }}
-          >
+          <button type="submit">
             {customer ? "Update" : "Submit"}
           </button>
         </form>
