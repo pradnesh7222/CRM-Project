@@ -31,10 +31,10 @@ class UserLoginView(APIView):
             return Response(tokens, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class LogoutView(APIView):
-    permission_classes = [IsAuthenticated]  # Ensure the user is logged in
+    permission_classes = [IsAuthenticated]  
 
     def post(self, request):
-        logout(request)  # Django's built-in logout function
+        logout(request)  
         return Response({"message": "Logout successful"}, status=status.HTTP_200_OK)   
 class CustomerViewSet(viewsets.ModelViewSet):
     #authentication_classes = [JWTAuthentication] 
