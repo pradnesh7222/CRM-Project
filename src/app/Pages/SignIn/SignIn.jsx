@@ -16,7 +16,7 @@ const SignIn = () => {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Handle form input change   
+  // Handle form input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -103,11 +103,8 @@ const SignIn = () => {
 
       console.log('Sign in successful, data:', responseData);
       setSuccess('Sign in successful!');
-      // Navigate to dashboard after successful sign-in
-      
       setFormData({ email: '', password: '' });
       navigate('/Dashboard');
-
     } catch (error) {
       console.error('Error during sign-in:', error);
       setError('There was an error signing in. Please try again.');

@@ -40,12 +40,11 @@ const handleDelete = async (customerId) => {
         method: 'DELETE',
         headers: {
           "Content-Type": "application/json",
-          // Add any authentication headers if required
+
         },
       });
 
       if (response.ok) {
-        // Remove the deleted customer from the state
         setCustomers(customers.filter((customer) => customer.id !== customerId));
       } else {
         console.error('Failed to delete customer');
@@ -109,7 +108,7 @@ const handleDelete = async (customerId) => {
             <table border="0" style={{ width: "100%", textAlign: "center" }}>
               <thead>
                 <tr>
-                  <th id="srNo">srNo.</th>
+                  <th id="srNo">Sr No.</th>
                   <th id="firstName">First Name</th>
                   <th id="lastName">Last Name</th>
                   <th id="email">Email</th>
