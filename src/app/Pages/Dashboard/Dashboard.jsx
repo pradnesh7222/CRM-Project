@@ -5,24 +5,23 @@ import Navbar from "../../components/navbar/NavBar";
 import LeadForm from "../../components/LeadForm/LeadForm";
 
 const Dashboard = () => {
-  const [customers, setCustomers] = useState([]); // Initialize customers as an empty array
+  const [customers, setCustomers] = useState([]); 
   const [isVisible, setIsVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [customersPerPage] = useState(5);
+  const [searchQuery, setSearchQuery] = useState(""); 
 
 
-  // Get current customers
   const indexOfLastCustomer = currentPage * customersPerPage;
   let indexOfFirstCustomer = indexOfLastCustomer - customersPerPage;
   const currentCustomers = customers.slice(
     indexOfFirstCustomer,
     indexOfLastCustomer
   );
-  // console.log(currentCustomers);
-  // Change page
+
+
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // Calculate total pages
   const totalPages = Math.ceil(customers.length / customersPerPage);
 
   const [editingCustomer, setEditingCustomer] = useState(null);
@@ -31,51 +30,52 @@ const Dashboard = () => {
     setEditingCustomer(customer);
     setIsVisible(true);
   };
-console.log("editingCustomer", editingCustomer)
-const handleDelete = async (customerId) => {
-  // Show confirmation dialog
-  if (window.confirm("Are you sure you want to delete this customer?")) {
+
+  const handleDelete = async (customerId) => {
+
+    if (window.confirm("Are you sure you want to delete this customer?")) {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/customers/${customerId}/`, {
+          method: 'DELETE',
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.ok) {
+          setCustomers(customers.filter((customer) => customer.id !== customerId));
+        } else {
+          console.error('Failed to delete customer');
+        }
+      } catch (error) {
+        console.error('Error deleting customer:', error);
+      }
+    }
+  };
+
+ 
+  useEffect(() => {
+    fetchCustomers();
+  }, [searchQuery]); 
+
+  const fetchCustomers = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/customers/${customerId}/`, {
-        method: 'DELETE',
-        headers: {
-          "Content-Type": "application/json",
-
-        },
-      });
-
-      if (response.ok) {
-        setCustomers(customers.filter((customer) => customer.id !== customerId));
+      const response = await fetch(`http://127.0.0.1:8000/customers/?search=${searchQuery}`);
+      const data = await response.json();
+      if (Array.isArray(data.results)) {
+        setCustomers(data.results); // Set customers to data.results, which is an array
       } else {
-        console.error('Failed to delete customer');
+        console.error("Expected an array of customers, but got:", data.results);
       }
     } catch (error) {
-      console.error('Error deleting customer:', error);
+      console.error("Error fetching customers:", error);
     }
-  }
-};
+  };
 
-        
-        
-
-   
-  
-  // Fetch customer data from the backend
-  useEffect(() => {
-    fetch("http://127.0.0.1:8000/customers/")
-      .then((response) => response.json())
-      .then((data) => {
-        if (Array.isArray(data.results)) {
-          setCustomers(data.results); // Set customers to data.results, which is an array
-        } else {
-          console.error(
-            "Expected an array of customers, but got:",
-            data.results
-          );
-        }
-      })
-      .catch((error) => console.error("Error fetching customers:", error));
-  }, []);
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value); 
+    setCurrentPage(1); 
+  };
 
   return (
     <div style={{ width: "100%" }}>
@@ -99,9 +99,13 @@ const handleDelete = async (customerId) => {
           <div className="dashboard_right_upper">
             <button onClick={() => setIsVisible(true)}>+ Create Lead</button>
             <div className="search-btn">
-              <input type="search" placeholder="search" />
+              <input 
+                type="search" 
+                placeholder="search" 
+                value={searchQuery}
+                onChange={handleSearchChange} 
+              />
               <i className="ri-search-line"></i>
-             
             </div>
           </div>
           <div className="dashboard_right_table">
@@ -130,12 +134,8 @@ const handleDelete = async (customerId) => {
                       <td>{item.address}</td>
                       <td>{item.status}</td>
                       <td>
-                        <button onClick={() => handleEdit(item)}>
-                          Edit
-                        </button>
-                        <button onClick={() => handleDelete(item.id)}>
-                          Delete
-                        </button>
+                        <button onClick={() => handleEdit(item)}>Edit</button>
+                        <button onClick={() => handleDelete(item.id)}>Delete</button>
                       </td>
                     </tr>
                   ))
@@ -146,18 +146,18 @@ const handleDelete = async (customerId) => {
                 )}
               </tbody>
               <div className="dashboard_right_table_footer">
-                <button onClick={() => paginate(currentPage - 1)}>Previous</button>
+                <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>Previous</button>
                 <span style={{ border: "1px solid black", padding: "5px" }}>
                   {currentPage}
                 </span>
-                <button onClick={() => paginate(currentPage + 1)}>Next</button>
+                <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages}>Next</button>
               </div>
             </table>
           </div>
         </div>
       </div>
       {isVisible && (
-        <LeadForm isVisible={isVisible} setIsVisible={setIsVisible} customer={editingCustomer}/>
+        <LeadForm isVisible={isVisible} setIsVisible={setIsVisible} customer={editingCustomer} />
       )}
     </div>
   );
