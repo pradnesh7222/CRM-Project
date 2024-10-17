@@ -1,0 +1,125 @@
+.Product {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  background-color: #4241416e;
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+
+
+  &_form {
+    background-color: #d3d3f9;
+    padding: 1rem;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 30%;
+    height: fit-content;
+    // max-width: 500px;
+
+    &_container {
+        
+      &_title {
+        margin-bottom: 1.5rem;
+        position: relative;
+       
+        
+        h1{
+            text-align: start;
+            font-size: 1.7vw;
+            font-weight: 600;
+            color: black;
+            margin-bottom: 1vw;
+        }
+
+        #close_btn{
+            width: 1.5vw;
+            height: 1.5vw;
+            position: absolute;
+            right: 0;
+            top: 0;
+            padding: 5px;
+            border-radius: 50%;
+            border: none;
+            background-color: white;
+            font-size: 1.5vw;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            &:hover{
+                background-color: #6E2E6A;
+                color: white;
+            }
+
+            i{
+                font-size: small;
+            }
+        }
+
+        label {
+          display: block;
+          margin-bottom: 0.5rem;
+          font-weight: bold;
+          color: #333;
+          text-align: start;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+          width: 100%;
+          padding: 0.5rem;
+          margin-bottom: 1rem;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          font-size: 1rem;
+        }
+
+        textarea {
+          height: 100px;
+          resize: none;
+        }
+
+        button{
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #6E2E6A;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+           
+            &:hover{
+                background-color: #6E2E6A;
+                color: white;
+            }
+        }
+      }
+
+      &_dropdown {
+        margin-bottom: 1rem;
+
+        label {
+          display: block;
+          margin-bottom: 0.5rem;
+          font-weight: bold;
+          color: #333;
+        }
+
+        select {
+          width: 100%;
+          padding: 0.5rem;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          font-size: 1rem;
+          background-color: #fff;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

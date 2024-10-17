@@ -25,7 +25,12 @@ SECRET_KEY = 'django-insecure-npq#e43%0+yh@l@yng&-h1brzjur69s753j0c7!b)6j8f7!dll
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',  # Allow localhost
+    '127.0.0.1',  # Allow local IP
+    'laptop-mnrtbv3b',  # Add your laptop hostname
+    # Optionally add more hosts
+]
 
 
 # Application definition
@@ -84,7 +89,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'crm_sample',  
         'USER': 'root',    
-        'PASSWORD': 'SV01@joshi',  
+        'PASSWORD': '1234',  
         'HOST': 'localhost',           
         'PORT': '3306',                
     }
@@ -143,7 +148,7 @@ EMAIL_HOST_USER = 'svjoshi885@gmail.com'  # Your email
 EMAIL_HOST_PASSWORD = 'nuzy jcfd gqiu znrm'  # Your email password
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 1,  # Set the page size
+    'PAGE_SIZE': 10,  # Set the page size
 }
 
 

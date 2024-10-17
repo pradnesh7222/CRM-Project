@@ -15,7 +15,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import generics, permissions
 from django.contrib.auth import logout
-class RegistrationView(APIView):
+class UserRegistrationView(APIView):
     def post(self, request):
         serializer = RegistrationSerializer(data=request.data)
         if serializer.is_valid():
@@ -23,7 +23,7 @@ class RegistrationView(APIView):
             return Response({"message": "User created successfully!"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class LoginView(APIView):
+class UserLoginView(APIView):
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
@@ -31,12 +31,11 @@ class LoginView(APIView):
             return Response(tokens, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class LogoutView(APIView):
-    #permission_classes = [IsAuthenticated]  # Ensure the user is logged in
+    permission_classes = [IsAuthenticated]  
 
     def post(self, request):
         logout(request)  
-        return Response({"message": "Logout successful"}, status=status.HTTP_200_OK)
-        
+        return Response({"message": "Logout successful"}, status=status.HTTP_200_OK)   
 class CustomerViewSet(viewsets.ModelViewSet):
     #authentication_classes = [JWTAuthentication] 
     queryset = Customer.objects.all()

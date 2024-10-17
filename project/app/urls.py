@@ -17,8 +17,8 @@ Including another URLconf
 from django.contrib.auth import views as auth_views
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from app.views import RegistrationView,LoginView
-from .views import CustomerViewSet, LogoutView, ProductViewSet, ServiceRequestViewSet, OrderViewSet, ServiceViewSet
+
+from .views import CustomerViewSet, LogoutView, ProductViewSet, ServiceRequestViewSet, OrderViewSet, ServiceViewSet, UserLoginView, UserRegistrationView
 
 router = DefaultRouter()
 router.register(r'customers', CustomerViewSet)
@@ -28,8 +28,8 @@ router.register(r'orders', OrderViewSet)
 router.register(r'services', ServiceViewSet)
 urlpatterns = [
     path('', include(router.urls)),
-    path('register/',RegistrationView.as_view()),
-    path('login/',LoginView.as_view()),
+    path('register/',UserRegistrationView.as_view()),
+    path('login/',UserLoginView.as_view()),
     #path('api/protected/', ProtectedView.as_view(), name='protected'),
      path('logout/', LogoutView.as_view(), name='logout'),
     #path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
