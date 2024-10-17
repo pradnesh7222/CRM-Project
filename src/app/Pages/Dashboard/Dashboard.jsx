@@ -3,10 +3,12 @@ import "./Dashboard.scss";
 import { Link } from "react-router-dom";
 import Navbar from "../../components/navbar/NavBar";
 import LeadForm from "../../components/LeadForm/LeadForm";
+import ProductForm from "../../components/Product_form/Product_form";
 
 const Dashboard = () => {
   const [customers, setCustomers] = useState([]); 
   const [isVisible, setIsVisible] = useState(false);
+  const [isProductFormVisible, setIsProductFormVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [customersPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState(""); 
@@ -83,16 +85,20 @@ const Dashboard = () => {
       <div className="dashboard">
         <div className="dashboard_left">
           <div className="link1">
-            <Link to="/about">Home</Link>
+            <Link to="">Home</Link>
           </div>
           <div className="link1">
-            <Link to="/about">Product</Link>
+            <Link to="">Customers</Link>
           </div>
           <div className="link1">
-            <Link to="/about">Manage Services</Link>
+            <Link to="" onClick={() => setIsProductFormVisible(true)}>Products</Link>
+            {isProductFormVisible && <ProductForm />}
           </div>
           <div className="link1">
-            <Link to="/about">Orders</Link>
+            <Link to="">Manage Services</Link>
+          </div>
+          <div className="link1">
+            <Link to="">Orders</Link>
           </div>
         </div>
         <div className="dashboard_right">
@@ -145,17 +151,22 @@ const Dashboard = () => {
                   </tr>
                 )}
               </tbody>
-              <div className="dashboard_right_table_footer">
+            </table>
+           
+          </div>
+          <div className="dashboard_right_table_footer">
+            <span>Total Pages: {totalPages}</span>
+                <div className="dashboard_right_table_footer_block">
                 <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>Previous</button>
-                <span style={{ border: "1px solid black", padding: "5px" }}>
+                <span style={{  padding: "5px" }}>
                   {currentPage}
                 </span>
                 <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages}>Next</button>
+                </div>
               </div>
-            </table>
-          </div>
         </div>
       </div>
+      
       {isVisible && (
         <LeadForm isVisible={isVisible} setIsVisible={setIsVisible} customer={editingCustomer} />
       )}
