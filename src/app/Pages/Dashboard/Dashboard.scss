@@ -1,7 +1,7 @@
 .dashboard {
   width: 100%;
   display: flex;
- 
+
   &_left {
     width: 15%;
     height: calc(100vh - 60px);
@@ -12,7 +12,6 @@
     align-items: start;
     gap: 2vw;
     padding-top: 2vh;
-    
 
     .link1 {
       padding-block: 10px;
@@ -44,7 +43,6 @@
   &_right {
     width: 85%;
     display: flex;
-    // justify-content: center;
     flex-direction: column;
     align-items: center;
 
@@ -115,75 +113,66 @@
       width: 98%;
       box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 
-      &_footer{
-        
+      table {
         width: 100%;
-        display: flex;
-        // background-color: red;
-        box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+        border-collapse: collapse;
+       
 
-        button{
-            padding: .7vw;
-        }
-    }
-
-
-      thead {
-        width: 100%;
-        
-        th{
-            padding: .7vw;
-            box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+        th, td {
+         
+          padding: 0.3vw; /* Reduced padding for smaller row height */
+          text-align: center;
+          box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
         }
 
         tr {
-          text-align: center;
-          box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
 
+        th {
+          background-color: #f9f9f9;
+        }
 
-          td{
-            box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
-          }
-          
-          #srNo {
-            width: 5%;
-          }
-          #firstName {
-            width: 15%;
-          }
-          #lastName {
-            width: 15%;
-          }
-          #email {
-            width: 8%;
-          }
-          #phone{
-            width: 9%;
-          }
-          #address {
-            width: 20%;
-          }
-          #status{
-            width: 10%;
-          }
-          #actions{
-            width: 10%;
-           
-          }
+        td {
+          border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        #srNo {
+          width: 2%; /* Further decreased width for srNo column */
+        }
+        #firstName {
+          width: 15%;
+        }
+        #lastName {
+          width: 15%;
+        }
+        #email {
+          width: 8%;
+        }
+        #phone {
+          width: 9%;
+        }
+        #address {
+          width: 20%;
+        }
+        #status {
+          width: 10%;
+        }
+        #actions {
+          justify-content: space-between;
+          width: 13%; /* Increased width for actions column */
         }
       }
-      
+
+      &_footer {
+        width: 100%;
+        display: flex;
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+
+        button {
+          padding: 0.7vw;
+        }
+      }
     }
-
-   
-
-     
-
-       
-     
-
-
-        
-    
   }
 }

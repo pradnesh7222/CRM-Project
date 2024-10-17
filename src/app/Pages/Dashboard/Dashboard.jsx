@@ -134,8 +134,8 @@ const Dashboard = () => {
                       <td>{item.address}</td>
                       <td>{item.status}</td>
                       <td>
-                        <button onClick={() => handleEdit(item)}>Edit</button>
-                        <button onClick={() => handleDelete(item.id)}>Delete</button>
+                        <button onClick={() => handleEdit(item)}><i class="ri-edit-fill"></i></button>
+                        <button onClick={() => handleDelete(item.id)}><i class="ri-delete-bin-line"></i></button>
                       </td>
                     </tr>
                   ))

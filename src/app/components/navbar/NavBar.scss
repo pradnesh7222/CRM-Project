@@ -1,24 +1,81 @@
-.navbar{
+.navbar {
     width: 100%;
-    // background:  linear-gradient(to right, #202671, #6E2E6A);
-    background:  linear-gradient(to right, #6E2E6A, #202671);
-    &_cont{
+    background: linear-gradient(to right, #6e2e6a, #202671);
+  
+    &_cont {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 3vw;
+      height: 60px;
+  
+      h1 {
+        color: white;
+      }
+  
+      &_profile {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        padding: 0 3vw;
-        height: 60px;
-
-        h1{
-          color: white;
+        gap: 10px;
+        position: relative;
+        border: 1px solid white;
+        border-radius: 10px;
+        padding: 5px;
+        cursor: pointer;
+  
+        &_circle {
+          width: 3vw;
+          height: 3vw;
+          border-radius: 50%;
+          border: 1px solid white;
+          overflow: hidden;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+  
+          img {
+            height: 35px;
+            width: 35px;
+          }
         }
-
-        &_circle{
-            width: 3vw;
-            height: 3vw;
-            border-radius: 50%;
-            border:1px solid white;
-            
+  
+        &_dropdown_menu {
+            // width: 15vw;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          position: absolute;
+          top: 100%;
+          right: -1vw;
+          background-color: rgb(253, 253, 253);
+          padding: 10px;
+          border-radius: 5px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          z-index: 1000;
+  
+          button {
+            background-color: #D3D3F9;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+            text-align: left;
+  
+          
+            &:hover{
+                background-color: #f0f0f0;
+            }
+          }
         }
+      }
+  
+      i {
+        color: white;
+        font-size: 20px;
+      }
     }
-}
+  }
+  
+  

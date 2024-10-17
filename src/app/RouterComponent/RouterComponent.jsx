@@ -13,7 +13,7 @@ const RouterComponent = () => {
         <Route path="/" element={<SignIn />} />
         <Route path="/Dashboard" element={<Dashboard/>}/>
         <Route path="/LeadForm" element={<LeadForm />} />
-        
+        <Route path="/Signin" element={<SignIn />} />
       </Routes>
     </BrowserRouter>
   );
