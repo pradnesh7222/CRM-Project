@@ -7,7 +7,7 @@ const LeadForm = ({ isVisible, setIsVisible, customer }) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const navigate = useNavigate();
-
+  
   // Separate state for handling errors
   const [error, setError] = useState({
     firstName: "",
@@ -186,7 +186,7 @@ const LeadForm = ({ isVisible, setIsVisible, customer }) => {
             <option value="New">New</option>
             <option value="Connected">Connected</option>
             <option value="Qualified">Qualified</option>
-            <option value="Lost">Lost</option>
+            <option value="Lost">Inactive</option>
           </select>
           <span style={{ color: "red" }}>{error.status}</span>
 

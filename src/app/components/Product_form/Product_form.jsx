@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import './Product_form.scss';
 
-const Product_form = () => {
-  const [isProductFormVisible, setIsProductFormVisible] = useState(true); 
+const Product_form = ({isProductFormVisible, setIsProductFormVisible}) => {
 
   const closeForm = () => {
     setIsProductFormVisible(false); 
+    
   };
 
   return (
