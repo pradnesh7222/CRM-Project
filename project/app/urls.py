@@ -1,41 +1,24 @@
-"""
-URL configuration for project project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-from django.contrib.auth import views as auth_views
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import CustomerViewSet, LogoutView, ProductViewSet, ServiceRequestViewSet, OrderViewSet, ServiceViewSet, UserLoginView, UserRegistrationView
+from .views import  CourseViewSet, LogoutView, UserLoginView, UserRegistrationView, conversion_rate
+from .views import UsersViewSet, LeadViewSet, StudentViewSet, RolesViewSet
+
 
 router = DefaultRouter()
-router.register(r'customers', CustomerViewSet)
-router.register(r'products', ProductViewSet)
-router.register(r'service-requests', ServiceRequestViewSet)
-router.register(r'orders', OrderViewSet)
-router.register(r'services', ServiceViewSet)
+router.register(r'users', UsersViewSet)
+router.register(r'leads', LeadViewSet)
+router.register(r'students', StudentViewSet)
+router.register(r'roles', RolesViewSet)
+router.register(r'courses', CourseViewSet)
+
 urlpatterns = [
-    path('', include(router.urls)),
-    path('register/',UserRegistrationView.as_view()),
-    path('login/',UserLoginView.as_view()),
-    #path('api/protected/', ProtectedView.as_view(), name='protected'),
-     path('logout/', LogoutView.as_view(), name='logout'),
-    #path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    #path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('register/', UserRegistrationView.as_view(), name='register'),
+    path('login/', UserLoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('conversion_rate/', conversion_rate.as_view(), name='conversion_rate'),
+    
 ]
 
 
-
-
+urlpatterns += router.urls

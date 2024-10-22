@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from .models import Customer, Order, ServiceRequest
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
@@ -17,9 +16,10 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_decode
-# crm/serializers.py
 from rest_framework import serializers
-from .models import  Customer, Product,Service
+from .models import Course, Roles, Users, Lead, Student
+
+from rest_framework import serializers
 from django.contrib.auth.forms import PasswordResetForm
 class RegistrationSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=255)
@@ -28,7 +28,10 @@ class RegistrationSerializer(serializers.Serializer):
         validators=[EmailValidator(message="Invalid email format")]  
     )
     password = serializers.CharField(write_only=True)
-    password_confirm = serializers.CharField(write_only=True)  
+    password_confirm = serializers.CharField(write_only=True)
+    first_name = serializers.CharField(max_length=100)
+    last_name = serializers.CharField(max_length=100)
+    phone_number = serializers.CharField(max_length=10)
 
     def validate_password(self, value):
         """
@@ -50,29 +53,34 @@ class RegistrationSerializer(serializers.Serializer):
         if User.objects.filter(username=data['username']).exists():
             raise serializers.ValidationError({'username': 'Username already exists'})
 
-        # Check if the email already exists
         if User.objects.filter(email=data['email']).exists():
             raise serializers.ValidationError({'email': 'Email already exists'})
 
-        # Check if passwords match
         if data['password'] != data['password_confirm']:
             raise serializers.ValidationError({'password_confirm': 'Passwords do not match'})
 
         return data
-    
-    def create(self, validated_data):
-        # Remove password_confirm from validated_data as it's not needed for user creation
-        validated_data.pop('password_confirm')
 
-        # Hash the password and create the user
-        validated_data['password'] = make_password(validated_data['password'])
+    def create(self, validated_data):
+        validated_data.pop('password_confirm')  # Remove password_confirm
+
+        # Create user in Django's User model
         user = User.objects.create(
             username=validated_data['username'],
-            email=validated_data['email'],  # Save email
-            password=validated_data['password']
+            email=validated_data['email'],
+            password=make_password(validated_data['password'])
         )
-        return user
 
+        # Create an entry in the custom Users model
+        Users.objects.create(
+            user=user,
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
+            email=validated_data['email'],
+            phone_number=validated_data['phone_number']
+        )
+
+        return user
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=255)
@@ -81,21 +89,21 @@ class LoginSerializer(serializers.Serializer):
     def validate(self, data):
         username = data.get('username')
         password = data.get('password')
-        print(username)
-        # Check if user exists and authenticate
+
+        # Authenticate user
         user = authenticate(username=username, password=password)
-        print(user)
         if user is None:
             raise serializers.ValidationError({'error': 'Invalid username or password'})
-        
-        # If valid, store the user in the instance for use later
+
+        # Check if the associated custom Users entry exists
+        if not hasattr(user, 'users'):
+            raise serializers.ValidationError({'error': 'User profile not found'})
+
         self.user = user
         return data
 
     def get_tokens_for_user(self):
-        # After user is authenticated, generate tokens
         refresh = RefreshToken.for_user(self.user)
-
         return {
             'message': "Login successful",
             'data': {
@@ -104,35 +112,29 @@ class LoginSerializer(serializers.Serializer):
             }
         }
 
-class CustomerSerializer(serializers.ModelSerializer):
+class UsersSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Customer
+        model = Users
+        fields = ['user', 'first_name', 'last_name', 'email', 'phone_number', 'status', 'created_at', 'updated_at']
+
+
+class LeadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Lead
+        fields = ['id','first_name', 'last_name', 'email', 'phone_number', 'assigned_to_user', 'lead_score', 'status', 'notes', 'created_at', 'updated_at']
+
+
+class StudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ['id','first_name', 'last_name', 'email', 'phone_number', 'user', 'date_of_birth', 'address', 'enrollment_status', 'created_at', 'updated_at','lead_id']
+
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Roles
         fields = '__all__'
 
-class ProductSerializer(serializers.ModelSerializer):
+class CourseSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Product
-        fields = '__all__'
-
-class ServiceRequestSerializer(serializers.ModelSerializer):
-    customer_name = serializers.CharField(source='customer.first_name')  
-    customer_last_name = serializers.CharField(source='customer.last_name')  
-    product_name = serializers.CharField(source='product.name')  
-
-    class Meta:
-        model = ServiceRequest
-        fields = ['id', 'issue_description', 'status', 'created_at', 'updated_at', 'customer_name', 'customer_last_name', 'product_name']
-
-class OrderSerializer(serializers.ModelSerializer):
-    customer_name = serializers.CharField(source='service_request.customer.first_name')  # First name of the customer
-    customer_last_name = serializers.CharField(source='service_request.customer.last_name')  # Last name of the customer
-    product_name = serializers.CharField(source='service_request.product.name')  # Name of the product
-
-    class Meta:
-        model = Order
-        fields = ['id', 'total_cost', 'is_paid', 'created_at', 'service_request', 'customer_name', 'customer_last_name', 'product_name']
-
-class ServiceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Service
+        model = Course
         fields = '__all__'
