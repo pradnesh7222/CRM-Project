@@ -76,7 +76,7 @@ const StudentForm = ({ isVisible, setIsVisible, student }) => {
       return;
     }
 
-    const method = student ? "PATCH" : "POST";
+    const method = student ? "PUT" : "POST";
     const url = student
       ? `http://127.0.0.1:8000/students/${student.id}/`
       : "http://127.0.0.1:8000/students/";

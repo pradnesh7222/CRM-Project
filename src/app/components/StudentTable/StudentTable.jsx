@@ -40,6 +40,7 @@ const StudentTable = () => {
 
   const handleEdit = (student) => {
     setEditingStudent(student);
+    setIsVisible(true);
   };
 
   const handleDelete = async (studentId) => {
@@ -157,7 +158,7 @@ const StudentTable = () => {
         <StudentForm
           isVisible={isVisible}
           setIsVisible={setIsVisible}
-          customer={editingStudent}
+          student={editingStudent}
         />
       )}
     </div>

@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import  CourseViewSet, LogoutView, UserLoginView, UserRegistrationView, conversion_rate
+from .views import  Convert_lead_to_student, CourseViewSet, LogoutView, UserLoginView, UserRegistrationView, conversion_rate
 from .views import UsersViewSet, LeadViewSet, StudentViewSet, RolesViewSet
 
 
@@ -17,6 +17,7 @@ urlpatterns = [
     path('login/', UserLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('conversion_rate/', conversion_rate.as_view(), name='conversion_rate'),
+    path('Convert_lead_to_student/',Convert_lead_to_student.as_view(), name='Convert_lead_to_student'),
     
 ]
 

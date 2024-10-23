@@ -121,13 +121,13 @@ class UsersSerializer(serializers.ModelSerializer):
 class LeadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lead
-        fields = ['id','first_name', 'last_name', 'email', 'phone_number', 'assigned_to_user', 'lead_score', 'status', 'notes', 'created_at', 'updated_at']
+        fields = ['id','first_name', 'last_name', 'email', 'phone_number', 'assigned_to_user', 'lead_score', 'status', 'notes', 'created_at', 'updated_at','states']
 
 
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ['id','first_name', 'last_name', 'email', 'phone_number', 'user', 'date_of_birth', 'address', 'enrollment_status', 'created_at', 'updated_at','lead_id']
+        fields = ['id','first_name', 'last_name', 'email', 'phone_number', 'user', 'date_of_birth', 'address', 'enrollment_status', 'created_at', 'updated_at','lead_id','states']
 
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:

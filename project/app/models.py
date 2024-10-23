@@ -1,6 +1,41 @@
 from django.db import models
 from django.contrib.auth.models import User
+class BaseModel(models.Model):
+    states=models.CharField(max_length=100,choices=[
+            ('ap', 'Andhra Pradesh'),
+            ('ar', 'Arunachal Pradesh'),
+            ('as', 'Assam'),
+            ('br', 'Bihar'),
+            ('ch', 'Chhattisgarh'),
+            ('ga', 'Goa'),
+            ('gj', 'Gujarat'),
+            ('hr', 'Haryana'),
+            ('hp', 'Himachal Pradesh'),
+            ('jh', 'Jharkhand'),
+            ('ka', 'Karnataka'),
+            ('kl', 'Kerala'),
+            ('mp', 'Madhya Pradesh'),
+            ('mh', 'Maharashtra'),
+            ('mn', 'Manipur'),
+            ('ml', 'Meghalaya'),
+            ('mz', 'Mizoram'),
+            ('nl', 'Nagaland'),
+            ('or', 'Odisha'),
+            ('pb', 'Punjab'),
+            ('rj', 'Rajasthan'),
+            ('sk', 'Sikkim'),
+            ('tn', 'Tamil Nadu'),
+            ('ts', 'Telangana'),
+            ('tr', 'Tripura'),
+            ('up', 'Uttar Pradesh'),
+            ('ut', 'Uttarakhand'),
+            ('wb', 'West Bengal'),
+        
+    ])
+  
 
+    class Meta:
+        abstract = True
 class Users(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
@@ -22,7 +57,7 @@ class Users(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 
-class Lead(models.Model):
+class Lead(BaseModel):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField(unique=True) 
@@ -47,7 +82,7 @@ class Lead(models.Model):
         return f"Lead: {self.first_name} {self.last_name}"
 
 
-class Student(models.Model):
+class Student(BaseModel):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField(unique=True) 
