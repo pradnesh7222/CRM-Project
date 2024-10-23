@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'app',
     'rest_framework_simplejwt',
     'corsheaders',
-     'django_filters',
     
 ]
 
@@ -168,8 +167,4 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
-}
-# settings.py
-REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }

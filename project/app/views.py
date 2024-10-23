@@ -1,5 +1,4 @@
 from django.shortcuts import render
-import django_filters
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -15,7 +14,6 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import generics, permissions
 from django.contrib.auth import logout
-from django_filters.rest_framework import DjangoFilterBackend
 class UserRegistrationView(APIView):
     def post(self, request):
         serializer = RegistrationSerializer(data=request.data)
@@ -41,27 +39,21 @@ class LogoutView(APIView):
 class UsersViewSet(viewsets.ReadOnlyModelViewSet):  
     queryset = Users.objects.all()
     serializer_class = UsersSerializer
-class LeadFilter(django_filters.FilterSet):
-    # Filter based on the `status` field in the Lead model
-    status = django_filters.ChoiceFilter(choices=[
-        ('Enquiry', 'Enquiry'),
-        ('Follow Up', 'Follow Up'),
-        ('Application', 'Application')
-    ])
 
-    class Meta:
-        model = Lead
-        fields = ['status'] 
-        
 class LeadViewSet(viewsets.ModelViewSet):
     queryset = Lead.objects.all()
     serializer_class = LeadSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_class = LeadFilter  
+    filter_backends = [filters.SearchFilter]  
+    search_fields = ['first_name', 'last_name', 'email', 'status']
+
 
     def get_queryset(self):
-        # You can customize the queryset if needed
-        return super().get_queryset()
+        queryset = Lead.objects.all()
+        status = self.request.query_params.get('status', None)
+        if status:
+            queryset = queryset.filter(status=status)
+        return queryset
+
 
 class StudentViewSet(viewsets.ModelViewSet):
     queryset = Student.objects.all()
@@ -81,24 +73,22 @@ class conversion_rate(APIView):
     def get(self, request):
         leads = Lead.objects.count()
         students = Student.objects.count()
-
-        # Avoid division by zero
-        conversion_rate = ( leads/students * 100) if students > 0 else 0
+        conversion_rate = ( students/leads * 100) if students > 0 else 0
 
         active_students_count = Student.objects.filter(enrollment_status='active').count()
         graduated_students_count = Student.objects.filter(enrollment_status='Graduated').count()
-        
-        # Return all the data as a single dictionary
+        total_students_active_till_date=Student.objects.count()
         return Response({
             'conversionRate': conversion_rate,
             'totalLeads': leads,
             'activeStudents': active_students_count,
             'graduatedStudents': graduated_students_count,
+            'total_students_active_till_date':total_students_active_till_date
         })
     
 class Convert_lead_to_student(APIView):
     def post(self, request):
-        lead_id = request.data['lead_id']
+        lead_id = request.data['id']
         lead = Lead.objects.get(id=lead_id)
         user_id = request.data['assigned_to_user']
         user_instance = Users.objects.get(id=user_id)
