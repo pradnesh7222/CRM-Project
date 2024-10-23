@@ -3,13 +3,13 @@ import "./Dashboard.scss";
 import { Link } from "react-router-dom";
 import Navbar from "../../components/navbar/NavBar";
 import LeadForm from "../../components/LeadForm/LeadForm";
-import ProductForm from "../../components/Product_form/Product_form";
+// import ProductForm from "../../components/Product_form/Product_form";
 import SideBar from "../../components/SideBar/SideBar";
 
 const Dashboard = () => {
   const [leads, setLeads] = useState([]); // Renamed customers to leads
   const [isVisible, setIsVisible] = useState(false);
-  const [isProductFormVisible, setIsProductFormVisible] = useState(false);
+  // const [isProductFormVisible, setIsProductFormVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [leadsPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");

@@ -1,16 +1,11 @@
 import React from "react";
 import "./SideBar.scss";
-import { useState } from "react";
+// import { useState } from "react";
 import { Link } from "react-router-dom";
-import Navbar from "../navbar/NavBar";
-import ProductForm from "../Product_form/Product_form";
 
 const SideBar = () => {
-  const [isProductFormVisible, setIsProductFormVisible] = useState(false);
-const handleClick = () => {
-console.log("isProductFormVisible",isProductFormVisible)
-  setIsProductFormVisible(true)
-}
+ 
+
 
   return (
     <>
@@ -24,11 +19,7 @@ console.log("isProductFormVisible",isProductFormVisible)
             <Link to="/Dashboard">Leads</Link>
           </div>
           <div className="link1">
-          <Link onClick={handleClick}>Courses</Link>
-          <ProductForm
-              isProductFormVisible={isProductFormVisible}
-              setIsProductFormVisible={setIsProductFormVisible}
-            />
+          <Link to='/Courses'>Courses</Link>
           </div>
           <div className="link1">
             <Link to="/StudentTable">Students</Link>

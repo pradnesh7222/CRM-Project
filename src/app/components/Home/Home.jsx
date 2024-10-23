@@ -11,6 +11,7 @@ const Home = () => {
         conversionRate: '0%',
         activeStudents: 0,
         placedStudents: 0,
+        totalStudentsActiveTillDate:0,
     });
 
     // Fetch data from backend APIs
@@ -27,6 +28,7 @@ const Home = () => {
                     conversionRate: result.conversionRate || '0%',
                     activeStudents: result.activeStudents || 0,
                     placedStudents: result.placedStudents || 0,
+                    totalStudentsActiveTillDate:result.totalStudentsActiveTillDate|| 0,
                 });
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -60,6 +62,10 @@ const Home = () => {
                         <HomeCard
                             title="Placed Students"
                             value={data.placedStudents}
+                        />
+                         <HomeCard
+                            title="Total Student Active till date"
+                            value={data.totalStudentsActiveTillDate}
                         />
                     </div>
                 </div>
