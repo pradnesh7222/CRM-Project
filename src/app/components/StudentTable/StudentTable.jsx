@@ -11,6 +11,7 @@ const StudentTable = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [editingStudent, setEditingStudent] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
+  
   const indexOfLastStudent = currentPage * studentsPerPage;
   const indexOfFirstStudent = indexOfLastStudent - studentsPerPage;
   const currentStudents = students.slice(indexOfFirstStudent, indexOfLastStudent);
@@ -72,24 +73,29 @@ const StudentTable = () => {
   };
 
   return (
-    <div className="student-table-page">
+    <>
       <Navbar />
-      <div className="main-content">
-        <SideBar />
-        <div className="table-container">
-          <div className="student-table">
-            <input
-              type="search"
-              placeholder="Search Students"
-              value={searchQuery}
-              onChange={handleSearchChange}
-            />
-             <button onClick={() => setIsVisible(true)}>+ Add student</button>
-          </div>
+      <div className="mainCont">
+      <div className="sidebarCont">
+      <SideBar />
+      </div>
+     
+      <div className="table-container">
+        <div className="student-table-header">
+          <input
+            type="search"
+            placeholder="Search Students"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="search-input"
+          />
+          <button className="add-btn" onClick={() => setIsVisible(true)}>+ Add Student</button>
+        </div>
+        <div className="student-table">
           <table>
             <thead>
               <tr>
-                <th>Student ID</th>
+                <th>#</th>
                 <th>Lead ID</th>
                 <th>First Name</th>
                 <th>Last Name</th>
@@ -98,9 +104,9 @@ const StudentTable = () => {
                 <th>User ID</th>
                 <th>DOB</th>
                 <th>Address</th>
-                <th>Enroll Status</th>
-                <th>Created At</th>
-                <th>Updated At</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Updated</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -121,10 +127,10 @@ const StudentTable = () => {
                     <td>{student.created_at}</td>
                     <td>{student.updated_at}</td>
                     <td>
-                      <button onClick={() => handleEdit(student)}>
+                      <button onClick={() => handleEdit(student)} className="edit-btn">
                         <i className="ri-edit-fill"></i>
                       </button>
-                      <button onClick={() => handleDelete(student.id)}>
+                      <button onClick={() => handleDelete(student.id)} className="delete-btn">
                         <i className="ri-delete-bin-line"></i>
                       </button>
                     </td>
@@ -137,31 +143,35 @@ const StudentTable = () => {
               )}
             </tbody>
           </table>
-          <div className="pagination">
-            <button
-              onClick={() => paginate(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </button>
-            <span>{currentPage}</span>
-            <button
-              onClick={() => paginate(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </button>
-          </div>
         </div>
+        <div className="pagination">
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="pagination-btn"
+          >
+            Previous
+          </button>
+          <span>{currentPage}</span>
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="pagination-btn"
+          >
+            Next
+          </button>
+        </div>
+
+        {isVisible && (
+          <StudentForm
+            isVisible={isVisible}
+            setIsVisible={setIsVisible}
+            student={editingStudent}
+          />
+        )}
       </div>
-      {isVisible && (
-        <StudentForm
-          isVisible={isVisible}
-          setIsVisible={setIsVisible}
-          student={editingStudent}
-        />
-      )}
-    </div>
+      </div>
+    </>
   );
 };
 
