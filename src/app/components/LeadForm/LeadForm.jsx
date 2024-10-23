@@ -181,7 +181,7 @@ const LeadForm = ({ isVisible, setIsVisible, lead }) => {
           <span style={{ color: "red" }}>{error.notes}</span>
           <span>Status</span>
           <select name="status" onChange={handleInputChange} value={formData.status} required>
-            <option value="">--Select an option--</option>
+            <option value=""disabled>--Select an option--</option>
             <option value="Enquiry">Enquiry</option>
             <option value="Follow Up">Follow Up</option>
             <option value="Application">Application</option>

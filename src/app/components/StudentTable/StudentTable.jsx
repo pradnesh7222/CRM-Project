@@ -2,9 +2,12 @@ import React, { useState, useEffect } from "react";
 import "./StudentTable.scss";
 import Navbar from "../../components/navbar/NavBar"; 
 import SideBar from "../../components/SideBar/SideBar"; 
-import StudentForm from "../StudentForm/StudentForm";
+import StudentForm from "../StudentForm/StudentForm";   
+import { useNavigate } from "react-router-dom";
+
 
 const StudentTable = () => {
+  const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [studentsPerPage] = useState(5);
@@ -89,13 +92,13 @@ const StudentTable = () => {
             onChange={handleSearchChange}
             className="search-input"
           />
-          <button className="add-btn" onClick={() => setIsVisible(true)}>+ Add Student</button>
+          <button className="add-btn" onClick={() => navigate("/StudentForm")}>+ Add Student</button>
         </div>
         <div className="student-table">
           <table>
             <thead>
               <tr>
-                <th>#</th>
+                <th>Sr.</th>
                 <th>Lead ID</th>
                 <th>First Name</th>
                 <th>Last Name</th>

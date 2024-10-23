@@ -1,224 +1,157 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import Navbar from "../../components/navbar/NavBar";
 import "./StudentForm.scss";
 
-const StudentForm = ({ isVisible, setIsVisible, student }) => {
-  const phoneRegex = /^[0-9]{10}$/;
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const navigate = useNavigate();
-
-  // Error handling state
-  const [error, setError] = useState({
-    first_name: "",
-    last_name: "",
+const StudentForm = () => {
+  const [formData, setFormData] = useState({
+    firstname: "",
+    lastname: "",
     email: "",
-    phone_number: "",
-    date_of_birth: "",
+    phone: "",
     address: "",
     enrollment_status: "",
-    lead_id: ""
+    dob: "",
+    course: "",
+    batch: "",
+    user: "",
   });
 
-  // Form data state
-  const [formData, setFormData] = useState({
-    first_name: student?.first_name || "",
-    last_name: student?.last_name || "",
-    email:student?.email || "",
-    phone_number: student?.phone_number || "",
-    date_of_birth: "",
-    address: "",
-    enrollment_status: "Active",
-    lead_id: student?.id || "",
-    user: student?.user || "",
-  });
-
-  // Handle input changes
+  // Handles input changes for all input fields
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-
-    // Clear specific errors
-    setError({
-      ...error,
-      [name]: "",
-    });
+    setFormData({ ...formData, [name]: value });
   };
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
+  // Logs formData in console when the form is submitted
+  const handleSubmit = (e) => {
     e.preventDefault();
-    let hasError = false;
-    let newError = { ...error };
-
-    // Check for empty fields
-    for (const key in formData) {
-      if (!formData[key]) {
-        newError[key] = "This field is required";
-        hasError = true;
-      }
-    }
-
-    // Email and phone validation
-    if (!emailRegex.test(formData.email)) {
-      newError.email = "Invalid email format!";
-      hasError = true;
-    }
-    if (!phoneRegex.test(formData.phone_number)) {
-      newError.phone_number = "Invalid phone number!";
-      hasError = true;
-    }
-
-    if (hasError) {
-      setError(newError);
-      return;
-    }
-
-    const method = student ? "PUT" : "POST";
-    const url = student
-      ? `http://127.0.0.1:8000/students/${student.id}/`
-      : "http://127.0.0.1:8000/students/";
-
-    try {
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        console.log("Data successfully submitted:", result);
-        setIsVisible(false);
-        navigate("/StudentTable", { state: { formData } });
-      } else {
-        const errorData = await response.json();
-        console.error("Error:", errorData);  // Log the error data
-        alert(JSON.stringify(errorData));
-      }
-    } catch (error) {
-      console.error("Error during submission:", error);
-    }
+    console.log(formData);  // Logs the form data
   };
 
   return (
-    <div className="leadFormBg">
-      <div className="leadform">
-        <form onSubmit={handleSubmit}>
-          <div className="closebtn-cont">
-            <h1>{student ? "Edit Details" : "Enter Details"}</h1>
-            <button id="closebtn" type="button" onClick={() => setIsVisible(!isVisible)}>
-              <i className="ri-close-line"></i>
-            </button>
-          </div>
+    <>
+      <Navbar />
+      <div className="StudentForm">
+        <div className="StudentForm_Cont">
+          <h1>Student Form</h1>
+          <form onSubmit={handleSubmit}>
+            <div className="form_Cont">
+              <div className="form_Cont_col1">
+                <label htmlFor="firstname">First Name</label>
+                <input
+                  type="text"
+                  id="firstname"
+                  name="firstname"
+                  placeholder="Enter your first name"
+                  value={formData.firstname}
+                  onChange={handleInputChange}
+                />
 
-          <span>First Name</span>
-          <input
-            type="text"
-            name="first_name"
-            placeholder="First Name"
-            value={formData.first_name}
-            onChange={handleInputChange}
-            required
-          />
-          <span style={{ color: "red" }}>{error.first_name}</span>
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                />
 
-          <span>Last Name</span>
-          <input
-            type="text"
-            name="last_name"
-            placeholder="Last Name"
-            value={formData.last_name}
-            onChange={handleInputChange}
-            required
-          />
-          <span style={{ color: "red" }}>{error.last_name}</span>
+                <label htmlFor="phone">Phone</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  placeholder="Enter your phone number"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                />
 
-          <span>Email</span>
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleInputChange}
-            required
-          />
-          <span style={{ color: "red" }}>{error.email}</span>
+                <label htmlFor="address">Address</label>
+                <input
+                  type="text"
+                  id="address"
+                  name="address"
+                  placeholder="Enter your address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                />
 
-          <span>Phone</span>
-          <input
-            type="text"
-            name="phone_number"
-            placeholder="Phone"
-            value={formData.phone_number}
-            onChange={handleInputChange}
-            required
-          />
-          <span style={{ color: "red" }}>{error.phone_number}</span>
+                <label htmlFor="enrollment_status">Enrollment Status</label>
+                <select
+                  id="enrollment_status"
+                  name="enrollment_status"
+                  value={formData.enrollment_status}
+                  onChange={handleInputChange}
+                >
+                  <option value="">Select enrollment status</option>
+                  <option value="enrolled">Enrolled</option>
+                  <option value="pending">Pending</option>
+                  <option value="withdrawn">Withdrawn</option>
+                </select>
+              </div>
+              <div className="form_Cont_col2">
+                <label htmlFor="lastname">Last Name</label>
+                <input
+                  type="text"
+                  id="lastname"
+                  name="lastname"
+                  placeholder="Enter your last name"
+                  value={formData.lastname}
+                  onChange={handleInputChange}
+                />
 
-          <span>Date of Birth</span>
-          <input
-            type="date"
-            name="date_of_birth"
-            value={formData.date_of_birth}
-            onChange={handleInputChange}
-            required
-          />
-          <span style={{ color: "red" }}>{error.date_of_birth}</span>
+                <label htmlFor="dob">Date of Birth</label>
+                <input
+                  type="date"
+                  id="dob"
+                  name="dob"
+                  placeholder="Enter your date of birth"
+                  value={formData.dob}
+                  onChange={handleInputChange}
+                />
 
-          <span>Address</span>
-          <textarea
-            name="address"
-            placeholder="Address"
-            value={formData.address}
-            onChange={handleInputChange}
-            required
-          />
-          <span style={{ color: "red" }}>{error.address}</span>
+                <label htmlFor="course">Course</label>
+                <select
+                  id="course"
+                  name="course"
+                  value={formData.course}
+                  onChange={handleInputChange}
+                >
+                  <option value="">Select a course</option>
+                  <option value="MERN Stack">MERN Stack</option>
+                  <option value="MEAN Stack">MEAN Stack</option>
+                  <option value="Python BackEnd">Python BackEnd</option>
+                  <option value="Business Analyst">Business Analyst</option>
+                  <option value="Data Science">Data Science</option>
+                </select>
 
-          <span>Enrollment Status</span>
-          <select
-            name="enrollment_status"
-            value={formData.enrollment_status}
-            onChange={handleInputChange}
-            required
-          >
-            <option value="Active">Active</option>
-            <option value="Graduated">Graduated</option>
-            <option value="Dropped">Dropped</option>
-          </select>
-          <span style={{ color: "red" }}>{error.enrollment_status}</span>
+                <label htmlFor="batch">Batch</label>
+                <input
+                  type="text"
+                  id="batch"
+                  name="batch"
+                  placeholder="Enter your batch"
+                  value={formData.batch}
+                  onChange={handleInputChange}
+                />
 
-          <span>User ID</span>
-          <input
-            type="text"
-            name="user"
-            placeholder="user id"
-            value={formData.user}
-            onChange={handleInputChange}
-            required
-          />
-          <span style={{ color: "red" }}>{error.user}</span>
-
-          <span>Lead ID</span>
-          <input
-            type="text"
-            name="lead_id"
-            placeholder="Lead ID"
-            value={formData.lead_id}
-            onChange={handleInputChange}
-            required
-          />
-          <span style={{ color: "red" }}>{error.lead_id}</span>
-
-          <button type="submit">{student ? "Update" : "Submit"}</button>
-        </form>
+                <label htmlFor="user">User</label>
+                <input
+                  type="text"
+                  id="user"
+                  name="user"
+                  placeholder="Enter your username"
+                  value={formData.user}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+            <button type="submit">Submit</button>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

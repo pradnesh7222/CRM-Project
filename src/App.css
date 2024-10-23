@@ -18,7 +18,7 @@ html,body{
 .App{
     height: 100vh;
     width: 100%;
-    overflow: scroll;
+    /* overflow: scroll; */
     /* display: flex; 
     justify-content:center;
     align-items: center; */
