@@ -11,7 +11,8 @@ const Navbar = () => {
   };
 
   const handleResetPassword = () => {
-    console.log("Reset Password");
+    window.location.href = "/ChangePassword";
+    console.log("Change Password");
   };
 
   const toggleDropdown = () => {
@@ -29,7 +30,7 @@ const Navbar = () => {
           <i className="ri-arrow-down-s-fill"></i>
           {dropdownOpen && (
             <div className="navbar_cont_profile_dropdown_menu">
-              <button onClick={handleResetPassword} className='hover_effect'>Reset Password</button>
+              <button onClick={handleResetPassword} className='hover_effect'>Change Password</button>
               <button onClick={handleLogout} className='hover_effect'>Logout</button>
             </div>
           )}

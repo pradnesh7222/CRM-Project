@@ -16,8 +16,9 @@ html,body{
 }
 .App{
     height: 100vh;
-    height: 100dvh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 100%;
+    overflow: scroll;
+    /* display: flex; 
+    justify-content:center;
+    align-items: center; */
 }

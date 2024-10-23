@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'app',
     'rest_framework_simplejwt',
     'corsheaders',
+     'django_filters',
     
 ]
 
@@ -158,7 +159,7 @@ EMAIL_HOST_USER = 'svjoshi885@gmail.com'  # Your email
 EMAIL_HOST_PASSWORD = 'nuzy jcfd gqiu znrm'  # Your email password
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,  # Set the page size
+    'PAGE_SIZE': 100,  # Set the page size
 }
 
 
@@ -169,5 +170,6 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 # settings.py
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media/'
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}

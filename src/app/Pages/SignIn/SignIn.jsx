@@ -104,7 +104,7 @@ const SignIn = () => {
       console.log('Sign in successful, data:', responseData);
       setSuccess('Sign in successful!');
       setFormData({ email: '', password: '' });
-      navigate('/Dashboard');
+      navigate('/Home');
     } catch (error) {
       console.error('Error during sign-in:', error);
       setError('There was an error signing in. Please try again.');
@@ -114,6 +114,7 @@ const SignIn = () => {
   };
 
   return (
+    <div className="mainCont">
     <div className={`container ${isActive ? 'active' : ''}`} id="container">
       <div className="form-container sign-up">
         <form onSubmit={handleSignUpSubmit}>
@@ -179,7 +180,7 @@ const SignIn = () => {
             placeholder="Password"
             onChange={handleInputChange}
           />
-          <a href="#">Forget Your Password?</a>
+          <a href="/ForgotPassword">Forget Your Password?</a>
           <button type="submit" disabled={loading}>
             {loading ? 'Signing In...' : 'Sign In'}
           </button>
@@ -207,6 +208,7 @@ const SignIn = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };
