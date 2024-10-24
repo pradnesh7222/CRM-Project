@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "../../components/navbar/NavBar";
 import "./StudentForm.scss";
+import SideBar from "../SideBar/SideBar";
 
 const StudentForm = () => {
   const [formData, setFormData] = useState({
@@ -31,6 +32,7 @@ const StudentForm = () => {
   return (
     <>
       <Navbar />
+    
       <div className="StudentForm">
         <div className="StudentForm_Cont">
           <h1>Student Form</h1>
@@ -45,6 +47,7 @@ const StudentForm = () => {
                   placeholder="Enter your first name"
                   value={formData.firstname}
                   onChange={handleInputChange}
+                  required
                 />
 
                 <label htmlFor="email">Email</label>
@@ -55,6 +58,7 @@ const StudentForm = () => {
                   placeholder="Enter your email"
                   value={formData.email}
                   onChange={handleInputChange}
+                  required
                 />
 
                 <label htmlFor="phone">Phone</label>
@@ -65,6 +69,7 @@ const StudentForm = () => {
                   placeholder="Enter your phone number"
                   value={formData.phone}
                   onChange={handleInputChange}
+                  required
                 />
 
                 <label htmlFor="address">Address</label>
@@ -75,6 +80,7 @@ const StudentForm = () => {
                   placeholder="Enter your address"
                   value={formData.address}
                   onChange={handleInputChange}
+                  required
                 />
 
                 <label htmlFor="enrollment_status">Enrollment Status</label>
@@ -83,11 +89,13 @@ const StudentForm = () => {
                   name="enrollment_status"
                   value={formData.enrollment_status}
                   onChange={handleInputChange}
+                  required  
                 >
                   <option value="">Select enrollment status</option>
                   <option value="enrolled">Enrolled</option>
                   <option value="pending">Pending</option>
                   <option value="withdrawn">Withdrawn</option>
+
                 </select>
               </div>
               <div className="form_Cont_col2">
@@ -99,6 +107,7 @@ const StudentForm = () => {
                   placeholder="Enter your last name"
                   value={formData.lastname}
                   onChange={handleInputChange}
+                  required
                 />
 
                 <label htmlFor="dob">Date of Birth</label>
@@ -109,6 +118,7 @@ const StudentForm = () => {
                   placeholder="Enter your date of birth"
                   value={formData.dob}
                   onChange={handleInputChange}
+                  required
                 />
 
                 <label htmlFor="course">Course</label>
@@ -117,6 +127,7 @@ const StudentForm = () => {
                   name="course"
                   value={formData.course}
                   onChange={handleInputChange}
+                  required
                 >
                   <option value="">Select a course</option>
                   <option value="MERN Stack">MERN Stack</option>
@@ -134,6 +145,7 @@ const StudentForm = () => {
                   placeholder="Enter your batch"
                   value={formData.batch}
                   onChange={handleInputChange}
+                  required
                 />
 
                 <label htmlFor="user">User</label>
@@ -144,6 +156,7 @@ const StudentForm = () => {
                   placeholder="Enter your username"
                   value={formData.user}
                   onChange={handleInputChange}
+                  required
                 />
               </div>
             </div>
