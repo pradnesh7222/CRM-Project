@@ -1,15 +1,12 @@
-
 .sidebar {
-//   width: 100%;
   display: flex;
-position: fixed;
-top: 0;
-left: 0;
-padding-top: 5vw;
-width: 15%;
-box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding-top: 5vw;
+  width: 15%;
 
-&_left {
+  &_left {
     width: 100%;
     height: calc(100vh - 60px);
     // height: 100%;
@@ -25,8 +22,10 @@ box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8p
       border-radius: 5px;
       width: 100%;
       text-align: center;
-      box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;      &:hover {
-        background-color: #202671;
+
+      &:hover {
+        background-color: #6e2e6a;
+        transition: color 0.5s ease, background-color 0.5s ease;
         color: white;
       }
     }
@@ -39,8 +38,9 @@ box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8p
       font-weight: 700;
 
       &:hover {
-        background-color: #202671;
+        // background-color: #202671;
         color: white;
+        transition: color 0.3s ease, background-color 0.3s ease;
       }
     }
   }

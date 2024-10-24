@@ -9,10 +9,13 @@
 .table-container {
     width: 85%;
     padding: 1.5vw 1vw;
+    border-radius: 10px;
 }
 
 .sidebarCont{
   width: 15%;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  padding-top: 41.5vw;
   
 }
 
@@ -45,7 +48,8 @@
 .student-table {
   width: 100%;
   overflow-x: auto; 
-
+  border-radius: 10px;
+  border: 1px solid #ccc;
   table {
     width: 100%;
     border-collapse: collapse;
@@ -56,6 +60,9 @@
       padding: 0.8rem;
       text-align: center;
       white-space: nowrap; 
+      color: rgba(0, 0, 0, 0.662);
+      font-size: 1vw;
+
     }
 
     th {

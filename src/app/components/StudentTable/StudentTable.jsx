@@ -85,6 +85,7 @@ const StudentTable = () => {
      
       <div className="table-container">
         <div className="student-table-header">
+        <button className="add-btn" onClick={() => navigate("/StudentForm")}>+ Add Student</button>
           <input
             type="search"
             placeholder="Search Students"
@@ -92,7 +93,7 @@ const StudentTable = () => {
             onChange={handleSearchChange}
             className="search-input"
           />
-          <button className="add-btn" onClick={() => navigate("/StudentForm")}>+ Add Student</button>
+          
         </div>
         <div className="student-table">
           <table>
@@ -158,8 +159,9 @@ const StudentTable = () => {
           <span>{currentPage}</span>
           <button
             onClick={() => paginate(currentPage + 1)}
-            disabled={currentPage === totalPages}
+            disabled={currentPage === totalPages || students.length === 0}
             className="pagination-btn"
+
           >
             Next
           </button>
