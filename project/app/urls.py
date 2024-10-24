@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import  Convert_lead_to_student, CourseViewSet, LogoutView, UserLoginView, UserRegistrationView, conversion_rate
+from .views import  CommunicationViewSet, Convert_lead_to_student, CourseViewSet, EnrollmentViewSet, LogoutView, UserLoginView, UserRegistrationView, conversion_rate
 from .views import UsersViewSet, LeadViewSet, StudentViewSet, RolesViewSet
 
 
@@ -11,7 +11,8 @@ router.register(r'leads', LeadViewSet)
 router.register(r'students', StudentViewSet)
 router.register(r'roles', RolesViewSet)
 router.register(r'courses', CourseViewSet)
-
+router.register(r'communications', CommunicationViewSet)
+router.register(r'enrollments', EnrollmentViewSet)
 urlpatterns = [
     path('register/', UserRegistrationView.as_view(), name='register'),
     path('login/', UserLoginView.as_view(), name='login'),

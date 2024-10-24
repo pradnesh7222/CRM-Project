@@ -5,8 +5,8 @@ from rest_framework import status
 from rest_framework import generics
 from app.serializers import LoginSerializer, RegistrationSerializer
 from rest_framework import viewsets
-from .models import   Course, Lead, Roles, Student, Users
-from .serializers import  CourseSerializer, LeadSerializer, RoleSerializer, StudentSerializer, UsersSerializer
+from .models import   Communication, Course, Enrollment, Lead, Roles, Student, Users
+from .serializers import  CommunicationSerializer, CourseSerializer, EnrollmentSerializer, LeadSerializer, RoleSerializer, StudentSerializer, UsersSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework import filters 
@@ -14,6 +14,8 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import generics, permissions
 from django.contrib.auth import logout
+from .permissions import RoleBasedPermission
+
 class UserRegistrationView(APIView):
     def post(self, request):
         serializer = RegistrationSerializer(data=request.data)
@@ -30,9 +32,10 @@ class UserLoginView(APIView):
             return Response(tokens, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class LogoutView(APIView):
-    #permission_classes = [IsAuthenticated]  
+    permission_classes = [IsAuthenticated]  
 
     def post(self, request):
+        print(request.user)
         logout(request)  
         return Response({"message": "Logout successful"}, status=status.HTTP_200_OK)   
 
@@ -66,11 +69,16 @@ class RolesViewSet(viewsets.ModelViewSet):
     serializer_class = RoleSerializer
 
 class CourseViewSet(viewsets.ModelViewSet):
+    print("1")
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+    print("2")
+    #permission_classes = [RoleBasedPermission]
+   
 
 class conversion_rate(APIView):
     def get(self, request):
+        print(request.user)
         leads = Lead.objects.count()
         students = Student.objects.count()
         conversion_rate = ( students/leads * 100) if students > 0 else 0
@@ -108,3 +116,11 @@ class Convert_lead_to_student(APIView):
         lead.status="Application"
         lead.save()
         return Response({"message": "lead has been converted to student"}, status=status.HTTP_200_OK)   
+
+class CommunicationViewSet(viewsets.ModelViewSet):
+    queryset = Communication.objects.all()
+    serializer_class = CommunicationSerializer
+
+class EnrollmentViewSet(viewsets.ModelViewSet):
+    queryset = Enrollment.objects.all()
+    serializer_class = EnrollmentSerializer

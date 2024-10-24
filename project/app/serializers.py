@@ -17,7 +17,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
-from .models import Course, Roles, Users, Lead, Student
+from .models import Communication, Course, Enrollment, Roles, Users, Lead, Student
 
 from rest_framework import serializers
 from django.contrib.auth.forms import PasswordResetForm
@@ -111,7 +111,7 @@ class LoginSerializer(serializers.Serializer):
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
-        fields = ['user', 'first_name', 'last_name', 'email', 'phone_number', 'status', 'created_at', 'updated_at']
+        fields = ['user', 'first_name', 'last_name', 'email', 'phone_number', 'status', 'created_at', 'updated_at','role']
 
 
 class LeadSerializer(serializers.ModelSerializer):
@@ -121,9 +121,30 @@ class LeadSerializer(serializers.ModelSerializer):
 
 
 class StudentSerializer(serializers.ModelSerializer):
+    # Use SlugRelatedField to refer to the course by its name
+    courses = serializers.SlugRelatedField(
+        queryset=Course.objects.all(),
+        slug_field='name'  # Assuming the Course model has a 'name' field
+    )
+
     class Meta:
         model = Student
-        fields = ['id','first_name', 'last_name', 'email', 'phone_number', 'user', 'date_of_birth', 'address', 'enrollment_status', 'created_at', 'updated_at','lead_id','states']
+        fields = [
+            'id',
+            'first_name',
+            'last_name',
+            'email',
+            'phone_number',
+            'user',
+            'date_of_birth',
+            'address',
+            'enrollment_status',
+            'created_at',
+            'updated_at',
+            'lead_id',
+            'states',
+            'courses'  # Ensure this matches the field name
+        ]
 
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -134,3 +155,13 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = '__all__'
+
+class CommunicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Communication
+        fields = '__all__' 
+
+class EnrollmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Enrollment
+        fields = '__all__'  
