@@ -29,7 +29,7 @@ const Courses = () => {
           duration="6 months"
           fee="1000"
           instructor="John Doe"
-         
+          redirect="https://techentry.in/courses/nodejs-fullstack-mean-mern-course"
 
         />
 
@@ -40,6 +40,8 @@ const Courses = () => {
           duration="6 months"
           fee="1000"
           instructor="John Doe"
+          redirect="https://techentry.in/courses/nodejs-fullstack-mean-mern-course"
+
         />
 
         <TrainProCard
@@ -49,6 +51,8 @@ const Courses = () => {
           duration="6 months"
           fee="1000"
           instructor="John Doe"
+          redirect="https://techentry.in/courses/python-fullstack-developer-course"
+
         />
 
         <TrainProCard
@@ -58,15 +62,19 @@ const Courses = () => {
           duration="6 months"
           fee="1000"
           instructor="John Doe"
+          redirect="https://techentry.in/courses/nodejs-fullstack-mean-mern-course"
+
         />
 
         <TrainProCard
           img={Data_science}
-          title="Data Science"
+          title=".Net Full Stack Development"
           description="Learn the latest web development technologies and frameworks"
           duration="6 months"
           fee="1000"
           instructor="John Doe"
+          redirect="https://techentry.in/courses/dotnet-fullstack-developer-course"
+
         />
 
         <TrainProCard
@@ -76,6 +84,8 @@ const Courses = () => {
           duration="6 months"
           fee="1000"
           instructor="John Doe"
+          redirect="https://techentry.in/courses/business-analyst-course"
+
         />
       </div>
       </div>

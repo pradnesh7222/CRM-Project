@@ -155,7 +155,7 @@ const Dashboard = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="8">No leads found</td> {/* Updated text */}
+                    <td colSpan="13">No leads found</td> {/* Updated text */}
                   </tr>
                 )}
               </tbody>

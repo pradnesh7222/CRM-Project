@@ -13,6 +13,8 @@ import StudentTable from "../components/StudentTable/StudentTable";
 import StudentForm from "../components/StudentForm/StudentForm";
 import Courses from "../Pages/Courses/Courses";
 import TrainProCard from "../components/TrainProCard/TrainProCard";
+import IndiaMap from "../components/IndiaMap/IndiaMap";
+import HomeGraph from "../components/HomeGraph/HomeGraph";
 
 const RouterComponent = () => {
   return (
@@ -32,6 +34,8 @@ const RouterComponent = () => {
         <Route path="/StudentForm" element={<StudentForm />} />
         <Route path="/Courses" element={<Courses />} />
         <Route path="/TrainProCard" element={<TrainProCard />} />
+        <Route path="/IndiaMap" element={<IndiaMap />} />
+        <Route path="/HomeGraph" element={<HomeGraph />} />
       </Routes>
     </BrowserRouter>
   );

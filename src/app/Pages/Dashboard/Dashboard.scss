@@ -1,6 +1,7 @@
 .dashboard {
   width: 100%;
   display: flex;
+  padding-top: 6vw;
 
   &_left {
     width: 15%;
@@ -12,7 +13,8 @@
     justify-content: start;
     align-items: start;
     gap: 2vw;
-    padding-top: 2vh;
+    padding-top: 49vw;
+   
 
     .link1 {
       padding-block: 10px;
@@ -33,9 +35,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+  
 
     &_upper {
-      margin: 1vh;
+      margin: -1vh;
       height: 10%;
       align-items: center;
       width: 98%;
@@ -97,6 +100,7 @@
       overflow-x: scroll;
       width: 98%;
       box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+      padding-top: 1.5vw;
       table {
         width: 100%;
         overflow-x: auto;

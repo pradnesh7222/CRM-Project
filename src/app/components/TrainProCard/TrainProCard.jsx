@@ -4,7 +4,7 @@ import './TrainProCard.scss'
 
 
 
-const TrainProCard = ({img, title, description, duration, fee, instructor}) => {
+const TrainProCard = ({img, title, description, duration, fee, instructor,redirect}) => {
 
 
 
@@ -19,7 +19,7 @@ const TrainProCard = ({img, title, description, duration, fee, instructor}) => {
              <h3>Instructor: {instructor}</h3>
 
              <div className="TrainProCard_Btn">
-            <button>View Details</button>
+           <a href={redirect} target='_blank'> <button>View Details</button></a>
             <button>Enroll Now</button>
              </div>
         </div>

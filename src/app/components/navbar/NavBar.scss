@@ -1,14 +1,17 @@
 .navbar {
     width: 100%;
     background: linear-gradient(to right, #6e2e6a, #202671);
+    z-index: 10;
+    position: fixed;
     
-  
     &_cont {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0 3vw;
       height: 60px;
+    //   margin-top: 4vw;
+    
   
       h1 {
         color: white;

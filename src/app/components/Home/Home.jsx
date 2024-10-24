@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Home.scss';
 import Navbar from '../navbar/NavBar';
 import SideBar from '../SideBar/SideBar';
 import HomeCard from '../HomeCard/HomeCard';
+import IndiaMap from '../IndiaMap/IndiaMap';
+import HomeGraph from '../HomeGraph/HomeGraph';
+
 
 const Home = () => {
     // State to hold API data
@@ -13,31 +16,31 @@ const Home = () => {
         placedStudents: 0,
         totalStudentsActiveTillDate:0,
     });
-
-    // Fetch data from backend APIs
+    const hasFetchedData = useRef(false);
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch('http://127.0.0.1:8000/conversion_rate/'); // Adjusted to a single endpoint
-                const result = await response.json();
-                console.log('Dashboard data response:', result);
+        if (!hasFetchedData.current) {
+            const fetchData = async () => {
+                try {
+                    const response = await fetch('http://127.0.0.1:8000/conversion_rate/');
+                    const result = await response.json();
+                    console.log('Dashboard data response:', result);
 
-                // Set state with fetched data
-                setData({
-                    totalLeads: result.totalLeads || 0,
-                    conversionRate: result.conversionRate || '0%',
-                    activeStudents: result.activeStudents || 0,
-                    placedStudents: result.placedStudents || 0,
-                    totalStudentsActiveTillDate:result.totalStudentsActiveTillDate|| 0,
-                });
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
+                    setData({
+                        totalLeads: result.totalLeads || 0,
+                        conversionRate: result.conversionRate || '0%',
+                        activeStudents: result.activeStudents || 0,
+                        placedStudents: result.placedStudents || 0,
+                        totalStudentsActiveTillDate: result.totalStudentsActiveTillDate || 0,
+                    });
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
+            };
 
-        fetchData();
-    }, []); // Empty dependency array ensures this runs once on component mount
-
+            fetchData();
+            hasFetchedData.current = true; // Mark as fetched
+        }
+    }, []); 
     return (
         <>
             <Navbar />
@@ -54,6 +57,7 @@ const Home = () => {
                         <HomeCard
                             title="Conversion Rate"
                             value={data.conversionRate}
+                            style={{ backgroundColor: '#262c7e67' }}
                         />
                         <HomeCard
                             title="Active Students"
@@ -67,6 +71,16 @@ const Home = () => {
                             title="Total Student Active till date"
                             value={data.totalStudentsActiveTillDate}
                         />
+                    </div>
+
+                    <div className="home_right_graphsCont">
+                       
+                        <div className="home_right_graphsCont_left">
+                         <HomeGraph/>
+                        </div>
+                        <div className="home_right_graphsCont_right">
+                            <IndiaMap/>
+                        </div>
                     </div>
                 </div>
             </div>
