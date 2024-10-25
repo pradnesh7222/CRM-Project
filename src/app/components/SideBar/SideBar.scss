@@ -9,13 +9,13 @@
   &_left {
     width: 100%;
     height: calc(100vh - 60px);
-    // height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: start;
     align-items: start;
-    gap: 2vw;
+    gap: 1vw;
     padding-top: 2vh;
+
 
     .link1 {
       padding-block: 10px;
@@ -23,9 +23,9 @@
       width: 100%;
       text-align: center;
 
+    
       &:hover {
         background-color: #6e2e6a;
-        transition: color 0.5s ease, background-color 0.5s ease;
         color: white;
       }
     }
@@ -37,11 +37,10 @@
       color: #6e2e6a;
       font-weight: 700;
 
-      &:hover {
-        // background-color: #202671;
+      &:hover{
         color: white;
-        transition: color 0.3s ease, background-color 0.3s ease;
+        background-color: #6e2e6a;
       }
-    }
+}
   }
 }

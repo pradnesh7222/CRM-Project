@@ -5,6 +5,8 @@ import SideBar from '../SideBar/SideBar';
 import HomeCard from '../HomeCard/HomeCard';
 import IndiaMap from '../IndiaMap/IndiaMap';
 import HomeGraph from '../HomeGraph/HomeGraph';
+import HomePieChart from '../HomePieChart/HomePieChart';
+import HomeLineGraph from '../HomeLineGraph/HomeLineGraph';
 
 
 const Home = () => {
@@ -82,6 +84,18 @@ const Home = () => {
                             <IndiaMap/>
                         </div>
                     </div>
+                    
+                    <div className="home_right_graphCont">
+                        <div className="home_right_graphCont_left">
+                        <HomePieChart/>
+                        </div>
+                        <div className="home_right_graphCont_right">
+                        <HomeLineGraph/>
+                        </div>
+                       
+                    </div>
+
+                    
                 </div>
             </div>
         </>

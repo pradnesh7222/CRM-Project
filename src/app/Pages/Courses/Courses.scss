@@ -9,22 +9,70 @@
 .SideBar{
     width: 15%;
     height: 80%;
-//    box-shadow: rgba(240, 46, 170, 0.4) 5px 5px, rgba(240, 46, 170, 0.3) 10px 10px, rgba(240, 46, 170, 0.2) 15px 15px, rgba(240, 46, 170, 0.1) 20px 20px, rgba(240, 46, 170, 0.05) 25px 25px;
-     box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px;
-// position: fixed;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px;
+
 }
 .Courses{
     width: 85%;
-    // height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    // padding-top: 4vw;
+
+    .Courses_header{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 2vw 2vw;
+
+        button{
+            padding: 1vw 2vw;
+            border-radius: 10px;
+            border: none;
+            background-color: #6D2E6A;
+            color: white;
+            font-size: 1vw;
+            font-weight: 600;
+        }
+
+        .search-btn {
+            width: 20%;
+            display: flex;
+            align-items: center;
+            border: 1.5px solid #6e2e6a;
+            border-radius: 10px;
+    
+            &:focus-within,
+            &:hover {
+              background-color: #6e2e6a;
+              color: white;
+    
+              input {
+                background-color: #6e2e6a;
+                color: white;
+              }
+            }
+    
+            input {
+              padding: 0.7vw;
+              border: none;
+              width: 90%;
+              border-radius: 10px;
+              outline: none;
+    
+              &:focus-within,
+              &:hover {
+                background-color: #6e2e6a;
+                color: white;
+              }
+            }
+          }
+    }
 
     h1{
         color: #6D2E6A;
-        margin: 20px;
+        // margin: 20px;
         padding: 10px;
     }
 

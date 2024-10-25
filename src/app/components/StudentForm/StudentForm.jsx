@@ -126,12 +126,14 @@ const StudentForm = ({ isVisible, setIsVisible, student }) => {
       <Navbar />
       <div className="StudentForm">
         <div className="StudentForm_Cont">
+        <i className="ri-arrow-left-fill" onClick={() => navigate("/StudentTable")}></i>
           <h1>{student ? "Edit Student" : "Student Form"}</h1>
+
           <form onSubmit={handleSubmit}>
             <div className="form_Cont">
               <div className="form_Cont_col1">
                 <label htmlFor="first_name">First Name</label>
-                <input
+                <input  
                   type="text"
                   id="first_name"
                   name="first_name"
@@ -268,15 +270,7 @@ const StudentForm = ({ isVisible, setIsVisible, student }) => {
                   onChange={handleInputChange}
                 />
 
-                <label htmlFor="user">User</label>
-                <input
-                  type="number"
-                  id="user"
-                  name="user"
-                  placeholder="Enter your user ID"
-                  value={formData.user}
-                  onChange={handleInputChange}
-                />
+                
               </div>
             </div>
             <button type="submit">{student ? "Update" : "Submit"}</button>

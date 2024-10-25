@@ -61,7 +61,7 @@ const IndiaMap = () => {
       <VectorMap
         map={"in_mill"}
         backgroundColor="transparent"
-       
+       style={{display:"flex",alignItems:"center",justifyContent:"center"}}
         focusOn={{
           x: 0.5,
           y: 0.5,
@@ -70,7 +70,7 @@ const IndiaMap = () => {
         }}
         zoomOnScroll={true}
         containerStyle={{
-          width: "90%",
+          width: "85%",
           height: "320px",
         }}
         onRegionClick={(e, countryCode) => console.log(countryCode)}
@@ -97,7 +97,7 @@ const IndiaMap = () => {
           regions: [
             {
               values: getalldata(),
-              scale: ["#6e2e6a", "#202671"],
+              scale: ["#ffd6fc", "#6e2e6a"],
               normalizeFunction: "polynomial",
             },
           ],

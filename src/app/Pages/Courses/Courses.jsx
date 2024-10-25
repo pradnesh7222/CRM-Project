@@ -1,5 +1,6 @@
 import React from "react";
 import "./Courses.scss";
+import { useEffect ,useState} from "react";
 import Navbar from "../../components/navbar/NavBar";
 import SideBar from "../../components/SideBar/SideBar";
 import TrainProCard from "../../components/TrainProCard/TrainProCard";
@@ -9,8 +10,30 @@ import Mern_stack from "../../Assets/CourseImg/MERN stack.jpg";
 import Mean_stack from "../../Assets/CourseImg/MEAN stack.jpg";
 import Data_science from "../../Assets/CourseImg/Data Science.jpg";
 import Business_analyst from "../../Assets/CourseImg/Business_analytics.jpg";
+import { useNavigate } from "react-router-dom";
 
 const Courses = () => {
+    const navigate = useNavigate();
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const fetchCourses = async () => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/courses/?search=${searchQuery}`);
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error("Error fetching courses:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchCourses(); // Updated function name
+      }, [searchQuery]);
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+        // setCurrentPage(1);
+      };
   return (
     <>
       <Navbar />
@@ -19,6 +42,18 @@ const Courses = () => {
         <SideBar />
       </div>
       <div className="Courses">
+      <div className="Courses_header">
+      <button onClick={() => navigate("/CourseForm")}>+ Add Course</button> 
+            <div className="search-btn">
+              <input
+                type="search"
+                placeholder="search"
+                value={searchQuery}
+                onChange={handleSearchChange}
+              />
+              <i className="ri-search-line"></i>
+            </div>
+      </div>
       <h1> Our Training Programs</h1>
         <div className="Courses_Cont">
        
