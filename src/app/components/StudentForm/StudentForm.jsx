@@ -1,53 +1,143 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../components/navbar/NavBar";
 import "./StudentForm.scss";
-import SideBar from "../SideBar/SideBar";
+import { useNavigate } from "react-router-dom";
 
-const StudentForm = () => {
-  const [formData, setFormData] = useState({
-    firstname: "",
-    lastname: "",
+const StudentForm = ({ isVisible, setIsVisible, student }) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const navigate = useNavigate();
+
+  // Error handling state
+  const [error, setError] = useState({
+    first_name: "",
+    last_name: "",
     email: "",
-    phone: "",
+    phone_number: "",
     address: "",
-    enrollment_status: "",
-    dob: "",
-    course: "",
-    batch: "",
-    user: "",
+    enrollment_status:"",
+    states:"",
+    courses: "",
+    notes: "",
+    lead_id:"",
+    user:"",
   });
 
-  // Handles input changes for all input fields
+  // Form data state
+  const [formData, setFormData] = useState({
+    first_name: student?.first_name || "",
+    last_name: student?.last_name || "",
+    email: student?.email || "",
+    phone_number: student?.phone_number || "",
+    address: student?.address || "",
+    enrollment_status:student?.enrollment_status||"",
+    states:student?.states||"",
+    courses: student?.courses || "",
+    notes: student?.notes || "",
+    lead_id: student?.lead_id|| "",
+    user: student?.user|| "",
+  });
+
+  useEffect(() => {
+    if (student) {
+      setFormData({
+        first_name: student.first_name || "",
+        last_name: student.last_name || "",
+        email: student.email || "",
+        phone_number: student.phone_number || "",
+        address: student.address || "",
+        enrollment_status:student?.enrollment_status||"",
+        states:student?.states||"",
+        courses: student.courses || "",
+        notes: student.notes || "",
+        lead_id: student?.lead_id|| "",
+      });
+    }
+  }, [student]);
+
+  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+
+    // Clear specific errors
+    setError({ ...error, [name]: "" });
   };
 
-  // Logs formData in console when the form is submitted
-  const handleSubmit = (e) => {
+  // Handle form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);  // Logs the form data
-  };
+    console.log("Form submitted");
+
+    let hasError = false;
+    let newError = { ...error };
+
+    // Check for empty fields
+    for (const key in formData) {
+        if (!formData[key] && key !== 'notes') { // Example: allowing notes to be optional
+            newError[key] = "This field is required";
+            hasError = true;
+        }
+    }
+
+    // Email validation
+    if (!emailRegex.test(formData.email)) {
+        newError.email = "Invalid email format!";
+        hasError = true;
+    }
+
+    if (hasError) {
+        setError(newError);
+        console.log("Validation errors:", newError);
+        return;
+    }
+
+    const method = student ? "PUT" : "POST";
+    const url = student ? `http://127.0.0.1:8000/students/${student.id}/` : "http://127.0.0.1:8000/students/";
+
+    console.log("API URL:", url);
+    console.log("Request body:", JSON.stringify(formData));
+
+    try {
+        const response = await fetch(url, {
+            method,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log("Data successfully submitted:", result);
+            setIsVisible(false);
+            navigate("/Dashboard", { state: { formData } });
+        } else {
+            const errorData = await response.json();
+            console.error("Error:", errorData);
+            alert(JSON.stringify(errorData));
+        }
+    } catch (error) {
+        console.error("Error during submission:", error);
+    }
+};
 
   return (
     <>
       <Navbar />
-    
       <div className="StudentForm">
         <div className="StudentForm_Cont">
-          <h1>Student Form</h1>
+          <h1>{student ? "Edit Student" : "Student Form"}</h1>
           <form onSubmit={handleSubmit}>
             <div className="form_Cont">
               <div className="form_Cont_col1">
-                <label htmlFor="firstname">First Name</label>
+                <label htmlFor="first_name">First Name</label>
                 <input
                   type="text"
-                  id="firstname"
-                  name="firstname"
+                  id="first_name"
+                  name="first_name"
                   placeholder="Enter your first name"
-                  value={formData.firstname}
+                  value={formData.first_name}
                   onChange={handleInputChange}
-                  required
                 />
 
                 <label htmlFor="email">Email</label>
@@ -58,18 +148,16 @@ const StudentForm = () => {
                   placeholder="Enter your email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  required
                 />
 
-                <label htmlFor="phone">Phone</label>
+                <label htmlFor="phone_number">Phone</label>
                 <input
                   type="tel"
-                  id="phone"
-                  name="phone"
+                  id="phone_number"
+                  name="phone_number"
                   placeholder="Enter your phone number"
-                  value={formData.phone}
+                  value={formData.phone_number}
                   onChange={handleInputChange}
-                  required
                 />
 
                 <label htmlFor="address">Address</label>
@@ -80,7 +168,6 @@ const StudentForm = () => {
                   placeholder="Enter your address"
                   value={formData.address}
                   onChange={handleInputChange}
-                  required
                 />
 
                 <label htmlFor="enrollment_status">Enrollment Status</label>
@@ -89,78 +176,110 @@ const StudentForm = () => {
                   name="enrollment_status"
                   value={formData.enrollment_status}
                   onChange={handleInputChange}
-                  required  
                 >
                   <option value="">Select enrollment status</option>
-                  <option value="enrolled">Enrolled</option>
-                  <option value="pending">Pending</option>
-                  <option value="withdrawn">Withdrawn</option>
-
+                  <option value="Active">Active</option>
+                  <option value="Graduated">Graduated</option>
+                  <option value="Dropped">Dropped</option>
                 </select>
               </div>
               <div className="form_Cont_col2">
-                <label htmlFor="lastname">Last Name</label>
+                <label htmlFor="last_name">Last Name</label>
                 <input
                   type="text"
-                  id="lastname"
-                  name="lastname"
+                  id="last_name"
+                  name="last_name"
                   placeholder="Enter your last name"
-                  value={formData.lastname}
+                  value={formData.last_name}
                   onChange={handleInputChange}
-                  required
                 />
 
-                <label htmlFor="dob">Date of Birth</label>
+                <label htmlFor="date_of_birth">Date of Birth</label>
                 <input
                   type="date"
-                  id="dob"
-                  name="dob"
-                  placeholder="Enter your date of birth"
-                  value={formData.dob}
+                  id="date_of_birth"
+                  name="date_of_birth"
+                  value={formData.date_of_birth}
                   onChange={handleInputChange}
-                  required
                 />
 
-                <label htmlFor="course">Course</label>
+                <label htmlFor="courses">Courses</label>
                 <select
-                  id="course"
-                  name="course"
-                  value={formData.course}
+                  id="courses"
+                  name="courses"
+                  value={formData.courses}
                   onChange={handleInputChange}
-                  required
                 >
                   <option value="">Select a course</option>
                   <option value="MERN Stack">MERN Stack</option>
                   <option value="MEAN Stack">MEAN Stack</option>
                   <option value="Python BackEnd">Python BackEnd</option>
-                  <option value="Business Analyst">Business Analyst</option>
-                  <option value="Data Science">Data Science</option>
                 </select>
 
-                <label htmlFor="batch">Batch</label>
+                <label htmlFor="states">States</label>
+                <select
+                  id="states"
+                  name="states"
+                  value={formData.states}
+                  onChange={handleInputChange}
+                >
+                  <option value="">Select a state</option>
+                  <option value="ap">Andhra Pradesh</option>
+                  <option value="ar">Arunachal Pradesh</option>
+                  <option value="as">Assam</option>
+                  <option value="br">Bihar</option>
+                  <option value="ch">Chandigarh</option>
+                  <option value="ct">Chhattisgarh</option>
+                  <option value="dn">Dadra and Nagar Haveli and Daman and Diu</option>
+                  <option value="dl">Delhi</option>
+                  <option value="ga">Goa</option>
+                  <option value="gj">Gujarat</option>
+                  <option value="hr">Haryana</option>
+                  <option value="hp">Himachal Pradesh</option>
+                  <option value="jk">Jammu and Kashmir</option>
+                  <option value="jh">Jharkhand</option>
+                  <option value="ka">Karnataka</option>
+                  <option value="kl">Kerala</option>
+                  <option value="mp">Madhya Pradesh</option>
+                  <option value="mh">Maharashtra</option>
+                  <option value="mn">Manipur</option>
+                  <option value="ml">Meghalaya</option>
+                  <option value="miz">Mizoram</option>
+                  <option value="nl">Nagaland</option>
+                  <option value="or">Odisha</option>
+                  <option value="pb">Punjab</option>
+                  <option value="rj">Rajasthan</option>
+                  <option value="sk">Sikkim</option>
+                  <option value="tn">Tamil Nadu</option>
+                  <option value="tg">Telangana</option>
+                  <option value="tr">Tripura</option>
+                  <option value="up">Uttar Pradesh</option>
+                  <option value="ut">Uttarakhand</option>
+                  <option value="wb">West Bengal</option>
+                </select>
+
+                <label htmlFor="lead_id">Lead ID</label>
                 <input
                   type="text"
-                  id="batch"
-                  name="batch"
-                  placeholder="Enter your batch"
-                  value={formData.batch}
+                  id="lead_id"
+                  name="lead_id"
+                  placeholder="Enter your lead ID"
+                  value={formData.lead_id}
                   onChange={handleInputChange}
-                  required
                 />
 
                 <label htmlFor="user">User</label>
                 <input
-                  type="text"
+                  type="number"
                   id="user"
                   name="user"
-                  placeholder="Enter your username"
+                  placeholder="Enter your user ID"
                   value={formData.user}
                   onChange={handleInputChange}
-                  required
                 />
               </div>
             </div>
-            <button type="submit">Submit</button>
+            <button type="submit">{student ? "Update" : "Submit"}</button>
           </form>
         </div>
       </div>

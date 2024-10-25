@@ -124,7 +124,7 @@ const StudentTable = () => {
                     <td>{student.last_name}</td>
                     <td>{student.email}</td>
                     <td>{student.phone_number}</td>
-                    <td>{student.user_id}</td>
+                    <td>{student.user}</td>
                     <td>{student.date_of_birth}</td>
                     <td>{student.address}</td>
                     <td>{student.enrollment_status}</td>

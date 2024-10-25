@@ -108,8 +108,8 @@ const Dashboard = () => {
                   <th id="lastName">Last Name</th>
                   <th id="email">Email</th>
                   <th id="phone">Phone</th>
-                  <th id="lead_source_id">Lead Source ID</th>
-                  <th id="assigned_to_user_id">Assigned to User ID</th>
+                 
+                  <th id="user">Assigned to User ID</th>
                   <th id="lead_score">Lead Score</th>
                   <th id="created_at">Created At</th>
                   <th id="updated_at">Updated At</th>
@@ -127,8 +127,8 @@ const Dashboard = () => {
                       <td>{item.last_name}</td>
                       <td>{item.email}</td>
                       <td>{item.phone_number}</td>
-                      <td>{item.lead_source_id}</td>
-                      <td>{item.assigned_to_user_id}</td>
+                     
+                      <td>{item.assigned_to_user}</td>
                       <td>{item.lead_score}</td>
                       <td>{item.created_at}</td>
                       <td>{item.updated_at}</td>

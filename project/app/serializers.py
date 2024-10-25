@@ -17,7 +17,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
-from .models import Course, Roles, Users, Lead, Student
+from .models import Communication, Course, Enrollment, Roles, Users, Lead, Student
 
 from rest_framework import serializers
 from django.contrib.auth.forms import PasswordResetForm
@@ -29,9 +29,6 @@ class RegistrationSerializer(serializers.Serializer):
     )
     password = serializers.CharField(write_only=True)
     password_confirm = serializers.CharField(write_only=True)
-    first_name = serializers.CharField(max_length=100)
-    last_name = serializers.CharField(max_length=100)
-    phone_number = serializers.CharField(max_length=10)
 
     def validate_password(self, value):
         """
@@ -74,10 +71,9 @@ class RegistrationSerializer(serializers.Serializer):
         # Create an entry in the custom Users model
         Users.objects.create(
             user=user,
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
+           
             email=validated_data['email'],
-            phone_number=validated_data['phone_number']
+            
         )
 
         return user
@@ -115,19 +111,40 @@ class LoginSerializer(serializers.Serializer):
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
-        fields = ['user', 'first_name', 'last_name', 'email', 'phone_number', 'status', 'created_at', 'updated_at']
+        fields = ['user', 'first_name', 'last_name', 'email', 'phone_number', 'status', 'created_at', 'updated_at','role']
 
 
 class LeadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lead
-        fields = ['id','first_name', 'last_name', 'email', 'phone_number', 'assigned_to_user', 'lead_score', 'status', 'notes', 'created_at', 'updated_at','states']
+        fields = ['id','first_name', 'last_name', 'email', 'phone_number', 'address','assigned_to_user', 'lead_score', 'status', 'notes', 'created_at', 'updated_at','states']
 
 
 class StudentSerializer(serializers.ModelSerializer):
+    # Use SlugRelatedField to refer to the course by its name
+    courses = serializers.SlugRelatedField(
+        queryset=Course.objects.all(),
+        slug_field='name'  # Assuming the Course model has a 'name' field
+    )
+
     class Meta:
         model = Student
-        fields = ['id','first_name', 'last_name', 'email', 'phone_number', 'user', 'date_of_birth', 'address', 'enrollment_status', 'created_at', 'updated_at','lead_id','states']
+        fields = [
+            'id',
+            'first_name',
+            'last_name',
+            'email',
+            'phone_number',
+            'user',
+            'date_of_birth',
+            'address',
+            'enrollment_status',
+            'created_at',
+            'updated_at',
+            'lead_id',
+            'states',
+            'courses'  # Ensure this matches the field name
+        ]
 
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -138,3 +155,13 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = '__all__'
+
+class CommunicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Communication
+        fields = '__all__' 
+
+class EnrollmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Enrollment
+        fields = '__all__'  

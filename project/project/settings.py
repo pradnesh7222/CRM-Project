@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'app',
     'rest_framework_simplejwt',
     'corsheaders',
-     'django_filters',
+
     
 ]
 
@@ -88,7 +88,7 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'crm_sample',  
+        'NAME': 'crm_sample1',  
         'USER': 'root',    
         'PASSWORD': 'SV01@joshi',  
         'HOST': 'localhost',           
@@ -160,6 +160,12 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 # settings.py
+'''
 REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
-}
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}'''
