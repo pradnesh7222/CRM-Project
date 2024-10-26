@@ -10,7 +10,8 @@ import ForgotPassword from "../Pages/ForgotPassword/ForgotPassword";
 import ResetPassword from "../Pages/ResetPassword/ResetPassword";
 import ChangePassword from "../Pages/ChangePassword/ChangePassword";
 import HomeCard from "../components/HomeCard/HomeCard";
-// import StudentTable from "../components/StudentTable/StudentTable";
+import StudentTable from "../components/StudentTable/StudentTable";
+import StudentForm from "../components/StudentForm/StudentForm";
 
 const RouterComponent = () => {
   return (
@@ -27,7 +28,8 @@ const RouterComponent = () => {
         <Route path="/ResetPassword" element={<ResetPassword />} />
         <Route path="/ChangePassword" element={<ChangePassword />} />
         <Route path="/HomeCard" element={<HomeCard />} />
-        {/* <Route path="/StudentTable" element={<StudentTable />} /> */}
+        <Route path="/StudentTable" element={<StudentTable />} />
+        <Route path="/StudentForm" element={<StudentForm />} />
       </Routes>
     </BrowserRouter>
   );
