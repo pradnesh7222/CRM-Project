@@ -10,9 +10,23 @@
     z-index: 10;
 
     .closebtn-cont{
+        width: 78%;
         display: flex;
+        margin-top: 1vw;
         justify-content: space-between;
         align-items: center;
+
+      .ri-arrow-left-fill{
+        background-color: white;
+        padding: .5vw;
+        border-radius: 50%;
+
+        &:hover{
+            background-color: black;
+            color: white;
+        }
+      }
+
     }
 
     #closebtn{
@@ -23,64 +37,92 @@
     }
     
     .leadform{
-        width: 30%;
-        background-color: #d3d3f9;
+        width: 60%;
+        height: 80vh;
+        background-color: #E5E5E5;
         border-radius: 10px;
         box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-        margin: 1.5vh;
+        padding: 1.5vh;
+        display: flex;
+        flex-direction: column;
+    align-items: center;
+
+        h1{
+            // font-weight: 600;
+            font-size: 2vw;
+            color: #646464;
+            text-align: center;
+        }
+
+
+        label,span{
+            font-size: .8vw;
+            font-weight: 600;
+            color: #646464;
+        }
+
+        select,input{
+            padding: 1vh;
+            background-color: white;
+            border: none;
+            color: #646464;
+            border-radius: 10px;
+        }
+
+        
+
+        button{
+            width: 50%;
+            align-self: center;
+            background-color: black;
+            color: white;
+            border: 1px solid #6E2E6A;
+            padding: .5vw .5vw;
+            margin-top: 1vw;
+            border-radius: 10px;
+            font-size: 1.2vw;
+            font-weight: 600;
+
+            &:hover{
+                background-color: black;
+                color: white;
+            }
+        }
        
     
             form{
                 width: 100%;
                 display: flex;
                 flex-direction: column;
+                align-items: center;
                 gap: 1vh;
                 padding: 2vh ;
-                // display: none;
-                
-                // border: 1px solid #202071;
                 border-radius: 10px;
-                
-                // align-items: center;
-                 
-                h1{
-                    font-size: 1.5vw;
-                }
-        
+
+                .form-cont{
+                    width: 85%;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+
+                    .form-left{
+                        display: flex;
+                        flex-direction: column;
+                        width: 45%;
+                        gap: 1vh;
     
-                span{
-                    font-size: .8vw;
-                    font-weight: 500;
-                }
-        
-                select,input{
-                    padding: 1vh;
-                    background-color: #eeeef4;
-                    border: none;
-                    border-radius: 10px;
-                }
-    
-                button{
-                    // height: 3vw;
-                    background-color: white;
-                    border: 1px solid #6E2E6A;
-                    padding: .5vw .5vw;
-                    border-radius: 10px;
-                    font-size: 1.2vw;
-                    font-weight: 600;
-                    // display: flex;
-                    // align-items: center;
-                    // text-align: center;
-        
-                    &:hover{
-                        background-color: #6E2E6A;
-                        color: white;
+                        
                     }
-                }
-            }
-        
-        
     
-     
+                    .form-right{
+                        width: 45%;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 1vh;
+                    }
+                     
+                }
+               
+            }
     }
 }

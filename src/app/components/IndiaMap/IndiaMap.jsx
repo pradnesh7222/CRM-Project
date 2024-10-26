@@ -163,7 +163,7 @@ const IndiaMap = () => {
         }}
         zoomOnScroll={true}
         containerStyle={{
-          width: "90%",
+          width: "85%",
           height: "320px",
         }}
         onRegionClick={(e, countryCode) => console.log(countryCode)}

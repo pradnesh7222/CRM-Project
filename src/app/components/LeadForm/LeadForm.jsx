@@ -13,12 +13,11 @@ const LeadForm = ({ isVisible, setIsVisible, lead }) => {
     last_name: "",
     email: "",
     phone_number: "",
-    address:"",
-    states:"",
+    address: "",
+    states: "",
     lead_score: "",
     status: "",
     assigned_to_user: "",
-    
   });
 
   // Form data state
@@ -30,9 +29,8 @@ const LeadForm = ({ isVisible, setIsVisible, lead }) => {
     lead_score: lead?.lead_score || "",
     status: lead?.status || "Enquiry",
     assigned_to_user: lead?.assigned_to_user || "",
-    notes: lead?.notes || "" // Add notes field
+    notes: lead?.notes || "", // Add notes field
   });
-  
 
   // Handle input changes
   const handleInputChange = (e) => {
@@ -99,7 +97,7 @@ const LeadForm = ({ isVisible, setIsVisible, lead }) => {
         navigate("/Dashboard", { state: { formData } });
       } else {
         const errorData = await response.json();
-        console.error("Error:", errorData);  // Log the error data
+        console.error("Error:", errorData); // Log the error data
         alert(JSON.stringify(errorData));
       }
     } catch (error) {
@@ -110,150 +108,172 @@ const LeadForm = ({ isVisible, setIsVisible, lead }) => {
   return (
     <div className="leadFormBg">
       <div className="leadform">
-        <form onSubmit={handleSubmit}>
-          <div className="closebtn-cont">
+      <div className="closebtn-cont">
+      <i className="ri-arrow-left-fill" onClick={() => navigate(0)}></i>
             <h1>{lead ? "Edit Details" : "Enter Details"}</h1>
-            <button id="closebtn" type="button" onClick={() => setIsVisible(!isVisible)}>
+            <button
+              id="closebtn"
+              type="button"
+              onClick={() => setIsVisible(!isVisible)}
+            >
               <i className="ri-close-line"></i>
             </button>
           </div>
+        <form onSubmit={handleSubmit}>
+          
 
-          <span>First Name</span>
-          <input
-            type="text"
-            name="first_name"
-            placeholder="First Name"
-            value={formData.first_name}
-            onChange={handleInputChange}
-            required
-          />
-          <span style={{ color: "red" }}>{error.first_name}</span>
+          <div className="form-cont">
+         
+          <div className="form-left">
+              <span>First Name</span>
+              <input
+                type="text"
+                name="first_name"
+                placeholder="First Name"
+                value={formData.first_name}
+                onChange={handleInputChange}
+                required
+              />
+              <span style={{ color: "red" }}>{error.first_name}</span>
 
-          <span>Last Name</span>
-          <input
-            type="text"
-            name="last_name"
-            placeholder="Last Name"
-            value={formData.last_name}
-            onChange={handleInputChange}
-            required
-          />
-          <span style={{ color: "red" }}>{error.last_name}</span>
+              <span>Last Name</span>
+              <input
+                type="text"
+                name="last_name"
+                placeholder="Last Name"
+                value={formData.last_name}
+                onChange={handleInputChange}
+                required
+              />
+              <span style={{ color: "red" }}>{error.last_name}</span>
 
-          <span>Email</span>
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleInputChange}
-            required
-          />
-          <span style={{ color: "red" }}>{error.email}</span>
+              <span>Email</span>
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+              />
+              <span style={{ color: "red" }}>{error.email}</span>
 
-          <span>Phone</span>
-          <input
-            type="text"
-            name="phone_number"
-            placeholder="Phone"
-            value={formData.phone_number}
-            onChange={handleInputChange}
-            required
-          />
-          <span style={{ color: "red" }}>{error.phone_number}</span>
-          <label htmlFor="address">Address</label>
-                <input
-                  type="text"
-                  id="address"
-                  name="address"
-                  placeholder="Enter your address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                />
-                 <label htmlFor="states">States</label>
-<select
-  id="states"
-  name="states"
-  value={formData.states}
-  onChange={handleInputChange}
->
-  <option value="">Select a state</option>
-  <option value="ap">Andhra Pradesh</option>
-  <option value="ar">Arunachal Pradesh</option>
-  <option value="as">Assam</option>
-  <option value="br">Bihar</option>
-  <option value="ch">Chandigarh</option>
-  <option value="ct">Chhattisgarh</option>
-  <option value="dn">Dadra and Nagar Haveli and Daman and Diu</option>
-  <option value="dl">Delhi</option>
-  <option value="ga">Goa</option>
-  <option value="gj">Gujarat</option>
-  <option value="hr">Haryana</option>
-  <option value="hp">Himachal Pradesh</option>
-  <option value="jk">Jammu and Kashmir</option>
-  <option value="jh">Jharkhand</option>
-  <option value="ka">Karnataka</option>
-  <option value="kl">Kerala</option>
-  <option value="mp">Madhya Pradesh</option>
-  <option value="mh">Maharashtra</option>
-  <option value="mn">Manipur</option>
-  <option value="ml">Meghalaya</option>
-  <option value="miz">Mizoram</option>
-  <option value="nl">Nagaland</option>
-  <option value="or">Odisha</option>
-  <option value="pb">Punjab</option>
-  <option value="rj">Rajasthan</option>
-  <option value="sk">Sikkim</option>
-  <option value="tn">Tamil Nadu</option>
-  <option value="tg">Telangana</option>
-  <option value="tr">Tripura</option>
-  <option value="up">Uttar Pradesh</option>
-  <option value="ut">Uttarakhand</option>
-  <option value="wb">West Bengal</option>
-</select>
+              <span>Phone</span>
+              <input
+                type="text"
+                name="phone_number"
+                placeholder="Phone"
+                value={formData.phone_number}
+                onChange={handleInputChange}
+                required
+              />
+              <span style={{ color: "red" }}>{error.phone_number}</span>
+              <label htmlFor="address">Address</label>
+              <input
+                type="text"
+                id="address"
+                name="address"
+                placeholder="Enter your address"
+                value={formData.address}
+                onChange={handleInputChange}
+              />
+            </div>
+            
+            <div className="form-right">
+              <label htmlFor="states">States</label>
+              <select
+                id="states"
+                name="states"
+                value={formData.states}
+                onChange={handleInputChange}
+              >
+                <option value="">Select a state</option>
+                <option value="ap">Andhra Pradesh</option>
+                <option value="ar">Arunachal Pradesh</option>
+                <option value="as">Assam</option>
+                <option value="br">Bihar</option>
+                <option value="ch">Chandigarh</option>
+                <option value="ct">Chhattisgarh</option>
+                <option value="dn">
+                  Dadra and Nagar Haveli and Daman and Diu
+                </option>
+                <option value="dl">Delhi</option>
+                <option value="ga">Goa</option>
+                <option value="gj">Gujarat</option>
+                <option value="hr">Haryana</option>
+                <option value="hp">Himachal Pradesh</option>
+                <option value="jk">Jammu and Kashmir</option>
+                <option value="jh">Jharkhand</option>
+                <option value="ka">Karnataka</option>
+                <option value="kl">Kerala</option>
+                <option value="mp">Madhya Pradesh</option>
+                <option value="mh">Maharashtra</option>
+                <option value="mn">Manipur</option>
+                <option value="ml">Meghalaya</option>
+                <option value="miz">Mizoram</option>
+                <option value="nl">Nagaland</option>
+                <option value="or">Odisha</option>
+                <option value="pb">Punjab</option>
+                <option value="rj">Rajasthan</option>
+                <option value="sk">Sikkim</option>
+                <option value="tn">Tamil Nadu</option>
+                <option value="tg">Telangana</option>
+                <option value="tr">Tripura</option>
+                <option value="up">Uttar Pradesh</option>
+                <option value="ut">Uttarakhand</option>
+                <option value="wb">West Bengal</option>
+              </select>
 
+              <span>Lead Score</span>
+              <input
+                type="number"
+                name="lead_score"
+                placeholder="Lead Score"
+                value={formData.lead_score}
+                onChange={handleInputChange}
+                required
+              />
+              <span style={{ color: "red" }}>{error.lead_score}</span>
+              <span>Notes</span>
+              <input
+                type="text"
+                name="notes"
+                placeholder="Notes"
+                value={formData.notes}
+                onChange={handleInputChange}
+                required
+              />
+              <span style={{ color: "red" }}>{error.notes}</span>
+              <span>Status</span>
+              <select
+                name="status"
+                onChange={handleInputChange}
+                value={formData.status}
+                required
+              >
+                <option value="" disabled>
+                  --Select an option--
+                </option>
+                <option value="Enquiry">Enquiry</option>
+                <option value="Follow Up">Follow Up</option>
+                <option value="Application">Application</option>
+              </select>
+              <span style={{ color: "red" }}>{error.status}</span>
 
-          <span>Lead Score</span>
-          <input
-            type="number"
-            name="lead_score"
-            placeholder="Lead Score"
-            value={formData.lead_score}
-            onChange={handleInputChange}
-            required
-          />
-          <span style={{ color: "red" }}>{error.lead_score}</span>
-          <span>Notes</span>
-          <input
-            type="text"
-            name="notes"
-            placeholder="Notes"
-            value={formData.notes}
-            onChange={handleInputChange}
-            required
-          />
-          <span style={{ color: "red" }}>{error.notes}</span>
-          <span>Status</span>
-          <select name="status" onChange={handleInputChange} value={formData.status} required>
-            <option value=""disabled>--Select an option--</option>
-            <option value="Enquiry">Enquiry</option>
-            <option value="Follow Up">Follow Up</option>
-            <option value="Application">Application</option>
-          </select>
-          <span style={{ color: "red" }}>{error.status}</span>
-
-          <span>Assigned User</span>
-          <input
-            type="number"
-            name="assigned_to_user"
-            placeholder="Assigned User ID"
-            value={formData.assigned_to_user}
-            onChange={handleInputChange}
-            required
-          />
-          <span style={{ color: "red" }}>{error.assigned_to_user}</span>
-
+              <span>Assigned User</span>
+              <input
+                type="number"
+                name="assigned_to_user"
+                placeholder="Assigned User ID"
+                value={formData.assigned_to_user}
+                onChange={handleInputChange}
+                required
+              />
+              <span style={{ color: "red" }}>{error.assigned_to_user}</span>
+            </div>
+          </div>
           <button type="submit">{lead ? "Update" : "Submit"}</button>
+
         </form>
       </div>
     </div>

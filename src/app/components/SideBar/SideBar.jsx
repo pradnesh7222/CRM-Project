@@ -25,7 +25,7 @@ const SideBar = () => {
             <Link to="/StudentTable">Students</Link>
           </div>
           <div className="link1">
-            <Link to="">Orders</Link>
+            <Link to="">Enrolled Student</Link>
           </div>
         </div>
       </div>

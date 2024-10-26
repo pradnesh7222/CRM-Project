@@ -99,6 +99,13 @@
         border: none;
         background-color: #000000;
         color: white;
+
+        &:hover{
+            background-color: #00000090;
+                transition: transform 0.3s ease;
+
+        
+        }
       }
     }
   }

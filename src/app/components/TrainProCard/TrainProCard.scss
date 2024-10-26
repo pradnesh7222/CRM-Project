@@ -5,6 +5,7 @@
     border-radius: 0.7vw;
     box-shadow: 0 0.3vw 0.6vw rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease-in-out;
+    
 
     &:hover {
         transform: translateY(-0.35vw);
@@ -46,7 +47,7 @@
         
         .TrainProCard_Btn{
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             width: 100%;
             margin-top: 1vw;
         }

@@ -13,7 +13,7 @@
 
    &_right {
     width: 85%;
-    height: 90vh;
+    // height: 90vh;
     display: flex;
     justify-content: center;
     margin: 1vw;
@@ -34,8 +34,8 @@
       display: flex;
 
       &_left{
-        width: 70%;
-        height: 90%;
+        width: 60%;
+        height: 95%;
         background-color: white;
         box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
         padding: 1vw 0;
@@ -44,8 +44,8 @@
       }
 
       &_right{
-        width: 30%;
-        height: 90%;
+        width: 40%;
+        height: 95%;
         border-radius: 10px;
         // padding: 1vw;
         box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
@@ -53,6 +53,30 @@
         background-color: white;
       }
        
+    }
+
+    &_graphCont{
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        // height: 20%;
+
+        &_left{
+            width: 50%;
+            box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+            border-radius: 10px;
+
+        }
+
+        &_right{
+            width: 50%;
+            border-radius: 10px;
+            box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+
+        }
+        
     }
    }
 

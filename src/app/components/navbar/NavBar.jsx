@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import './NavBar.scss';
 import dummy_profile from '../../Assets/dummy_profile.jpg';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
+  const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem("token");
     window.location.href = "/Signin";
@@ -22,7 +23,7 @@ const Navbar = () => {
   return (
     <div className="navbar">
       <div className="navbar_cont">
-        <h1>CRM</h1>
+        <h1 onClick={() => navigate("/Home")}>CRM</h1>
         <div className="navbar_cont_profile" onClick={toggleDropdown}>
           <div className="navbar_cont_profile_circle">
             <img src={dummy_profile} alt="profile" />
