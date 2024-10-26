@@ -56,7 +56,7 @@ const Home = () => {
                         />
                         <HomeCard
                             title="Conversion Rate"
-                            value={data.conversionRate}
+                            value={data.conversionRate + "%"}
                             style={{ backgroundColor: '#262c7e67' }}
                         />
                         <HomeCard

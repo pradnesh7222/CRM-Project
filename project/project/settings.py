@@ -88,9 +88,9 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'crm_sample1',  
+        'NAME': 'STUDENTCRM',  
         'USER': 'root',    
-        'PASSWORD': 'SV01@joshi',  
+        'PASSWORD': 'SMpatil@95',  
         'HOST': 'localhost',           
         'PORT': '3306',                
     }

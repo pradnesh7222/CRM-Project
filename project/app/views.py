@@ -15,6 +15,16 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import generics, permissions
 from django.contrib.auth import logout
 from .permissions import RoleBasedPermission
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
+from django.http import JsonResponse
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
+from rest_framework import status
+
+ 
 
 class UserRegistrationView(APIView):
     def post(self, request):
@@ -124,3 +134,57 @@ class CommunicationViewSet(viewsets.ModelViewSet):
 class EnrollmentViewSet(viewsets.ModelViewSet):
     queryset = Enrollment.objects.all()
     serializer_class = EnrollmentSerializer
+
+
+
+# views.py
+
+
+# views.py
+# views.py
+# Ensure Lead is correctly imported
+
+def monthly_leads_count(request):
+    monthly_data = (
+        Lead.objects.annotate(month=TruncMonth("created_at"))
+        .values("month")
+        .annotate(count=Count("id"))
+        .order_by("month")
+    )
+    response_data = {
+        "labels": [data["month"].strftime("%B") for data in monthly_data],
+        "counts": [data["count"] for data in monthly_data],
+    }
+    return JsonResponse(response_data)
+
+
+
+# In your views.py
+
+# views.p
+
+
+class LeadsPerStateView(APIView):
+    def get(self, request):
+        leads_count = Lead.objects.values('states').annotate(count=Count('id')).order_by('states')
+        data = {entry['states']: entry['count'] for entry in leads_count}
+        return Response(data, status=status.HTTP_200_OK)
+
+
+
+
+
+from django.db.models import Count
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+class StudentsPerCourseView(APIView):
+    def get(self, request):
+        # Group enrollments by course and count each group
+        course_counts = Enrollment.objects.values('course__name').annotate(count=Count('enrollment_id')).order_by('course__name')
+        
+        # Prepare the response data in dictionary format for visualization
+        data = {entry['course__name']: entry['count'] for entry in course_counts}
+        
+        return Response(data, status=status.HTTP_200_OK)

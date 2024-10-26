@@ -1,51 +1,144 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { VectorMap } from "react-jvectormap";
 import "./IndiaMap.scss";
 
-const map = [
-  { code: "IN-RJ", value: 10000 },
-  { code: "IN-MP", value: 800 },
-  { code: "IN-DL", value: 900 },
-  { code: "IN-KL", value: 500 },
-  { code: "IN-MH", value: 500 },
-  { code: "IN-KA", value: 1500 },
-  { code: "IN-BR", value: 11098 },
-  { code: "IN-AP", value: 11800 },
+// Define the initial state mapping
+const initialMapData = [
+
+  { code: "IN-AP", value: 0 },
+  { code: "IN-AR", value: 0 },
+  { code: "IN-AS", value: 0 },
+  { code: "IN-BR", value: 0 },
+  { code: "IN-CT", value: 0 },
+  { code: "IN-GA", value: 0 },
+  { code: "IN-GJ", value: 0 },
+  { code: "IN-HR", value: 0 },
+  { code: "IN-HP", value: 0 },
+  { code: "IN-JK", value: 0 },
+  { code: "IN-JH", value: 0 },
+  { code: "IN-KA", value: 0 },
+  { code: "IN-KL", value: 0 },
+  { code: "IN-MP", value: 0 },
+  { code: "IN-MH", value: 0 },
+  { code: "IN-MN", value: 0 },
+  { code: "IN-ML", value: 0 },
+  { code: "IN-MZ", value: 0 },
+  { code: "IN-NL", value: 0 },
+  { code: "IN-OR", value: 0 },
+  { code: "IN-PB", value: 0 },
+  { code: "IN-RJ", value: 0 },
+  { code: "IN-SK", value: 0 },
+  { code: "IN-TN", value: 0 },
+  { code: "IN-TG", value: 0 },
+  { code: "IN-TR", value: 0 },
+  { code: "IN-UP", value: 0 },
+  { code: "IN-UT", value: 0 },
+  { code: "IN-WB", value: 0 },
+  { code: "IN-AN", value: 0 },
+  { code: "IN-CH", value: 0 },
+  { code: "IN-DN", value: 0 },
+  { code: "IN-DD", value: 0 },
+  { code: "IN-LD", value: 0 },
+  { code: "IN-PY", value: 0 },
+  { code: "IN-LA", value: 0 }
 ];
 
-const getdata = (key) => {
-  const countryData = {};
-  map.forEach((obj) => {
-    countryData[obj.code] = obj.value;
-  });
-  return countryData[key];
+// Mapping of API keys to map codes
+const apiToMapCode = {
+
+  ap: "IN-AP",
+  ar: "IN-AR",
+  as: "IN-AS",
+  br: "IN-BR",
+  ct: "IN-CT",
+  ga: "IN-GA",
+  gj: "IN-GJ",
+  hr: "IN-HR",
+  hp: "IN-HP",
+  jk: "IN-JK",
+  jh: "IN-JH",
+  ka: "IN-KA",
+  kl: "IN-KL",
+  mp: "IN-MP",
+  mh: "IN-MH",
+  mn: "IN-MN",
+  ml: "IN-ML",
+  mz: "IN-MZ",
+  nl: "IN-NL",
+  or: "IN-OR",
+  pb: "IN-PB",
+  rj: "IN-RJ",
+  sk: "IN-SK",
+  tn: "IN-TN",
+  tg: "IN-TG",
+  tr: "IN-TR",
+  up: "IN-UP",
+  ut: "IN-UT",
+  wb: "IN-WB",
+  an: "IN-AN",
+  ch: "IN-CH",
+  dn: "IN-DN",
+  dd: "IN-DD",
+  ld: "IN-LD",
+  py: "IN-PY",
+  la: "IN-LA"
 };
 
-const getalldata = () => {
-  const countryData = {};
-  map.forEach((obj) => {
-    countryData[obj.code] = obj.value;
-  });
-  return countryData;
-};
 
-const handleshow2 = (e, el, code) => {
-  el.html(el.html() + ` <br> Statics: ${getdata(code)}`);
+// Function to format map data for VectorMap
+const formatMapData = (data) => {
+  const formattedData = {};
+  initialMapData.forEach((region) => {
+    // Map API data to map region codes
+    const apiKey = Object.keys(apiToMapCode).find(
+      (key) => apiToMapCode[key] === region.code
+    );
+    formattedData[region.code] = Number(data[apiKey]) || 0;
+  });
+  console.log("Formatted Map Data:", formattedData); // Log formatted data
+  return formattedData;
 };
 
 const IndiaMap = () => {
-  const mapRendered = useRef(false); // Track if the map has already been initialized
-  
+  const [mapData, setMapData] = useState(formatMapData({})); // Initialize with default values
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    if (!mapRendered.current) {
-      mapRendered.current = true;
-    }
+    const fetchLeadsPerState = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/leads-per-state/");
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("Received non-JSON response from API");
+        }
+
+        const data = await response.json();
+        console.log("Fetched Data:", data);
+        setMapData(formatMapData(data)); // Format and set fetched data
+      } catch (error) {
+        console.error("Error fetching leads per state:", error);
+        setMapData(formatMapData({})); // Use default data if error occurs
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLeadsPerState();
   }, []);
-  
-  if (mapRendered.current) {
-    return null; // Prevent re-rendering
+
+  const handleshow2 = (e, el, code) => {
+    el.html(`${el.html()} <br> Leads: ${mapData[code] || 0}`);
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
-  
+
   return (
     <div>
       <h1
@@ -56,12 +149,12 @@ const IndiaMap = () => {
           padding: "1vw",
         }}
       >
-        Students Active Across India
+        Leads Across India
       </h1>
       <VectorMap
         map={"in_mill"}
         backgroundColor="transparent"
-       
+        style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
         focusOn={{
           x: 0.5,
           y: 0.5,
@@ -89,15 +182,15 @@ const IndiaMap = () => {
             cursor: "pointer",
           },
           selected: {
-            fill: "#2938bc", // onClick color of state
+            fill: "#2938bc",
           },
         }}
         regionsSelectable={false}
         series={{
           regions: [
             {
-              values: getalldata(),
-              scale: ["#6e2e6a", "#202671"],
+              values: mapData,
+              scale: ["#ffd6fc", "#6e2e6a"],
               normalizeFunction: "polynomial",
             },
           ],

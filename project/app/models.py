@@ -85,8 +85,8 @@ class Lead(BaseModel):
         default='Enquiry'
     )
     notes = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField()
+    updated_at = models.DateTimeField()
 
     def __str__(self):
         return f"Lead: {self.first_name} {self.last_name}"
