@@ -188,3 +188,44 @@ class StudentsPerCourseView(APIView):
         data = {entry['course__name']: entry['count'] for entry in course_counts}
         
         return Response(data, status=status.HTTP_200_OK)
+    
+
+
+
+
+
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Student
+
+from calendar import month_name
+
+class MonthlyActiveStudentsView(APIView):
+    def get(self, request):
+        monthly_data = (
+            Student.objects.filter(enrollment_status='active')
+            .annotate(month=TruncMonth("created_at"))
+            .values("month")
+            .annotate(count=Count("id"))
+            .order_by("month")
+        )
+
+        # Create a full list of months with zero counts
+        counts_dict = {i: 0 for i in range(1, 13)}  # Months 1-12
+
+        for data in monthly_data:
+            month_index = data["month"].month  # Get the month number
+            counts_dict[month_index] = data["count"]
+
+        response_data = {
+            "labels": [month_name[i] for i in range(1, 13)],  # Month names
+            "counts": [counts_dict[i] for i in range(1, 13)],  # Counts for all months
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
+
+
