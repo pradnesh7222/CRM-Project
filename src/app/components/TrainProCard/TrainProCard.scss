@@ -47,7 +47,7 @@
         
         .TrainProCard_Btn{
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             width: 100%;
             margin-top: 1vw;
         }
@@ -55,7 +55,7 @@
             background-color: #007bff;
             color: white;
             border: none;
-            padding: 0.7vw 1.4vw;
+            padding: 0.7vw 1vw;
             border-radius: 0.35vw;
             cursor: pointer;
             transition: background-color 0.3s ease;

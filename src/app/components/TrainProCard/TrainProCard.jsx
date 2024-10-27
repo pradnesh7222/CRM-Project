@@ -1,11 +1,9 @@
 import React from 'react'
 import './TrainProCard.scss'
-
-
+// import { useLocation } from 'react-router-dom';
 
 
 const TrainProCard = ({img, title, description, duration, fee, instructor,redirect}) => {
-
 
 
   return (
@@ -20,7 +18,7 @@ const TrainProCard = ({img, title, description, duration, fee, instructor,redire
 
              <div className="TrainProCard_Btn">
            <a href={redirect} target='_blank'> <button>View Details</button></a>
-            {/* <button>Enroll Now</button> */}
+            <button >Enroll Now</button>
              </div>
         </div>
 

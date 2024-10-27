@@ -7,13 +7,14 @@ import IndiaMap from '../IndiaMap/IndiaMap';
 import HomeGraph from '../HomeGraph/HomeGraph';
 import HomePieChart from '../HomePieChart/HomePieChart';
 import HomeLineGraph from '../HomeLineGraph/HomeLineGraph';
+import Dashboard from '../../Pages/Dashboard/Dashboard';
+import Student from '../../components/StudentTable/StudentTable'
 
 
 const Home = () => {
-    // State to hold API data
     const [data, setData] = useState({
         totalLeads: 0,
-        conversionRate: '0%',
+        conversionRate:'0%',
         activeStudents: 0,
         placedStudents: 0,
         totalStudentsActiveTillDate:0,
@@ -55,23 +56,28 @@ const Home = () => {
                         <HomeCard
                             title="Total Leads"
                             value={data.totalLeads}
+                            redirectUrl="/Dashboard"
                         />
                         <HomeCard
                             title="Conversion Rate"
-                            value={data.conversionRate + "%"}
-                            style={{ backgroundColor: '#262c7e67' }}
+                            // value={data.conversionRate + "%"}
+                            value= {`${data.conversionRate}%`}
+                            redirectUrl=""
                         />
                         <HomeCard
                             title="Active Students"
                             value={data.activeStudents}
+                            redirectUrl="/Student"
                         />
                         <HomeCard
                             title="Placed Students"
                             value={data.placedStudents}
+                            redirectUrl=""
                         />
                          <HomeCard
                             title="Total Student Active till date"
                             value={data.totalStudentsActiveTillDate}
+                            redirectUrl=""
                         />
                     </div>
 
@@ -88,6 +94,7 @@ const Home = () => {
                     <div className="home_right_graphCont">
                         <div className="home_right_graphCont_left">
                         <HomePieChart/>
+
                         </div>
                         <div className="home_right_graphCont_right">
                         <HomeLineGraph/>

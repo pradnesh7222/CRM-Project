@@ -11,10 +11,12 @@ import Mean_stack from "../../Assets/CourseImg/MEAN stack.jpg";
 import Data_science from "../../Assets/CourseImg/Data Science.jpg";
 import Business_analyst from "../../Assets/CourseImg/Business_analytics.jpg";
 import { useNavigate } from "react-router-dom";
+import AddCourse from "../AddCourse/AddCourse";
 
 const Courses = () => {
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState("");
+
 
     const fetchCourses = async () => {
         try {
@@ -43,7 +45,7 @@ const Courses = () => {
       </div>
       <div className="Courses">
       <div className="Courses_header">
-      <button onClick={() => navigate("/CourseForm")}>+ Add Course</button> 
+      <button onClick={() => navigate("/AddCourse")}>+ Add Course</button> 
             <div className="search-btn">
               <input
                 type="search"

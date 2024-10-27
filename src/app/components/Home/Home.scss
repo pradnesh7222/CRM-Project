@@ -1,7 +1,7 @@
 .home {
     width: 100%;
     display: flex;
-    padding-top: 3.5vw;
+    padding-top: 4.5vw;
     
 
     &_left {
@@ -47,7 +47,6 @@
         width: 40%;
         height: 95%;
         border-radius: 10px;
-        // padding: 1vw;
         box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
         margin: 1vw 0 0 1vw;
         background-color: white;
@@ -61,12 +60,16 @@
         align-items: center;
         justify-content: center;
 
-        // height: 20%;
 
         &_left{
             width: 50%;
             box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
             border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            padding: 2vw 2vw; 
+            border-radius: 10px;
+            margin: 1vw 0 0 0;
 
         }
 

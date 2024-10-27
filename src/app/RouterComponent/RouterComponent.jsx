@@ -17,6 +17,8 @@ import IndiaMap from "../components/IndiaMap/IndiaMap";
 import HomeGraph from "../components/HomeGraph/HomeGraph";
 import HomePieChart from "../components/HomePieChart/HomePieChart";
 import HomeLineGraph from "../components/HomeLineGraph/HomeLineGraph";
+import AddCourse from "../Pages/AddCourse/AddCourse";
+import EnrolleTable from "../components/EnrolleTable/EnrolleTable";
 
 const RouterComponent = () => {
   return (
@@ -40,6 +42,8 @@ const RouterComponent = () => {
         <Route path="/HomeGraph" element={<HomeGraph />} />
         <Route path="/HomePieChart" element={<HomePieChart />} />
         <Route path="/HomeLineGraph" element={<HomeLineGraph />} />
+        <Route path="/AddCourse" element={<AddCourse />}/>
+        <Route path="/EnrolleTable" element={<EnrolleTable/>}/>
       </Routes>
     </BrowserRouter>
   );

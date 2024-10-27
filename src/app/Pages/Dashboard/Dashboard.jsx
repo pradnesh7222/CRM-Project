@@ -170,6 +170,7 @@ const Dashboard = () => {
               >
                 Previous
               </button>
+              <span> {currentPage} </span>
               <span style={{ padding: "5px" }}>{currentPage}</span>
               <button
                 onClick={() => paginate(currentPage + 1)}

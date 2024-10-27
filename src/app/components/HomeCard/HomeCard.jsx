@@ -1,9 +1,16 @@
 import React from 'react'
 import './HomeCard.scss'
 
-const HomeCard = (props) => {
+const HomeCard = (props,redirectUrl) => {
+
+
+  const handleRedirect = () => {
+    if (redirectUrl) {
+      window.location.href = redirectUrl; // Redirect to the specified URL
+    }
+  };
   return (
-    <div className='home-card'>
+    <div className='home-card' onClick={handleRedirect}>
       
         <h1>{props.title}</h1>
         <div className="card-content">
