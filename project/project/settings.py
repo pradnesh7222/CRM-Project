@@ -1,3 +1,4 @@
+
 """
 Django settings for project project.
 
@@ -88,9 +89,9 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'STUDENTCRM',  
+        'NAME': 'crm_sample1',  
         'USER': 'root',    
-        'PASSWORD': '1234',  
+        'PASSWORD': 'SV01@joshi',  
         'HOST': 'localhost',           
         'PORT': '3306',                
     }
@@ -169,3 +170,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
 }'''
+import os
+
+MEDIA_URL = '/media/'  # URL for accessing media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  

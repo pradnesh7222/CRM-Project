@@ -77,7 +77,7 @@ const Home = () => {
                          <HomeCard
                             title="Total Student Active till date"
                             value={data.totalStudentsActiveTillDate}
-                            redirectUrl=""
+                            redirectUrl="/StudentTable"
                         />
                     </div>
 

@@ -1,7 +1,17 @@
-// HomePieChart.scss
-// div {
-//     text-align: center;
-//     background-color: #f5f5f5;
-//     border-radius: 8px;
-//     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-// }
+.chart-row {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Adjust the space between heading and chart */
+    justify-content: center;
+}
+
+.chart-heading {
+    font-size: 18px;
+    font-weight: bold;
+    color: rgb(32, 38, 113);
+}
+
+.chart-wrapper {
+    width: 250px; /* Adjust width as needed */
+    height: auto;
+}

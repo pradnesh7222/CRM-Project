@@ -152,6 +152,7 @@ class RoleSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class CourseSerializer(serializers.ModelSerializer):
+    #Instructor=UsersSerializer()
     class Meta:
         model = Course
         fields = '__all__'
@@ -162,6 +163,8 @@ class CommunicationSerializer(serializers.ModelSerializer):
         fields = '__all__' 
 
 class EnrollmentSerializer(serializers.ModelSerializer):
+    student = StudentSerializer()  # Use nested serializer for student
+    course = CourseSerializer() 
     class Meta:
         model = Enrollment
         fields = '__all__'  

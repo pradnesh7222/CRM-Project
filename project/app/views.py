@@ -23,9 +23,20 @@ from django.http import JsonResponse
 from django.db.models import Count
 from django.db.models.functions import TruncMonth
 from rest_framework import status
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Student
+from rest_framework import serializers
+from calendar import month_name
 
- 
-
+from django.db.models import Count
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.shortcuts import get_object_or_404
 class UserRegistrationView(APIView):
     def post(self, request):
         serializer = RegistrationSerializer(data=request.data)
@@ -91,7 +102,7 @@ class conversion_rate(APIView):
         print(request.user)
         leads = Lead.objects.count()
         students = Student.objects.count()
-        conversion_rate = ( students/leads * 100) if students > 0 else 0
+        conversion_rate = ( leads/students * 100) if students > 0 else 0
 
         active_students_count = Student.objects.filter(enrollment_status='active').count()
         graduated_students_count = Student.objects.filter(enrollment_status='Graduated').count()
@@ -137,12 +148,6 @@ class EnrollmentViewSet(viewsets.ModelViewSet):
 
 
 
-# views.py
-
-
-# views.py
-# views.py
-# Ensure Lead is correctly imported
 
 def monthly_leads_count(request):
     monthly_data = (
@@ -159,25 +164,12 @@ def monthly_leads_count(request):
 
 
 
-# In your views.py
-
-# views.p
-
-
 class LeadsPerStateView(APIView):
     def get(self, request):
         leads_count = Lead.objects.values('states').annotate(count=Count('id')).order_by('states')
         data = {entry['states']: entry['count'] for entry in leads_count}
         return Response(data, status=status.HTTP_200_OK)
 
-
-
-
-
-from django.db.models import Count
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
 
 class StudentsPerCourseView(APIView):
     def get(self, request):
@@ -189,20 +181,6 @@ class StudentsPerCourseView(APIView):
         
         return Response(data, status=status.HTTP_200_OK)
     
-
-
-
-
-
-from django.db.models import Count
-from django.db.models.functions import TruncMonth
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from .models import Student
-
-from calendar import month_name
-
 class MonthlyActiveStudentsView(APIView):
     def get(self, request):
         monthly_data = (
@@ -228,4 +206,40 @@ class MonthlyActiveStudentsView(APIView):
         return Response(response_data, status=status.HTTP_200_OK)
 
 
+class EnrollStudentView(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def post(self, request):
+        # Get course ID and student ID from request data
+        print("Request Data:", request.data)
+
+        course_id = request.data.get('course')
+        student_id = request.data.get('student')
+
+    # Ensure the course exists
+        course = get_object_or_404(Course, id=course_id)
+
+    # Debugging statements
+        print("Logged-in User:", request.user)
+        print("Requested Student ID:", student_id)
+
+    # Check for Students associated with the logged-in User
+        associated_students = Student.objects.filter(user=request.user)
+        print("Associated Students:", list(associated_students))
+        student = get_object_or_404(Student, id=student_id)
+        print(student)
+        # Create the enrollment
+        enrollment = Enrollment.objects.create(
+            student=student,
+            course=course,
+            status='enrolled',  # Automatically set the status to 'enrolled'
+        )
+
+        # Return a success response
+        return Response({
+            'enrollment_id': enrollment.enrollment_id,
+            'student': str(enrollment.student),
+            'course': str(enrollment.course),
+            'status': enrollment.status,
+            'enrollment_date': enrollment.enrollment_date
+        }, status=status.HTTP_201_CREATED)

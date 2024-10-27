@@ -1,36 +1,70 @@
 // HomePieChart.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './HomePieChart.scss';
 import { Chart as Chartjs, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
-
+import axios from 'axios';
 
 Chartjs.register(ArcElement, Tooltip, Legend);
 
 const HomePieChart = () => {
-    const data = {
-        labels: ['One', 'Two', 'Three'],
-        datasets: [
-            {
-                data: [10, 20, 30],
-                backgroundColor: ['red', 'green', 'blue'],
-                label: 'My First Dataset',
-            },
-        ],
-    };
+    const [chartData, setChartData] = useState(null);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://127.0.0.1:8000/api/students-per-course/');
+                console.log('API response:', response.data);
+
+                if (response.data && typeof response.data === 'object') {
+                    const labels = Object.keys(response.data);
+                    const dataValues = Object.values(response.data);
+
+                    setChartData({
+                        labels,
+                        datasets: [
+                            {
+                                data: dataValues,
+                                backgroundColor: ['red', 'green', 'blue'],
+                                label: 'Students Per Course',
+                            },
+                        ],
+                    });
+                } else {
+                    console.error("Unexpected data format:", response.data);
+                    setError("Unexpected data format");
+                }
+            } catch (err) {
+                console.error("Error fetching data:", err);
+                setError("Failed to load data. Please try again.");
+            }
+        };
+
+        fetchData();
+    }, []);
 
     const options = {
         responsive: true,
         plugins: {
             legend: {
-                display: false, // Corrected legend option
+                display: false,
             },
         },
     };
 
     return (
-        <div style={{ padding: '2px', width: '40%' }}>
-            <Pie data={data} options={options} />
+        <div className="chart-row">
+            <h2 className="chart-heading">Students Per Course</h2>
+            {error ? (
+                <p>{error}</p>
+            ) : chartData ? (
+                <div className="chart-wrapper">
+                    <Pie data={chartData} options={options} />
+                </div>
+            ) : (
+                <p>Loading chart data...</p>
+            )}
         </div>
     );
 };

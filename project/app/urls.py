@@ -1,11 +1,12 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import  CommunicationViewSet, Convert_lead_to_student, CourseViewSet, EnrollmentViewSet, LogoutView, UserLoginView, UserRegistrationView, conversion_rate
+from .views import  CommunicationViewSet, Convert_lead_to_student, CourseViewSet, EnrollStudentView, EnrollmentViewSet, LogoutView, UserLoginView, UserRegistrationView, conversion_rate
 from .views import UsersViewSet, LeadViewSet, StudentViewSet, RolesViewSet
 from .views import monthly_leads_count
 from .views import LeadsPerStateView,StudentsPerCourseView,MonthlyActiveStudentsView
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 
@@ -27,8 +28,11 @@ urlpatterns = [
     path('api/leads-per-state/', LeadsPerStateView.as_view(), name='leads-per-state'),
     path('api/students-per-course/', StudentsPerCourseView.as_view(), name='students-per-course'),
     path('api/active-students-per-month/', MonthlyActiveStudentsView.as_view(), name='monthly_active_students'),
+    path('enroll/', EnrollStudentView.as_view(), name='enroll-student'),
 ]
 
 
 
 urlpatterns += router.urls
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -63,7 +63,7 @@ class Users(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.user} "
+        return f"{self.user.first_name} "
 
 
 class Lead(BaseModel):
@@ -97,7 +97,7 @@ class Student(BaseModel):
     last_name = models.CharField(max_length=100)
     email = models.EmailField(unique=True) 
     phone_number = models.CharField(max_length=10)
-    user = models.ForeignKey(Users, on_delete=models.CASCADE)  
+    user = models.OneToOneField(User, on_delete=models.CASCADE)   
     date_of_birth = models.DateField()
     address = models.TextField()
     enrollment_status = models.CharField(
@@ -142,7 +142,7 @@ class Course(models.Model):
     Instructor=models.ForeignKey(Users,on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    image=models.ImageField(upload_to='courses/',null=True)
     def __str__(self):
         return f"{self.name}"
 class Enrollment(models.Model):
