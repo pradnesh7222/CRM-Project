@@ -16,32 +16,30 @@
     gap: 1vw;
     padding-top: 2vh;
 
-
     .link1 {
       padding-block: 10px;
       border-radius: 5px;
       width: 100%;
       text-align: center;
-      transition: background-color 0.3s ease;
+      font-weight: 700;
+      color: #6e2e6a;
+      text-decoration: none;
 
-    
       &:hover {
         background-color: #6e2e6a;
         color: white;
+
+        a {
+          color: white;
+        }
       }
     }
 
     a {
       width: 100%;
       display: block;
+      color: inherit; // Inherit color from .link1
       text-decoration: none;
-      color: #6e2e6a;
-      font-weight: 700;
-
-      &:hover{
-        color: white;
-        background-color: #6e2e6a;
-      }
-}
+    }
   }
 }
