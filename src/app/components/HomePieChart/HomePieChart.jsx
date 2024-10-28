@@ -26,7 +26,7 @@ const HomePieChart = () => {
                         datasets: [
                             {
                                 data: dataValues,
-                                backgroundColor: ['red', 'green', 'blue'],
+                                backgroundColor: ['pink', 'purple', 'blue'],
                                 label: 'Students Per Course',
                             },
                         ],

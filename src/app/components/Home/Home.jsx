@@ -1,3 +1,4 @@
+// Home.js
 import React, { useState, useEffect, useRef } from 'react';
 import './Home.scss';
 import Navbar from '../navbar/NavBar';
@@ -7,19 +8,17 @@ import IndiaMap from '../IndiaMap/IndiaMap';
 import HomeGraph from '../HomeGraph/HomeGraph';
 import HomePieChart from '../HomePieChart/HomePieChart';
 import HomeLineGraph from '../HomeLineGraph/HomeLineGraph';
-import Dashboard from '../../Pages/Dashboard/Dashboard';
-import Student from '../../components/StudentTable/StudentTable'
-
 
 const Home = () => {
     const [data, setData] = useState({
         totalLeads: 0,
-        conversionRate:'0%',
+        conversionRate: '0%',
         activeStudents: 0,
-        placedStudents: 0,
-        total_students_active_till_date:0,
+        graduatedStudents: 0,
+        total_students_active_till_date: 0,
     });
     const hasFetchedData = useRef(false);
+
     useEffect(() => {
         if (!hasFetchedData.current) {
             const fetchData = async () => {
@@ -32,7 +31,7 @@ const Home = () => {
                         totalLeads: result.totalLeads || 0,
                         conversionRate: result.conversionRate || '0%',
                         activeStudents: result.activeStudents || 0,
-                        placedStudents: result.placedStudents || 0,
+                        graduatedStudents: result.graduatedStudents || 0,
                         total_students_active_till_date: result.total_students_active_till_date || 0,
                     });
                 } catch (error) {
@@ -43,7 +42,8 @@ const Home = () => {
             fetchData();
             hasFetchedData.current = true; // Mark as fetched
         }
-    }, []); 
+    }, []);
+
     return (
         <>
             <Navbar />
@@ -60,21 +60,22 @@ const Home = () => {
                         />
                         <HomeCard
                             title="Conversion Rate"
-                            // value={data.conversionRate + "%"}
-                            value= {`${data.conversionRate}%`}
-                            redirectUrl=""
+                            value={`${data.conversionRate}%`}
+                            redirectUrl="/StudentTable"
                         />
                         <HomeCard
                             title="Active Students"
                             value={data.activeStudents}
-                            redirectUrl="/Student"
+                            redirectUrl="/StudentTable"
+                            filter={{ enrollment_status: 'Active' }} // Add filter for active students
                         />
                         <HomeCard
                             title="Placed Students"
-                            value={data.placedStudents}
-                            redirectUrl=""
+                            value={data.graduatedStudents}
+                            redirectUrl="/StudentTable"
+                            filter={{ enrollment_status: 'Graduated' }} // Add filter for graduated students
                         />
-                         <HomeCard
+                        <HomeCard
                             title="Total Student Active till date"
                             value={data.total_students_active_till_date}
                             redirectUrl="/StudentTable"
@@ -82,27 +83,22 @@ const Home = () => {
                     </div>
 
                     <div className="home_right_graphsCont">
-                       
                         <div className="home_right_graphsCont_left">
-                         <HomeGraph/>
+                            <HomeGraph />
                         </div>
                         <div className="home_right_graphsCont_right">
-                            <IndiaMap/>
+                            <IndiaMap />
                         </div>
                     </div>
-                    
+
                     <div className="home_right_graphCont">
                         <div className="home_right_graphCont_left">
-                        <HomePieChart/>
-
+                            <HomePieChart />
                         </div>
                         <div className="home_right_graphCont_right">
-                        <HomeLineGraph/>
+                            <HomeLineGraph />
                         </div>
-                       
                     </div>
-
-                    
                 </div>
             </div>
         </>

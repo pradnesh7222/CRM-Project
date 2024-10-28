@@ -112,7 +112,7 @@ class conversion_rate(APIView):
         print(request.user)
         leads = Lead.objects.count()
         students = Student.objects.count()
-        conversion_rate = round((leads / students * 100), 2) if students > 0 else 0
+        conversion_rate = round(( students/leads  * 100), 2) if students > 0 else 0
 
 
         active_students_count = Student.objects.filter(enrollment_status='active').count()
@@ -254,3 +254,15 @@ class EnrollStudentView(APIView):
             'status': enrollment.status,
             'enrollment_date': enrollment.enrollment_date
         }, status=status.HTTP_201_CREATED)
+    
+class ActiveStudents(APIView):
+    def get(self, request):
+        students = Student.objects.filter(enrollment_status="Active")
+        serializer = StudentSerializer(students, many=True)
+        return Response({"students": serializer.data}, status=status.HTTP_200_OK)
+
+class PlacedStudents(APIView):
+    def get(self, request):
+        students = Student.objects.filter(enrollment_status="Graduated")
+        serializer = StudentSerializer(students, many=True)
+        return Response({"students": serializer.data}, status=status.HTTP_200_OK)
