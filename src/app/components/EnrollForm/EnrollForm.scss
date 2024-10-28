@@ -1,0 +1,138 @@
+.mainCont{
+    width: 100%;
+     display: flex;
+     justify-content: space-between;
+     position: relative;
+     padding-top: 4.8vw;
+   }
+   
+   .table-container {
+       width: 85%;
+       padding: 1.5vw 1vw;
+       border-radius: 10px;
+   }
+   
+   .sidebarCont{
+     width: 15%;
+     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+     padding-top: 41.5vw;
+     
+   }
+   
+   .student-table-header {
+     display: flex;
+     justify-content: space-between;
+     margin-bottom: 1.5rem;
+   
+     .search-input {
+       width: 20%;
+       padding: .7vw;
+       
+       border: 1.5px solid #6e2e6a;
+       border-radius: 10px;
+   
+       input{
+         border: none;
+       }
+     }
+   
+     .add-btn {
+       padding: 0.5rem 1rem;
+       background-color: #6e2e6a;
+       color: white;
+       border: none;
+       border-radius: 10px;
+       font-weight: 500;
+       cursor: pointer;
+   
+       &:hover {
+         background-color: #552352;
+       }
+     }
+   }
+   
+   .student-table {
+     width: 100%;
+     overflow-x: auto; 
+     border-radius: 10px;
+     border: 1px solid #ccc;
+     table {
+       width: 100%;
+       border-collapse: collapse;
+   
+       th,
+       td {
+         border: 1px solid #ccc;
+         padding: 0.8rem;
+         text-align: center;
+         white-space: nowrap; 
+         color: rgba(0, 0, 0, 0.662);
+         font-size: 1vw;
+   
+       }
+   
+       th {
+         background-color: #f2f2f2;
+         font-weight: bold;
+       }
+   
+       tbody {
+         tr {
+           td {
+             button {
+               background-color: transparent;
+               border: none;
+               cursor: pointer;
+               padding: 0.5rem;
+               font-size: 1.2rem;
+                width: 20%;
+               &.edit-btn {
+                 color: #552352;
+               }
+   
+               &.delete-btn {
+                 color: #552352;
+               }
+   
+               &:hover {
+                 opacity: 0.7;
+               }
+             }
+           }
+         }
+       }
+     }
+   }
+   
+   .pagination {
+     display: flex;
+     justify-content: center;
+     margin-top: 1rem;
+   
+     .pagination-btn {
+       background-color: #6e2e6a;
+     
+       color: white;
+       border: none;
+       padding: 10px 20px;
+       margin-bottom: 10px;
+       font-size: 16px;
+       cursor: pointer;
+       border-radius: 10px;
+   
+       &[disabled] {
+         background-color: #ccc;
+         cursor: not-allowed;
+       }
+   
+       &:hover {
+         background-color: #6e2e6a;
+         
+       }
+     }
+     span {
+       padding: 0.5rem 1rem;
+     }
+     }
+   
+   

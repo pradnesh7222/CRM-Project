@@ -17,7 +17,7 @@ const Home = () => {
         conversionRate:'0%',
         activeStudents: 0,
         placedStudents: 0,
-        totalStudentsActiveTillDate:0,
+        total_students_active_till_date:0,
     });
     const hasFetchedData = useRef(false);
     useEffect(() => {
@@ -33,7 +33,7 @@ const Home = () => {
                         conversionRate: result.conversionRate || '0%',
                         activeStudents: result.activeStudents || 0,
                         placedStudents: result.placedStudents || 0,
-                        totalStudentsActiveTillDate: result.totalStudentsActiveTillDate || 0,
+                        total_students_active_till_date: result.total_students_active_till_date || 0,
                     });
                 } catch (error) {
                     console.error('Error fetching data:', error);
@@ -76,7 +76,7 @@ const Home = () => {
                         />
                          <HomeCard
                             title="Total Student Active till date"
-                            value={data.totalStudentsActiveTillDate}
+                            value={data.total_students_active_till_date}
                             redirectUrl="/StudentTable"
                         />
                     </div>

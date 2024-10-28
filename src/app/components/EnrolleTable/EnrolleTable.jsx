@@ -52,7 +52,7 @@ const EnrolleTable = ({ handleEdit, handleDelete }) => {
             <thead>
               <tr>
                 <th id="srNo">Sr No.</th>
-                <th id="student">Student Name</th>
+                <th id="student">Student</th>
                 <th id="course">Course</th>
                 <th id="enrollment_date">Enrollment Date</th>
                 <th id="status">Status</th>
@@ -63,8 +63,8 @@ const EnrolleTable = ({ handleEdit, handleDelete }) => {
                 paginatedStudents.map((item, index) => (
                   <tr key={item.id}>
                     <td>{index + 1 + (currentPage - 1) * itemsPerPage}</td>
-                    <td>{item.student.first_name}</td>  {/* Access student name */}
-                    <td>{item.course.name}</td> 
+                    <td>{item.student}</td>  {/* Access student name */}
+                    <td>{item.course}</td> 
                     <td>{item.enrollment_date}</td>
                     <td>{item.status}</td>
                   </tr>

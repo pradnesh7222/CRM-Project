@@ -50,6 +50,7 @@ const StudentForm = ({ isVisible, setIsVisible, student }) => {
         courses: student.courses || "",
         notes: student.notes || "",
         lead_id: student?.lead_id|| "",
+        user: student?.user|| "",
       });
     }
   }, [student]);
@@ -270,10 +271,20 @@ const StudentForm = ({ isVisible, setIsVisible, student }) => {
                   onChange={handleInputChange}
                 />
 
+                  <label htmlFor="user">user</label>
+                <input
+                  type="text"
+                  id="user"
+                  name="user"
+                  placeholder="Enter your user ID"
+                  value={formData.user}
+                  onChange={handleInputChange}
+                />
+
                 
               </div>
             </div>
-            <button type="submit">{student ? "Update" : "Submit"}</button>
+            <button onClick={() => navigate("/StudentTable")} type="submit">{student ? "Update" : "Submit"} </button>
           </form>
         </div>
       </div>

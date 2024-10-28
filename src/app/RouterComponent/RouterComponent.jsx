@@ -19,7 +19,7 @@ import HomePieChart from "../components/HomePieChart/HomePieChart";
 import HomeLineGraph from "../components/HomeLineGraph/HomeLineGraph";
 import AddCourse from "../Pages/AddCourse/AddCourse";
 import EnrolleTable from "../components/EnrolleTable/EnrolleTable";
-
+import EnrollForm from "../components/EnrollForm/EnrollForm";
 const RouterComponent = () => {
   return (
     <BrowserRouter>
@@ -44,6 +44,7 @@ const RouterComponent = () => {
         <Route path="/HomeLineGraph" element={<HomeLineGraph />} />
         <Route path="/AddCourse" element={<AddCourse />}/>
         <Route path="/EnrolleTable" element={<EnrolleTable/>}/>
+        <Route path="/EnrollForm" element={<EnrollForm/>}/>
       </Routes>
     </BrowserRouter>
   );

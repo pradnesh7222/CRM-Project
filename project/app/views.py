@@ -65,25 +65,35 @@ class UsersViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UsersSerializer
 
 class LeadViewSet(viewsets.ModelViewSet):
-    queryset = Lead.objects.all()
+    queryset = Lead.objects.filter(is_deleted=False) 
     serializer_class = LeadSerializer
-    filter_backends = [filters.SearchFilter]  
+    filter_backends = [filters.SearchFilter]
     search_fields = ['first_name', 'last_name', 'email', 'status']
 
-
     def get_queryset(self):
-        queryset = Lead.objects.all()
+        queryset = Lead.objects.filter(is_deleted=False)
         status = self.request.query_params.get('status', None)
         if status:
             queryset = queryset.filter(status=status)
         return queryset
 
+    def destroy(self, request, *args, **kwargs):  # Change 'args' to '*args'
+        lead = self.get_object()  # Retrieve the lead object
+        lead.is_deleted = True  # Mark as deleted
+        lead.save()  # Save the changes
+        return Response(status=status.HTTP_200_OK)  # Return success status
 
 class StudentViewSet(viewsets.ModelViewSet):
-    queryset = Student.objects.all()
+    queryset = Student.objects.filter(deleted=False)
     serializer_class = StudentSerializer
-    filter_backends = [filters.SearchFilter]  
+    filter_backends = [filters.SearchFilter]
     search_fields = ['first_name', 'last_name', 'email', 'enrollment_status']
+
+    def destroy(self, request, *args, **kwargs):
+        student = self.get_object()
+        student.deleted = True
+        student.save()
+        return Response( status=status.HTTP_200_OK)
 
 class RolesViewSet(viewsets.ModelViewSet):
     queryset = Roles.objects.all()
@@ -102,7 +112,8 @@ class conversion_rate(APIView):
         print(request.user)
         leads = Lead.objects.count()
         students = Student.objects.count()
-        conversion_rate = ( leads/students * 100) if students > 0 else 0
+        conversion_rate = round((leads / students * 100), 2) if students > 0 else 0
+
 
         active_students_count = Student.objects.filter(enrollment_status='active').count()
         graduated_students_count = Student.objects.filter(enrollment_status='Graduated').count()

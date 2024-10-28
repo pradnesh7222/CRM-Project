@@ -85,6 +85,7 @@ class Lead(BaseModel):
         default='Enquiry'
     )
     notes = models.TextField()
+    is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -97,7 +98,7 @@ class Student(BaseModel):
     last_name = models.CharField(max_length=100)
     email = models.EmailField(unique=True) 
     phone_number = models.CharField(max_length=10)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)   
+    user = models.ForeignKey(User, on_delete=models.CASCADE)   
     date_of_birth = models.DateField()
     address = models.TextField()
     enrollment_status = models.CharField(
@@ -112,7 +113,15 @@ class Student(BaseModel):
     lead_id=models.ForeignKey(Lead,on_delete=models.CASCADE,null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    courses = models.ForeignKey('Course',on_delete=models.CASCADE ) 
+    courses = models.ForeignKey('Course',on_delete=models.CASCADE )
+
+    deleted = models.BooleanField(default=False)  # Soft delete flag
+
+    def delete(self, args, *kwargs):
+        """Override delete method to perform a soft delete."""
+        self.deleted = True
+        self.save()
+
     def __str__(self):
         return f"Student: {self.first_name} {self.last_name}"
 

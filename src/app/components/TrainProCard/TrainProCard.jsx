@@ -1,7 +1,8 @@
 import React from 'react';
 import './TrainProCard.scss';
-
+import { useNavigate } from "react-router-dom";
 const TrainProCard = ({ img, title, description, duration, fee, instructor, redirect, courseId }) => {
+  const navigate = useNavigate();
   const handleEnroll = async () => {
     try {
       const response = await fetch('http://127.0.0.1:8000/enroll/', {
@@ -39,7 +40,7 @@ const TrainProCard = ({ img, title, description, duration, fee, instructor, redi
           <a href={redirect} target="_blank" rel="noopener noreferrer"> {/* Added rel for security */}
             <button>View Details</button>
           </a>
-          <button onClick={handleEnroll}>Enroll Now</button>
+          <button onClick={() => navigate("/EnrollForm")}>Enroll Now</button>
         </div>
       </div>
     </div>

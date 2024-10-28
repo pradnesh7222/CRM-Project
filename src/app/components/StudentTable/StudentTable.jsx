@@ -86,14 +86,16 @@ const StudentTable = () => {
       <div className="table-container">
         <div className="student-table-header">
         <button className="add-btn" onClick={() => navigate("/StudentForm")}>+ Add Student</button>
+          <div className="search-input">
           <input
             type="search"
             placeholder="Search Students"
             value={searchQuery}
             onChange={handleSearchChange}
-            className="search-input"
+            
           />
-          
+          <i className="ri-search-line"></i>
+          </div>
         </div>
         <div className="student-table">
           <table>

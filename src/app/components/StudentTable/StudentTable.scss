@@ -26,9 +26,14 @@
 
   .search-input {
     width: 20%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
+    padding: .7vw;
+    
+    border: 1.5px solid #6e2e6a;
     border-radius: 10px;
+
+    input{
+      border: none;
+    }
   }
 
   .add-btn {
@@ -36,7 +41,8 @@
     background-color: #6e2e6a;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 10px;
+    font-weight: 500;
     cursor: pointer;
 
     &:hover {
@@ -81,11 +87,11 @@
             font-size: 1.2rem;
 
             &.edit-btn {
-              color: #28a745;
+              color: #552352;
             }
 
             &.delete-btn {
-              color: #dc3545;
+              color: #552352;
             }
 
             &:hover {
@@ -104,25 +110,28 @@
   margin-top: 1rem;
 
   .pagination-btn {
-    padding: 0.5rem 1rem;
-    margin: 0 0.5rem;
-    border: none;
-    background-color: #007bff;
+    background-color: #6e2e6a;
+  
     color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    font-size: 16px;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 10px;
 
-    &:hover {
-      background-color: #0056b3;
-    }
-
-    &:disabled {
+    &[disabled] {
       background-color: #ccc;
       cursor: not-allowed;
     }
-  }
 
+    &:hover {
+      background-color: #6e2e6a;
+      
+    }
+  }
   span {
     padding: 0.5rem 1rem;
   }
-}
+  }
+
