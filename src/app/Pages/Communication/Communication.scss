@@ -1,0 +1,170 @@
+.com{
+ width: 100%;
+ display: flex;
+ padding-top:5vw;
+
+ &_left{
+    width: 25%;
+    // box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+    
+    .top{
+        display: flex;
+        justify-content: space-between;
+        padding: 1vw;
+    .ri-arrow-left-s-line{
+        width: 3vw;
+        color: black;
+      
+        // box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+     .ri-notification-fill{
+        width: 3vw;
+        color: rgba(0, 0, 0, 0.39);
+     }
+      
+    }
+    }
+
+    &_profile{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 1vw ;
+
+
+        &_dp{
+            width: 8vw;
+            height: 8vw;
+            border-radius: 50%;
+            // border: 1px solid black;
+
+            
+            img{
+            width: 8vw;
+            height: 8vw;
+            border-radius: 50%;
+            }
+
+
+        }
+
+        h1{
+           margin: 1vw;
+            font-size: 2vw;
+    
+        }
+
+            &_iconCont{
+              width: 50%;
+              display:flex;
+              justify-content:space-between;
+          
+
+              i{
+                font-size: 1.5vw;
+                color: #6e2e6a;
+                align-items: center;
+              }
+            }
+            button{
+                background-color: #6e2e6a;
+                    color: white;
+                padding: .5vw 1vw;
+                margin-top: .5vw;
+                font-weight: 500;
+                border: none;
+                border-radius: 10px;
+
+                &:hover{
+                    border: 1px solid #6e2e6a;
+                    background-color: white;
+                    color: black;
+                }
+            }
+
+
+            
+        
+      
+    }
+
+    &_info{
+        margin-top: 1vw 0 0 1vw;
+        border-radius: 10px;
+        // box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+
+        h3{
+            margin-top: 1vw;
+            padding-left: .5vw;
+        }
+
+        .bind{
+            margin: .7vw;
+        label{
+            color: rgba(0, 0, 0, 0.36);
+            font-weight: 500;
+           
+        }
+        h4{
+            color: rgba(0, 0, 0, 0.686);
+        }
+    }
+    }
+
+ }
+
+ &_right{
+    width: 75%;
+    // height: 100vh;
+    background-color: aliceblue;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+
+   &_up{
+    width: 99%;
+    height: 55%;
+    display: flex;
+    justify-content: space-between;
+
+    &_action{
+        width: 60%;
+        background-color: whitesmoke;
+        border-radius: 10px;
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+
+        button{
+            background-color: #6e2e6a;
+            color: white;
+            padding: .5vw;
+            margin-bottom:1vw;
+        }
+    }
+
+    &_reminder{
+        width: 39%;
+        // padding: 0 3vw;
+        // height: 59%;
+        background-color: whitesmoke;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+
+    }
+}
+
+   
+    &_history{
+        width: 99%;
+        height: 44%;
+        background-color: whitesmoke;
+        border-radius: 10px;
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+    }
+
+ }
+
+}
