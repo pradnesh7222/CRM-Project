@@ -130,20 +130,40 @@ class Communication(models.Model):
         ('email', 'Email'),
         ('call', 'Call'),
         ('sms', 'SMS'),
-        # Add other communication types as needed
     ]
 
-    id = models.AutoField(primary_key=True)
-    lead = models.ForeignKey(Lead, on_delete=models.CASCADE, related_name='communications')
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='communications')
+    lead = models.ForeignKey('Lead', on_delete=models.CASCADE, related_name='communications', null=True, blank=True)
+    student = models.ForeignKey('Student', on_delete=models.CASCADE, related_name='communications', null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='communications')
     communication_type = models.CharField(max_length=10, choices=COMMUNICATION_TYPES)
-    content = models.TextField()
-    communication_date = models.DateTimeField(auto_now_add=True)  # Set to now when created
-    status = models.CharField(max_length=20)  # You can define choices here if needed
+    content = models.TextField(null=True,blank=True)
+    communication_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20)
 
     def __str__(self):
-        return f"{self.communication_type} - {self.content[:20]}..." 
+        return f"{self.communication_type} - {self.content[:20]}..."
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        
+        CommunicationHistory.objects.create(
+            communication=self,
+            communication_type=self.communication_type,
+            content=self.content,
+            status=self.status,
+            communication_date=self.communication_date
+        )
+
+class CommunicationHistory(models.Model):
+    communication = models.ForeignKey(Communication, on_delete=models.CASCADE, related_name='history')
+    communication_type = models.CharField(max_length=10, choices=Communication.COMMUNICATION_TYPES)
+    content = models.TextField()
+    communication_date = models.DateTimeField()
+    status = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f"History: {self.communication_type} - {self.content[:20]}..."
+     
 class Course(models.Model):
     name=models.CharField(max_length=100)
     description=models.TextField()

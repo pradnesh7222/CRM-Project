@@ -20,6 +20,7 @@ import HomeLineGraph from "../components/HomeLineGraph/HomeLineGraph";
 import AddCourse from "../Pages/AddCourse/AddCourse";
 import EnrolleTable from "../components/EnrolleTable/EnrolleTable";
 import EnrollForm from "../components/EnrollForm/EnrollForm";
+import Communication from "../Pages/Communication/Communication";
 const RouterComponent = () => {
   return (
     <BrowserRouter>
@@ -45,6 +46,7 @@ const RouterComponent = () => {
         <Route path="/AddCourse" element={<AddCourse />}/>
         <Route path="/EnrolleTable" element={<EnrolleTable/>}/>
         <Route path="/EnrollForm" element={<EnrollForm/>}/>
+        <Route path="/Communication" element={<Communication/>}/>
       </Routes>
     </BrowserRouter>
   );

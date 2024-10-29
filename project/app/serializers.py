@@ -17,7 +17,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
-from .models import Communication, Course, Enrollment, Roles, Users, Lead, Student
+from .models import Communication, CommunicationHistory, Course, Enrollment, Roles, Users, Lead, Student
 
 from rest_framework import serializers
 from django.contrib.auth.forms import PasswordResetForm
@@ -163,8 +163,13 @@ class CommunicationSerializer(serializers.ModelSerializer):
         fields = '__all__' 
 
 class EnrollmentSerializer(serializers.ModelSerializer):
-    student = StudentSerializer()  # Use nested serializer for student
-    course = CourseSerializer() 
+    #student = StudentSerializer()  # Use nested serializer for student
+    #course = CourseSerializer() 
     class Meta:
         model = Enrollment
         fields = '__all__'  
+
+class CommunicationHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CommunicationHistory
+        fields = '__all__'

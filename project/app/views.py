@@ -5,8 +5,8 @@ from rest_framework import status
 from rest_framework import generics
 from app.serializers import LoginSerializer, RegistrationSerializer
 from rest_framework import viewsets
-from .models import   Communication, Course, Enrollment, Lead, Roles, Student, Users
-from .serializers import  CommunicationSerializer, CourseSerializer, EnrollmentSerializer, LeadSerializer, RoleSerializer, StudentSerializer, UsersSerializer
+from .models import   Communication, CommunicationHistory, Course, Enrollment, Lead, Roles, Student, Users
+from .serializers import  CommunicationHistorySerializer, CommunicationSerializer, CourseSerializer, EnrollmentSerializer, LeadSerializer, RoleSerializer, StudentSerializer, UsersSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework import filters 
@@ -31,12 +31,16 @@ from rest_framework import status
 from .models import Student
 from rest_framework import serializers
 from calendar import month_name
-
+from datetime import timedelta
+from app.tasks import send_scheduled_email
 from django.db.models import Count
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from celery import shared_task
+from django.core.mail import send_mail
+from django.conf import settings
 class UserRegistrationView(APIView):
     def post(self, request):
         serializer = RegistrationSerializer(data=request.data)
@@ -67,8 +71,9 @@ class UsersViewSet(viewsets.ReadOnlyModelViewSet):
 class LeadViewSet(viewsets.ModelViewSet):
     queryset = Lead.objects.filter(is_deleted=False) 
     serializer_class = LeadSerializer
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['first_name', 'last_name', 'email', 'status']
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['first_name', 'last_name', 'email']
+    ordering_fields = ['first_name', 'email', 'created_at']
 
     def get_queryset(self):
         queryset = Lead.objects.filter(is_deleted=False)
@@ -86,9 +91,9 @@ class LeadViewSet(viewsets.ModelViewSet):
 class StudentViewSet(viewsets.ModelViewSet):
     queryset = Student.objects.filter(deleted=False)
     serializer_class = StudentSerializer
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['first_name', 'last_name', 'email', 'enrollment_status']
-
+    ordering_fields = ['first_name','last_name', 'email', 'created_at']
     def destroy(self, request, *args, **kwargs):
         student = self.get_object()
         student.deleted = True
@@ -100,10 +105,10 @@ class RolesViewSet(viewsets.ModelViewSet):
     serializer_class = RoleSerializer
 
 class CourseViewSet(viewsets.ModelViewSet):
-    print("1")
+    #print("1")
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-    print("2")
+    #print("2")
     #permission_classes = [RoleBasedPermission]
    
 
@@ -157,6 +162,9 @@ class EnrollmentViewSet(viewsets.ModelViewSet):
     queryset = Enrollment.objects.all()
     serializer_class = EnrollmentSerializer
 
+class CommunicationHistoryViewSet(viewsets.ModelViewSet):
+    queryset = CommunicationHistory.objects.all()
+    serializer_class = CommunicationHistorySerializer
 
 
 
@@ -266,3 +274,32 @@ class PlacedStudents(APIView):
         students = Student.objects.filter(enrollment_status="Graduated")
         serializer = StudentSerializer(students, many=True)
         return Response({"students": serializer.data}, status=status.HTTP_200_OK)
+@shared_task
+def send_scheduled_email(subject, message, recipient_list):
+    #print("This is send sheduled mail")
+    send_mail(
+        subject,
+        message,
+        settings.EMAIL_HOST_USER,
+        recipient_list,
+    )  
+class EmailSendViewSet(APIView):
+    
+    def post(self, request):
+        # Extract email details from the request data if needed
+        print(request.data)
+        subject = "Scheduled Email"
+        message = request.data.get("message")
+        recipient_list = request.data.get("recipient_list")
+        print(1)
+        send_scheduled_email.apply_async(
+            args=[subject, message, recipient_list],
+            countdown=60 # 600 seconds = 10 minutes
+        )
+
+        print("Email task scheduled.")
+        return Response({"detail": "Email scheduled successfully."}, status=status.HTTP_201_CREATED)
+
+
+
+    
