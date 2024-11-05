@@ -1,19 +1,31 @@
 .phone{
     width: 100%;
     margin: 1vw;
+    display: flex;
+    flex-direction: column;
 
     input{
-        padding: .8vw;
+        padding: .5vw;
         width: 80%;
         border-radius: 10px;
     }
 
+    h1{
+        font-size: 2vw;
+    }
+
+    span{
+        font-weight: 500;
+        margin: .5vw;
+    }
+
     button{
-        padding: .8vw;
+        width: 20%;
+        padding: .5vw;
         background-color: #08fc3594;
         color: black;
         border-radius: 10px;
-        margin: 1vw;
+        margin: 1vw 0;
         font-weight: 600;
         // border: none;
 
@@ -24,14 +36,6 @@
         }
     }
 
-    #endCall{
-        background-color: #fc08086d;
-
-        &:hover{
-            color: #6e2e6a;
-            background-color: white;
-
-        }
+   
     }
 
-}

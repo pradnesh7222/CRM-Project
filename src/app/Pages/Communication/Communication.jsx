@@ -28,7 +28,7 @@ const Communication = () => {
         </div>
           <div className="com_left_profile">
             <div className="com_left_profile_dp">
-                <img src={virat} alt="" />
+                <img src={virat} alt="DP.img" />
             </div>
             <h1>Virat Kohli</h1>
             <div className="com_left_profile_iconCont">

@@ -26,6 +26,10 @@ const StudentTable = () => {
     fetchStudents();
   }, [filter, searchQuery,orderField, orderDirection]);
 
+  useEffect(() => {
+    fetchStudents();
+  }, [filter, searchQuery]);
+
   const fetchStudents = async () => {
     try {
       // Construct the URL with both search and ordering parameters
@@ -106,6 +110,7 @@ const StudentTable = () => {
               <i className="ri-search-line"></i>
             </div>
             {/* Removed student type selection */}
+            {/ Removed student type selection /}
           </div>
           <div className="student-table">
             <table>
@@ -177,7 +182,6 @@ const StudentTable = () => {
               Next
             </button>
           </div>
-
           {isVisible && (
             <StudentForm
               isVisible={isVisible}
