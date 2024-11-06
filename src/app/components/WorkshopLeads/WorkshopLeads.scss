@@ -1,0 +1,70 @@
+
+.workshopLead{
+    width: 100%;
+    display: flex;
+  
+
+    &_left{
+        width: 15%;
+    }
+
+    &_right{
+        width: 84.5%;
+        // margin-top: 6vw;
+        padding-top: 6vw;
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            font-size: 16px;
+          
+            thead {
+              background-color: #f4f4f4;
+          
+              th {
+                padding: 12px;
+                font-weight: bold;
+              }
+            }
+          
+            tbody {
+              tr {
+                &:nth-child(even) {
+                  background-color: #f9f9f9;
+                }
+          
+                td {
+                  padding: 10px;
+                  border: 1px solid #ddd;
+                }
+          
+                .actions {
+                  display: flex;
+                  justify-content: center;
+                  gap: 8px;
+          
+                  button {
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    font-size: 18px;
+          
+                    &:hover {
+                      color: #007bff;
+                    }
+                  }
+          
+                  i {
+                    font-size: 18px;
+                  }
+                }
+              }
+            }
+          }
+    }
+}
+
+
+
+

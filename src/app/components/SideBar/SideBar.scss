@@ -5,25 +5,126 @@
   left: 0;
   padding-top: 5vw;
   width: 15%;
+  transition: width 0.3s ease;
+
+  &.collapsed {
+    width: 5%; // Smaller width when collapsed
+
+    // Hide text but keep icons visible
+    .link1 {
+      justify-content: center;
+
+      a, 
+      .dropbtn { 
+        display: none; // Hide text/buttons in collapsed state 
+      }
+
+      .ri-arrow-down-wide-line {
+        display: none; // Hide down arrow icon when collapsed
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    width: 5%;
+  }
 
   &_left {
     width: 100%;
     height: calc(100vh - 60px);
     display: flex;
     flex-direction: column;
-    justify-content: start;
-    align-items: start;
+    align-items: end;
     gap: 1vw;
     padding-top: 2vh;
+    transition: all 0.3s ease;
+
+    .ri-arrow-left-double-line {
+      font-size: 1.6vw;
+      margin-right: 5px;
+      color: #6e2e6a;
+      font-weight: 600;
+      padding: 5px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #6e2e6a;
+        color: white;
+        border-radius: 50%;
+      }
+    }
 
     .link1 {
-      padding-block: 10px;
+      display: flex;
+      align-items: center;
+      padding: 10px;
       border-radius: 5px;
       width: 100%;
       text-align: center;
       font-weight: 700;
       color: #6e2e6a;
       text-decoration: none;
+      transition: padding 0.3s ease;
+
+      .dropdown {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: column;
+        width: 100%; // Full width for consistent layout
+
+        .ri-customer-service-line,
+        .ri-customer-service-2-line {
+          margin-right: 1vw;
+        }
+
+        .ri-arrow-down-wide-line {
+          margin-left: 0.5vw;
+        }
+
+        button {
+          background-color: white;
+          border: none;
+          padding: 5px 10px;
+          font-size: 1.3vw;
+          color: #6e2e6a;
+          font-weight: bold;
+          cursor: pointer;
+        }
+
+        .dropdown-content {
+          width: 100%;
+          display: none;
+          margin-top: 0.5vw;
+          background-color: #f9f9f9;
+
+          &.active {
+            display: block;
+          }
+
+          a {
+            width: 100%;
+            padding: 0.5vw;
+            background-color: white;
+            color: #6e2e6a;
+            text-align: left;
+            display: block;
+            transition: background-color 0.3s ease;
+
+            &:hover {
+              background-color: #6e2e6a;
+              color: white;
+              box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset,
+                rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
+            }
+          }
+        }
+      }
+
+      i {
+        font-size: 1.6vw;
+        margin-left: 5px;
+      }
 
       &:hover {
         background-color: #6e2e6a;
@@ -32,7 +133,17 @@
         a {
           color: white;
         }
+
+        button {
+          color: white;
+          background-color: #6e2e6a;
+          transition: color 0.5s ease, background-color 0.5s ease;
+        }
       }
+    }
+
+    .sidebar.collapsed & .link1 a {
+      display: none;
     }
 
     a {
@@ -40,6 +151,7 @@
       display: block;
       color: inherit; // Inherit color from .link1
       text-decoration: none;
+      white-space: nowrap; // Prevents text wrapping
     }
   }
 }

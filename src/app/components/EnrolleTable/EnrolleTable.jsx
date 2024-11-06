@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import './EnrolleTable.scss';
 import Navbar from '../navbar/NavBar';
 import SideBar from '../SideBar/SideBar';
+import TablePagination from '@mui/material/TablePagination';
 
 const EnrolleTable = ({ handleEdit, handleDelete }) => {
-  const [enrolledStudent, setEnrolledStudent] = useState([]); // State to store enrolled students
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
-  const [totalPages, setTotalPages] = useState(0); // Initialize totalPages
+  const [enrolledStudent, setEnrolledStudent] = useState([]); 
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalCount, setTotalCount] = useState(0); 
 
   const fetchEnrolledStudents = async () => {
     try {
@@ -16,27 +17,30 @@ const EnrolleTable = ({ handleEdit, handleDelete }) => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      console.log("Fetched enrolled students:", data);
-      setEnrolledStudent(data.results); // Assuming the API response has a 'results' property
-      
-      // Set total pages using the total number of students from the API (if available)
-      setTotalPages(Math.ceil(data.count / itemsPerPage)); // Assuming data.count is total number of enrolled students
+      setEnrolledStudent(data.results);
+      setTotalCount(data.count); 
     } catch (error) {
       console.error("Error fetching enrolled students:", error);
     }
   };
 
   useEffect(() => {
-    fetchEnrolledStudents(); // Fetch students on component mount
-  }, []); // Empty dependency array to run only once
+    fetchEnrolledStudents();
+  }, []); 
 
-  const handlePageChange = (newPage) => {
-    if (newPage > 0 && newPage <= totalPages) {
-      setCurrentPage(newPage);
-    }
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
   };
 
-  const paginatedStudents = enrolledStudent.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const paginatedStudents = enrolledStudent.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   return (
     <>
@@ -56,39 +60,37 @@ const EnrolleTable = ({ handleEdit, handleDelete }) => {
                 <th id="course">Course</th>
                 <th id="enrollment_date">Enrollment Date</th>
                 <th id="status">Status</th>
+                <th id="actions">Actions</th>
               </tr>
             </thead>
             <tbody>
               {paginatedStudents.length > 0 ? (
                 paginatedStudents.map((item, index) => (
                   <tr key={item.id}>
-                    <td>{index + 1 + (currentPage - 1) * itemsPerPage}</td>
-                    <td>{item.student.first_name}</td>  {/* Access student name */}
-                    <td>{item.course.name}</td> 
+                    <td>{index + 1 + page * rowsPerPage}</td>
+                    <td>{item.student?.first_name}</td>
+                    <td>{item.course?.name}</td> 
                     <td>{item.enrollment_date}</td>
                     <td>{item.status}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5">No leads found</td>
+                  <td colSpan="6">No enrolled students found</td>
                 </tr>
               )}
             </tbody>
           </table>
+          
           <div className="pagination">
-            <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-              Prev
-            </button>
-            
-            {[...Array(totalPages)].map((_, index) => (
-              <button key={index} onClick={() => handlePageChange(index + 1)} className={currentPage === index + 1 ? 'active' : ''}>
-                {index + 1}
-              </button>
-            ))}
-            <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-              Next
-            </button>
+            <TablePagination
+              component="div"
+              count={totalCount}
+              page={page}
+              onPageChange={handleChangePage}
+              rowsPerPage={rowsPerPage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
           </div>
         </div>
       </div>
