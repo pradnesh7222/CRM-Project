@@ -129,7 +129,13 @@ const StudentForm = ({ isVisible, setIsVisible, student }) => {
         <div className="StudentForm_Cont">
         <i className="ri-arrow-left-fill" onClick={() => navigate("/StudentTable")}></i>
           <h1>{student ? "Edit Student" : "Student Form"}</h1>
-
+          {/* <button
+              id="closebtn"
+              type="button"
+              onClick={() => setIsVisible(!isVisible)}
+            >
+              <i className="ri-close-line"></i>
+            </button> */}
           <form onSubmit={handleSubmit}>
             <div className="form_Cont">
               <div className="form_Cont_col1">
@@ -176,6 +182,7 @@ const StudentForm = ({ isVisible, setIsVisible, student }) => {
                 <label htmlFor="enrollment_status">Enrollment Status</label>
                 <select
                   id="enrollment_status"
+                  type="text"
                   name="enrollment_status"
                   value={formData.enrollment_status}
                   onChange={handleInputChange}
@@ -208,6 +215,7 @@ const StudentForm = ({ isVisible, setIsVisible, student }) => {
 
                 <label htmlFor="courses">Courses</label>
                 <select
+                  type="courses"
                   id="courses"
                   name="courses"
                   value={formData.courses}
@@ -221,6 +229,7 @@ const StudentForm = ({ isVisible, setIsVisible, student }) => {
 
                 <label htmlFor="states">States</label>
                 <select
+                  // type="text"
                   id="states"
                   name="states"
                   value={formData.states}

@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./Dashboard.scss";
 import { Link } from "react-router-dom";
 import Navbar from "../../components/navbar/NavBar";
 import LeadForm from "../../components/LeadForm/LeadForm";
 import SideBar from "../../components/SideBar/SideBar";
+import { SidebarContext } from "../../../App";
 
 const Dashboard = () => {
+  const { activeSidebar, setActiveSidebar } = useContext(SidebarContext);
   const [leads, setLeads] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -80,10 +82,10 @@ const Dashboard = () => {
     <div style={{ width: "100%" }}>
       <Navbar />
       <div className="dashboard">
-        <div className="dashboard_left">
+        <div className={`dashboard_left${activeSidebar}`}>
           <SideBar />
         </div>
-        <div className="dashboard_right">
+        <div className={`dashboard_right${activeSidebar}`}>
           <div className="dashboard_right_upper">
             <button onClick={() => setIsVisible(true)}>+ Create Lead</button>
             <div className="search-btn">

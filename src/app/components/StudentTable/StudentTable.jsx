@@ -3,7 +3,6 @@ import "./StudentTable.scss";
 import Navbar from "../../components/navbar/NavBar"; 
 import SideBar from "../../components/SideBar/SideBar"; 
 import StudentForm from "../StudentForm/StudentForm";   
-
 import { useNavigate, useLocation } from "react-router-dom";
 
 const StudentTable = () => {
@@ -22,29 +21,25 @@ const StudentTable = () => {
   const totalPages = Math.ceil(students.length / studentsPerPage);
   const [orderField, setOrderField] = useState("first_name");
   const [orderDirection, setOrderDirection] = useState("asc");
+
   useEffect(() => {
     fetchStudents();
-  }, [filter, searchQuery,orderField, orderDirection]);
+  }, [filter, searchQuery, orderField, orderDirection]);
 
   const fetchStudents = async () => {
     try {
-      // Construct the URL with both search and ordering parameters
       const url = `http://127.0.0.1:8000/students/?search=${encodeURIComponent(searchQuery)}&ordering=${orderDirection === "asc" ? orderField : `-${orderField}`}`;
-  
       const response = await fetch(url);
       const data = await response.json();
-      
-      // Apply the additional filter logic after fetching
-      const filteredStudents = data.results.filter(student => {
-        return Object.keys(filter).every(key => student[key] === filter[key]);
-      });
-  
+
+      const filteredStudents = data.results.filter(student => 
+        Object.keys(filter).every(key => student[key] === filter[key])
+      );
       setStudents(filteredStudents);
     } catch (error) {
       console.error("Error fetching students:", error);
     }
   };
-  
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -58,12 +53,7 @@ const StudentTable = () => {
       try {
         const response = await fetch(
           `http://127.0.0.1:8000/students/${studentId}/`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
+          { method: "DELETE", headers: { "Content-Type": "application/json" } }
         );
         if (response.ok) {
           setStudents(students.filter((student) => student.id !== studentId));
@@ -80,6 +70,7 @@ const StudentTable = () => {
     setSearchQuery(e.target.value);
     setCurrentPage(1);
   };
+
   const handleSort = (field) => {
     setOrderField(field);
     setOrderDirection(orderDirection === "asc" ? "desc" : "asc");
@@ -105,7 +96,6 @@ const StudentTable = () => {
               />
               <i className="ri-search-line"></i>
             </div>
-            {/* Removed student type selection */}
           </div>
           <div className="student-table">
             <table>
@@ -136,7 +126,7 @@ const StudentTable = () => {
                       <td>{student.last_name}</td>
                       <td>{student.email}</td>
                       <td>{student.phone_number}</td>
-                      <td>{student.user}</td>
+                      <td>{student.user || "N/A"}</td> {/* Adjusted for fallback */}
                       <td>{student.date_of_birth}</td>
                       <td>{student.address}</td>
                       <td>{student.enrollment_status}</td>

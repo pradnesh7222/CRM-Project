@@ -21,8 +21,15 @@ import AddCourse from "../Pages/AddCourse/AddCourse";
 import EnrolleTable from "../components/EnrolleTable/EnrolleTable";
 import EnrollForm from "../components/EnrollForm/EnrollForm";
 import Communication from "../Pages/Communication/Communication";
+import Phone from "../components/Phone/Phone";
+import Email from "../components/Email/Email";
+import Message from "../components/Message/Message";
+import WorkshopLeads from "../components/WorkshopLeads/WorkshopLeads";
+
+
 const RouterComponent = () => {
   return (
+
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<SignIn />} />
@@ -47,6 +54,11 @@ const RouterComponent = () => {
         <Route path="/EnrolleTable" element={<EnrolleTable/>}/>
         <Route path="/EnrollForm" element={<EnrollForm/>}/>
         <Route path="/Communication" element={<Communication/>}/>
+        <Route path="/Phone" element={<Phone/>}/>
+        <Route path="/Message" element={<Message/>}/>
+        <Route path="/Email" element={<Email/>}/>
+        <Route path="/WorkshopLeads" element={<WorkshopLeads/>}/>
+
       </Routes>
     </BrowserRouter>
   );

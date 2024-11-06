@@ -5,10 +5,13 @@ const Phone = () => {
   return (
     <div>
        <div className="phone">
-        <h1>Dial number</h1>
+        <h1>Schedule Call</h1>
+        <span>Number</span>
         <input type="Phone" placeholder='number' />
-        <button>Start Call</button>
-        <button id='endCall'>End call</button>
+        <span>Date and Time</span>
+        <input type="datetime-local" placeholder='Date and Time' />
+        <button>Schedule Call</button>
+       
        </div>
     </div>
   )
