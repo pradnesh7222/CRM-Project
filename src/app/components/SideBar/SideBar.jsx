@@ -3,10 +3,14 @@ import "./SideBar.scss";
 import { Link } from "react-router-dom";
 import { SidebarContext } from "../../../App";
 import WorkshopLeads from "../../components/WorkshopLeads/WorkshopLeads";
+import { Button, Drawer } from 'antd';
+import { color } from "chart.js/helpers";
 
 const SideBar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { activeSidebar, setActiveSidebar } = useContext(SidebarContext);
+  const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
   
   // Update to track each submenu by a unique identifier
   const [submenuActive, setSubmenuActive] = useState({});
@@ -22,6 +26,16 @@ const SideBar = () => {
       ...prevState,
       [submenu]: !prevState[submenu],
     }));
+  };
+
+  const showLoading = () => {
+    setOpen(true);
+    setLoading(true);
+
+    // Simple loading mock. You should add cleanup logic in real world.
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
   };
 
   return (
@@ -58,8 +72,10 @@ const SideBar = () => {
               <i className="ri-arrow-down-wide-line"></i>
             </div>
             <div className={`dropdown-content ${submenuActive["telecaller"] ? "active" : ""}`}>
-              <Link to="/Dashboard">Enquiry Leads</Link>
-              <Link to="/LeadTracking">Workshop Leads</Link>
+              <div className="addTeleDrawer" onClick={showLoading}>Add Telecaller</div>
+              <Link to="/Dashboard">Enquiry Telecaller</Link>
+              <Link to="/LeadTracking">Workshop Telecaller</Link>
+              
             </div>
           </div>
         </div>
@@ -77,6 +93,63 @@ const SideBar = () => {
           {!isCollapsed && <Link to="/EnrolleTable">Enrolled</Link>}
         </div>
       </div>
+      <Drawer 
+        closable
+        destroyOnClose
+        title={<p>Create Telecaller</p>}
+        placement="right"
+        open={open}
+        loading={loading}
+        onClose={() => setOpen(false)}
+      >
+       
+        <h2>Create Telecaller</h2>
+        <form>
+          <label htmlFor="">Name</label>
+          <input type="text" placeholder="Name" />
+          <label htmlFor="">Email</label>
+          <input type="text" placeholder="Email" />
+          <label htmlFor="">Phone</label>
+          <input type="text" placeholder="Phone"/>
+          <label htmlFor="">Created At</label>
+          <input type="datetime-local" />
+          <label htmlFor="">Updated At</label>
+          <input type="datetime-local" />
+          <label htmlFor="">City</label>
+          <select name="city" id="city">
+          <option value="">Select a city</option>
+          <option value="Bangalore">Bangalore</option>
+          <option value="Mumbai">Mumbai</option>
+          <option value="Goa">Goa</option>
+        
+          
+        </select>
+        <div className="btn-cont">
+        <Button
+          type="primary"
+          style={{
+            marginBottom: 16,
+          }}
+          onClick={showLoading}
+        >
+          Submit
+        </Button>
+
+        <Button
+          type="primary"
+          style={{
+            marginBottom: 16,
+          }}
+          onClick={showLoading}
+        >
+          Reload
+        </Button>
+
+        </div>
+        
+        </form>
+
+      </Drawer>
     </div>
   );
 };

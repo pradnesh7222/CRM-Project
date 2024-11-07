@@ -3,6 +3,7 @@ import './NavBar.scss';
 import dummy_profile from '../../Assets/dummy_profile.jpg';
 import { useNavigate } from 'react-router-dom';
 
+
 const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
