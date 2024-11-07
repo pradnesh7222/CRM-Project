@@ -1,0 +1,54 @@
+.email{
+    width: 100%;
+    padding: 1vw;
+
+
+    &_inner{
+        width: 100%;
+        margin: 1vw 1vw;
+        align-items: end;
+        display: flex;
+        flex-direction: column;
+        // box-shadow: rgba(0, 0, 0, 0.2) 0px 20px 30px;
+    }
+    
+    .emailBind{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: .5vw;
+
+       span{
+        font-size: 1vw;
+        font-weight: 500;
+       }
+        input{
+            width: 94%;
+            border-radius: 10px;
+            padding: .5vw;
+            border: none;
+        }
+        textarea{
+            width: 94%;
+            border-radius: 10px;
+            padding: 1vw; 
+            resize: none; 
+            overflow: scroll;
+            scrollbar-width: none;
+            border: none;
+        }
+
+    }
+    button{
+        background-color: #6e2e6a;
+        color: white;
+        padding: .5vw 3vw;
+        border-radius: 10px;
+        border: none;
+        margin: .4vw;
+
+
+    }
+
+}
