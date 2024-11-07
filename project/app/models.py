@@ -65,12 +65,22 @@ class Users(models.Model):
     def __str__(self):
         return f"{self.user.first_name} "
 
-
-class Lead(BaseModel):
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
+class Course(models.Model):
+    name=models.CharField(max_length=100)
+    description=models.TextField()
+    price=models.DecimalField(max_digits=10,decimal_places=2)
+    Instructor=models.ForeignKey(Users,on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    image=models.ImageField(upload_to='courses/',null=True)
+    def __str__(self):
+        return f"{self.name}"
+    
+class Enquiry_Leads(models.Model):
+    name = models.CharField(max_length=100)
     email = models.EmailField(unique=True) 
     phone_number = models.CharField(max_length=10)
+    '''
     assigned_to_user = models.ForeignKey(Users, on_delete=models.CASCADE)
     address=models.TextField()
     #lead_source=models.ForeignKey(lead_score,on_delete=models.CASCADE
@@ -85,13 +95,32 @@ class Lead(BaseModel):
         default='Enquiry'
     )
     notes = models.TextField()
+    '''
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    course=models.ForeignKey(Course,on_delete=models.CASCADE,null=True)
     def __str__(self):
         return f"Lead: {self.first_name} {self.last_name}"
 
+class Workshop_Leads(models.Model):
+    orderId=models.CharField(unique=True,max_length=100)
+    customerName=models.CharField(max_length=100)
+    customerNumber=models.CharField(max_length=10)
+    customerEmail=models.EmailField()
+    orderDate=models.DateTimeField(auto_created=True)
+    amount=models.IntegerField()
+    paymentStatus=models.CharField(max_length=100,choices=[
+            ('Payment not done', 'Payment not done'),
+            ('Payment done', 'Payment done')
+        ])
+    
+    codingLevel=models.CharField(null=True,max_length=100)
+    location=models.CharField(max_length=100,choices=[
+            ('Mumbai', 'Mumbai'),
+            ('Bengaluru', 'Bengaluru')
+        ])
+    is_deleted = models.BooleanField(default=False)
 
 class Student(BaseModel):
     first_name = models.CharField(max_length=100)
@@ -110,7 +139,7 @@ class Student(BaseModel):
         ],
         default='Active'  
     )
-    lead_id=models.ForeignKey(Lead,on_delete=models.CASCADE,null=True,blank=True)
+    lead_id=models.ForeignKey(Enquiry_Leads,on_delete=models.CASCADE,null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     courses = models.ForeignKey('Course',on_delete=models.CASCADE )
@@ -132,7 +161,7 @@ class Communication(models.Model):
         ('sms', 'SMS'),
     ]
 
-    lead = models.ForeignKey('Lead', on_delete=models.CASCADE, related_name='communications', null=True, blank=True)
+    lead = models.ForeignKey('Enquiry_Leads', on_delete=models.CASCADE, related_name='communications', null=True, blank=True)
     student = models.ForeignKey('Student', on_delete=models.CASCADE, related_name='communications', null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='communications')
     communication_type = models.CharField(max_length=10, choices=COMMUNICATION_TYPES)
@@ -163,17 +192,7 @@ class CommunicationHistory(models.Model):
 
     def __str__(self):
         return f"History: {self.communication_type} - {self.content[:20]}..."
-     
-class Course(models.Model):
-    name=models.CharField(max_length=100)
-    description=models.TextField()
-    price=models.DecimalField(max_digits=10,decimal_places=2)
-    Instructor=models.ForeignKey(Users,on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    image=models.ImageField(upload_to='courses/',null=True)
-    def __str__(self):
-        return f"{self.name}"
+
 class Enrollment(models.Model):
     STATUS_CHOICES = [
         ('enrolled', 'Enrolled'),

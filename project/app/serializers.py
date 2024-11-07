@@ -17,7 +17,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
-from .models import Communication, CommunicationHistory, Course, Enrollment, Roles, Users, Lead, Student
+from .models import Communication, CommunicationHistory, Course, Enquiry_Leads, Enrollment, Roles, Users, Student, Workshop_Leads
 
 from rest_framework import serializers
 from django.contrib.auth.forms import PasswordResetForm
@@ -116,10 +116,13 @@ class UsersSerializer(serializers.ModelSerializer):
 
 class LeadSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Lead
-        fields = ['id','first_name', 'last_name', 'email', 'phone_number', 'address','assigned_to_user', 'lead_score', 'status', 'notes', 'created_at', 'updated_at','states']
+        model = Enquiry_Leads
+        fields = '__all__'
 
-
+class WorkshopSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Workshop_Leads
+        fields = '__all__'
 class StudentSerializer(serializers.ModelSerializer):
     # Use SlugRelatedField to refer to the course by its name
     courses = serializers.SlugRelatedField(

@@ -5,8 +5,8 @@ from rest_framework import status
 from rest_framework import generics
 from app.serializers import LoginSerializer, RegistrationSerializer
 from rest_framework import viewsets
-from .models import   Communication, CommunicationHistory, Course, Enrollment, Lead, Roles, Student, Users
-from .serializers import  CommunicationHistorySerializer, CommunicationSerializer, CourseSerializer, EnrollmentSerializer, LeadSerializer, RoleSerializer, StudentSerializer, UsersSerializer
+from .models import   Communication, CommunicationHistory, Course, Enquiry_Leads, Enrollment,  Roles, Student, Users, Workshop_Leads
+from .serializers import  CommunicationHistorySerializer, CommunicationSerializer, CourseSerializer, EnrollmentSerializer, LeadSerializer, RoleSerializer, StudentSerializer, UsersSerializer, WorkshopSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework import filters 
@@ -68,15 +68,25 @@ class UsersViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Users.objects.all()
     serializer_class = UsersSerializer
 
+class WorkshopLeadViewSet(viewsets.ModelViewSet):
+    queryset =Workshop_Leads.objects.filter(is_deleted=False) 
+    serializer_class = WorkshopSerializer
+
+    def destroy(self, request, *args, **kwargs):  
+        lead = self.get_object()  
+        lead.is_deleted = True 
+        lead.save() 
+        return Response(status=status.HTTP_200_OK)  
+
 class LeadViewSet(viewsets.ModelViewSet):
-    queryset = Lead.objects.filter(is_deleted=False) 
+    queryset = Enquiry_Leads.objects.filter(is_deleted=False) 
     serializer_class = LeadSerializer
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['first_name', 'last_name', 'email']
-    ordering_fields = ['first_name', 'email', 'created_at']
+    search_fields = ['name', 'course', 'email']
+    ordering_fields = ['name', 'email', 'course']
 
     def get_queryset(self):
-        queryset = Lead.objects.filter(is_deleted=False)
+        queryset = Enquiry_Leads.objects.filter(is_deleted=False)
         status = self.request.query_params.get('status', None)
         if status:
             queryset = queryset.filter(status=status)
@@ -300,6 +310,21 @@ class EmailSendViewSet(APIView):
         print("Email task scheduled.")
         return Response({"detail": "Email scheduled successfully."}, status=status.HTTP_201_CREATED)
 
+class CourseIdView(APIView):
+    def post(self, request, *args, **kwargs):
+        # Get the course name from the query parameter
+        course_name = request.data.get('courseName', None)
 
+        if not course_name:
+            return Response({"error": "Course name is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            # Find the course with the given name
+            course = Course.objects.get(name=course_name)
+        except Course.DoesNotExist:
+            return Response({"error": "Course not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Return the course id
+        return Response({"courseId": course.id}, status=status.HTTP_200_OK)
 
     

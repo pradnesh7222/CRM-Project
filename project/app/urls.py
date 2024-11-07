@@ -1,6 +1,6 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from .views import  ActiveStudents, CommunicationHistoryViewSet, CommunicationViewSet, Convert_lead_to_student, CourseViewSet, EmailSendViewSet, EnrollStudentView, EnrollmentViewSet,LogoutView, PlacedStudents, UserLoginView, UserRegistrationView, conversion_rate
+from .views import  ActiveStudents, CommunicationHistoryViewSet, CommunicationViewSet, Convert_lead_to_student, CourseIdView, CourseViewSet, EmailSendViewSet, EnrollStudentView, EnrollmentViewSet,LogoutView, PlacedStudents, UserLoginView, UserRegistrationView, WorkshopLeadViewSet, conversion_rate
 from .views import UsersViewSet, LeadViewSet, StudentViewSet, RolesViewSet
 from .views import monthly_leads_count
 from .views import LeadsPerStateView,StudentsPerCourseView,MonthlyActiveStudentsView
@@ -18,7 +18,7 @@ router.register(r'courses', CourseViewSet)
 router.register(r'communications', CommunicationViewSet)
 router.register(r'CommunicationHistory', CommunicationHistoryViewSet)
 router.register(r'enrollments', EnrollmentViewSet)
-
+router.register(r'WorkshopLeads',  WorkshopLeadViewSet)
 
 urlpatterns = [
     path('register/', UserRegistrationView.as_view(), name='register'),
@@ -34,6 +34,7 @@ urlpatterns = [
     path('ActiveStudents/', ActiveStudents.as_view(), name='ActiveStudents'),
     path('GraduatedStudents/', PlacedStudents.as_view(), name='PlacedStudents'),
     path('EmailSendViewSet/', EmailSendViewSet.as_view(), name='EmailSendViewSet'),
+     path('create-lead/', CourseIdView.as_view(), name='get-course-id'),
 ]
 
 
