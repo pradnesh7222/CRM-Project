@@ -37,7 +37,7 @@ const SideBar = () => {
         {/* Leads Submenu */}
         <div className="link1">
           <div className="dropdown" onClick={() => toggleSubmenu("leads")}>
-            <div>
+            <div className="dropdown-inner">
               <i className="ri-customer-service-line"></i>
               <button className="dropbtn">Leads</button>
               <i className="ri-arrow-down-wide-line"></i>
@@ -52,7 +52,7 @@ const SideBar = () => {
         {/* Telecaller Submenu */}
         <div className="link1">
           <div className="dropdown" onClick={() => toggleSubmenu("telecaller")}>
-            <div>
+            <div className="dropdown-inner">
               <i className="ri-customer-service-2-line"></i>
               <button className="dropbtn">Telecaller</button>
               <i className="ri-arrow-down-wide-line"></i>

@@ -156,6 +156,7 @@ const Dashboard = () => {
             <table border="0" style={{ width: "100%", textAlign: "center" }}>
               <thead>
                 <tr>
+                  <th>Srno.</th>
                   <th>Name</th>
                   <th>Email</th>
                   <th>Phone Number</th>
@@ -166,6 +167,7 @@ const Dashboard = () => {
                 {currentOrders.length > 0 ? (
                   currentOrders.map((order) => (
                     <tr key={order.enquiryFormId}>
+                      <td>{order.Sr_no}</td>
                       <td>{order.name}</td>
                       <td>{order.email}</td>
                       <td>{order.phoneNumber}</td>
@@ -174,7 +176,7 @@ const Dashboard = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="4">No orders found</td>
+                    <td colSpan="5">No orders found</td>
                   </tr>
                 )}
               </tbody>

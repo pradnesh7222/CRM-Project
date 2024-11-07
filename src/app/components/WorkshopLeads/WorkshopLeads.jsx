@@ -46,7 +46,7 @@ const WorkshopLeads = () => {
   const fetchWorkshopLeads = async () => {
     try {
       const payload = {
-        pageIndex: currentPage - 1,
+        pageIndex: currentPage -1,
         pageSize: leadsPerPage,
         searchString: searchQuery,
         fromDate: null,
@@ -146,7 +146,7 @@ const WorkshopLeads = () => {
 
           {/* Workshop Leads Table */}
           <div className="workshopLead_right_table">
-            <h3>Workshop Leads</h3>
+            {/* <h3>Workshop Leads</h3> */}
             <table border="0" style={{ width: "100%", textAlign: "center" }}>
               <thead>
                 <tr>
