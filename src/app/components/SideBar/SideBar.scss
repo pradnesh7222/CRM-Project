@@ -160,14 +160,12 @@ form{
   margin-top: 2vw;
   // padding: 1vw;
 
-  input,select{
-    border-radius: 10px;
-    border:1px solid black;
-    padding: 1vh;
+  .MuiTextField-root {
+    margin: 2px;
+    padding: .1vw;
   }
-  label{
-    color: #6e2e6a;
-  }
+
+  
 
   .btn-cont{
     margin-top: 2vw;

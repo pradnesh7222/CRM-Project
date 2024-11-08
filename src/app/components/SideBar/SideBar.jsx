@@ -5,12 +5,17 @@ import { SidebarContext } from "../../../App";
 import WorkshopLeads from "../../components/WorkshopLeads/WorkshopLeads";
 import { Button, Drawer } from 'antd';
 import { color } from "chart.js/helpers";
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
+import Box from '@mui/material/Box';
+
 
 const SideBar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { activeSidebar, setActiveSidebar } = useContext(SidebarContext);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] =useState(false);
   const [loading, setLoading] = React.useState(true);
+
   
   // Update to track each submenu by a unique identifier
   const [submenuActive, setSubmenuActive] = useState({});
@@ -37,6 +42,26 @@ const SideBar = () => {
       setLoading(false);
     }, 2000);
   };
+
+  const places = [
+    {
+      value: null,
+      name: 'Select an option',
+    },
+    {
+      value: 'BLR',
+      name: 'ETA Mall Bangalore',
+    },
+    {
+      value: 'MUM',
+      name: ' Andheri Mumbai',
+    },
+    {
+      value: 'GA',
+      name: 'Panaji GOA',
+    },
+  ];
+  
 
   return (
     <div className={`sidebar ${isCollapsed ? "collapsed" : ""}`}>
@@ -99,31 +124,31 @@ const SideBar = () => {
         title={<p>Create Telecaller</p>}
         placement="right"
         open={open}
-        loading={loading}
+        // loading={loading}
         onClose={() => setOpen(false)}
       >
        
         <h2>Create Telecaller</h2>
         <form>
-          <label htmlFor="">Name</label>
-          <input type="text" placeholder="Name" />
-          <label htmlFor="">Email</label>
-          <input type="text" placeholder="Email" />
-          <label htmlFor="">Phone</label>
-          <input type="text" placeholder="Phone"/>
-          <label htmlFor="">Created At</label>
-          <input type="datetime-local" />
-          <label htmlFor="">Updated At</label>
-          <input type="datetime-local" />
-          <label htmlFor="">City</label>
-          <select name="city" id="city">
-          <option value="">Select a city</option>
-          <option value="Bangalore">Bangalore</option>
-          <option value="Mumbai">Mumbai</option>
-          <option value="Goa">Goa</option>
-        
-          
-        </select>
+          <TextField id="outlined-basic" label="Name" variant="outlined" />
+          <TextField id="outlined-basic" label="Email" variant="outlined" />
+          <TextField id="outlined-basic" label="Phone" variant="outlined" />
+          <TextField id="outlined-basic" label="City" variant="outlined" />
+          <TextField
+          id="outlined-select-currency"
+          select
+          slotProps={{
+            select: {
+              native: true,
+            },
+          }}          label="Select"
+          defaultValue="EUR"
+          helperText="Please select your city"
+        >
+          {places.map((place, key) => (
+            <option key={place.value} value={place.value}>{place.name}</option>
+          ))}
+        </TextField>
         <div className="btn-cont">
         <Button
           type="primary"
