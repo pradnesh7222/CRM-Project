@@ -1,0 +1,86 @@
+.home {
+    width: 100%;
+    display: flex;
+    padding-top: 4.5vw;
+    
+
+    &_left {
+        width: 15%;
+        height: 100%;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+
+
+   &_right {
+    width: 85%;
+    // height: 90vh;
+    display: flex;
+    justify-content: center;
+    margin: 1vw;
+    flex-direction: column;
+
+    
+    &_cardCont{
+        // font-size: 1vw;
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    &_graphsCont{
+      width: 100%;
+      height: 80%;
+    //   background-color: white;
+      display: flex;
+
+      &_left{
+        width: 60%;
+        height: 95%;
+        background-color: white;
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+        padding: 1vw 0;
+        border-radius: 10px;
+        margin: 1vw 0 0 0;
+      }
+
+      &_right{
+        width: 40%;
+        height: 95%;
+        border-radius: 10px;
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+        margin: 1vw 0 0 1vw;
+        background-color: white;
+      }
+       
+    }
+
+    &_graphCont{
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+
+        &_left{
+            width: 50%;
+            box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            padding: 2vw 2vw; 
+            border-radius: 10px;
+            margin: 1vw 0 0 0;
+
+        }
+
+        &_right{
+            width: 50%;
+            border-radius: 10px;
+            box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+
+        }
+        
+    }
+   }
+
+}

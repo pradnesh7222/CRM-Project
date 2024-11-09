@@ -3,10 +3,19 @@ import "./SideBar.scss";
 import { Link } from "react-router-dom";
 import { SidebarContext } from "../../../App";
 import WorkshopLeads from "../../components/WorkshopLeads/WorkshopLeads";
+import { Button, Drawer } from 'antd';
+import { color } from "chart.js/helpers";
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
+import Box from '@mui/material/Box';
+
 
 const SideBar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { activeSidebar, setActiveSidebar } = useContext(SidebarContext);
+  const [open, setOpen] =useState(false);
+  const [loading, setLoading] = React.useState(true);
+
   
   // Update to track each submenu by a unique identifier
   const [submenuActive, setSubmenuActive] = useState({});
@@ -24,6 +33,36 @@ const SideBar = () => {
     }));
   };
 
+  const showLoading = () => {
+    setOpen(true);
+    setLoading(true);
+
+    // Simple loading mock. You should add cleanup logic in real world.
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+  };
+
+  const places = [
+    {
+      value: null,
+      name: 'Select an option',
+    },
+    {
+      value: 'BLR',
+      name: 'ETA Mall Bangalore',
+    },
+    {
+      value: 'MUM',
+      name: ' Andheri Mumbai',
+    },
+    {
+      value: 'GA',
+      name: 'Panaji GOA',
+    },
+  ];
+  
+
   return (
     <div className={`sidebar ${isCollapsed ? "collapsed" : ""}`}>
       <div className="sidebar_left">
@@ -37,7 +76,7 @@ const SideBar = () => {
         {/* Leads Submenu */}
         <div className="link1">
           <div className="dropdown" onClick={() => toggleSubmenu("leads")}>
-            <div>
+            <div className="dropdown-inner">
               <i className="ri-customer-service-line"></i>
               <button className="dropbtn">Leads</button>
               <i className="ri-arrow-down-wide-line"></i>
@@ -52,14 +91,16 @@ const SideBar = () => {
         {/* Telecaller Submenu */}
         <div className="link1">
           <div className="dropdown" onClick={() => toggleSubmenu("telecaller")}>
-            <div>
+            <div className="dropdown-inner">
               <i className="ri-customer-service-2-line"></i>
               <button className="dropbtn">Telecaller</button>
               <i className="ri-arrow-down-wide-line"></i>
             </div>
             <div className={`dropdown-content ${submenuActive["telecaller"] ? "active" : ""}`}>
-              <Link to="/Dashboard">Enquiry Leads</Link>
-              <Link to="/LeadTracking">Workshop Leads</Link>
+              <div className="addTeleDrawer" onClick={showLoading}>Add Telecaller</div>
+              <Link to="/Dashboard">Enquiry Telecaller</Link>
+              <Link to="/LeadTracking">Workshop Telecaller</Link>
+              
             </div>
           </div>
         </div>
@@ -77,6 +118,63 @@ const SideBar = () => {
           {!isCollapsed && <Link to="/EnrolleTable">Enrolled</Link>}
         </div>
       </div>
+      <Drawer 
+        closable
+        destroyOnClose
+        title={<p>Create Telecaller</p>}
+        placement="right"
+        open={open}
+        // loading={loading}
+        onClose={() => setOpen(false)}
+      >
+       
+        <h2>Create Telecaller</h2>
+        <form>
+          <TextField id="outlined-basic" label="Name" variant="outlined" />
+          <TextField id="outlined-basic" label="Email" variant="outlined" />
+          <TextField id="outlined-basic" label="Phone" variant="outlined" />
+          <TextField id="outlined-basic" label="City" variant="outlined" />
+          <TextField
+          id="outlined-select-currency"
+          select
+          slotProps={{
+            select: {
+              native: true,
+            },
+          }}          label="Select"
+          defaultValue="EUR"
+          helperText="Please select your city"
+        >
+          {places.map((place, key) => (
+            <option key={place.value} value={place.value}>{place.name}</option>
+          ))}
+        </TextField>
+        <div className="btn-cont">
+        <Button
+          type="primary"
+          style={{
+            marginBottom: 16,
+          }}
+          onClick={showLoading}
+        >
+          Submit
+        </Button>
+
+        <Button
+          type="primary"
+          style={{
+            marginBottom: 16,
+          }}
+          onClick={showLoading}
+        >
+          Reload
+        </Button>
+
+        </div>
+        
+        </form>
+
+      </Drawer>
     </div>
   );
 };

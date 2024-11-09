@@ -4,50 +4,23 @@ import Navbar from "../../components/navbar/NavBar";
 import SideBar from "../../components/SideBar/SideBar";
 import TablePagination from '@mui/material/TablePagination';
 
-
 const WorkshopLeads = () => {
   const [enrolledStudents, setEnrolledStudents] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [leadsPerPage] = useState(10); 
-  const [totalCount, setTotalCount] = useState(0); 
-  const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  // Pagination logic
-  const indexOfLastLead = currentPage * leadsPerPage;
-  const indexOfFirstLead = indexOfLastLead - leadsPerPage;
-  const currentLeads = enrolledStudents.slice(indexOfFirstLead, indexOfLastLead);
-
-  const totalPages = Math.ceil(totalCount / leadsPerPage);
-  console.log(currentLeads, 'totalPages:', totalPages, 'leadsPerPage:', leadsPerPage);
-
-  const paginate = (pageNumber) => {
-    if (pageNumber >= 1 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
-    }
-  };
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+  const [totalCount, setTotalCount] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Fetch data and store in state
   useEffect(() => {
     fetchWorkshopLeads();
-  }, [currentPage, searchQuery]);
-  
+  }, [page, rowsPerPage, searchQuery]);
 
   const fetchWorkshopLeads = async () => {
     try {
       const payload = {
-        pageIndex: currentPage - 1,
-        pageSize: leadsPerPage,
+        pageIndex: page,
+        pageSize: rowsPerPage,
         searchString: searchQuery,
         fromDate: null,
         toDate: null,
@@ -68,7 +41,6 @@ const WorkshopLeads = () => {
         setEnrolledStudents(Array.isArray(data.data) ? data.data : []);
         setTotalCount(data.totalCount || 0);
         saveWorkshopLeads(data.data);
-        console.log(data.totalCount, 'data.totalCount');
       } else {
         console.error("Failed to fetch data:", data?.message || "No data returned");
       }
@@ -78,14 +50,13 @@ const WorkshopLeads = () => {
   };
 
   const saveWorkshopLeads = async (leadsData) => {
-    console.log(`Fetching data for page ${currentPage} with page size ${leadsPerPage}`);
+    console.log(`Fetching data for page ${page + 1} with page size ${rowsPerPage}`);
     if (!Array.isArray(leadsData)) {
       console.error("Error: leadsData is not an array.");
       return;
     }
 
     try {
-      // Send the data one by one
       for (const lead of leadsData) {
         const formattedData = {
           orderDate: lead.orderDate,
@@ -100,7 +71,6 @@ const WorkshopLeads = () => {
 
         console.log(formattedData, "formattedData");
 
-        // Send each lead individually
         const response = await fetch("http://127.0.0.1:8000/WorkshopLeads/", {
           method: "POST",
           headers: {
@@ -121,7 +91,16 @@ const WorkshopLeads = () => {
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
-    setCurrentPage(1); // Reset to page 1 when search changes
+    setPage(0); // Reset to page 1 when search changes
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset to first page on rows per page change
   };
 
   return (
@@ -146,7 +125,6 @@ const WorkshopLeads = () => {
 
           {/* Workshop Leads Table */}
           <div className="workshopLead_right_table">
-            <h3>Workshop Leads</h3>
             <table border="0" style={{ width: "100%", textAlign: "center" }}>
               <thead>
                 <tr>
@@ -162,10 +140,10 @@ const WorkshopLeads = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentLeads.length > 0 ? (
-                  currentLeads.map((item, index) => (
+                {enrolledStudents.length > 0 ? (
+                  enrolledStudents.map((item, index) => (
                     <tr key={item.id}>
-                      <td>{index + 1 + indexOfFirstLead}</td>
+                      <td>{index + 1 + page * rowsPerPage}</td>
                       <td>... {item.orderId.slice(-3)}</td>
                       <td>{item.customerName}</td>
                       <td>{item.customerNumber}</td>
