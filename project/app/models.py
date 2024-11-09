@@ -101,7 +101,7 @@ class Enquiry_Leads(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     course=models.ForeignKey(Course,on_delete=models.CASCADE,null=True)
     def __str__(self):
-        return f"Lead: {self.first_name} {self.last_name}"
+        return f"Lead: {self.name} "
 
 class Workshop_Leads(models.Model):
     orderId=models.CharField(unique=True,max_length=100)
@@ -230,10 +230,12 @@ class Enrollment(models.Model):
         return f"{self.student} enrolled in {self.course} - Status: {self.status}"
 
 class EnquiryTelecaller(models.Model):
-    user = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='enquiry_calls')
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True) 
+    phone_number = models.CharField(max_length=10)
     assigned_lead = models.ForeignKey(Enquiry_Leads, on_delete=models.CASCADE, related_name='assigned_telecaller')
     follow_up_date = models.DateTimeField(null=True, blank=True)
-    assigned = models.BooleanField(default=False)
     status = models.CharField(
         max_length=100,
         choices=[
@@ -245,7 +247,6 @@ class EnquiryTelecaller(models.Model):
         ],
         default='Pending'
     )
-    notes = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     location=models.CharField(max_length=100,choices=[

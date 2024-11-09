@@ -5,8 +5,8 @@ from rest_framework import status
 from rest_framework import generics
 from app.serializers import LoginSerializer, RegistrationSerializer
 from rest_framework import viewsets
-from .models import   Communication, CommunicationHistory, Course, Enquiry_Leads, Enrollment, Installment,  Roles, Student, Users, Workshop_Leads, WorkshopTelecaller
-from .serializers import  CommunicationHistorySerializer, CommunicationSerializer, CourseSerializer, EnrollmentSerializer, InstallmentSerializer, LeadSerializer, RoleSerializer, StudentSerializer, UsersSerializer, WorkshopSerializer, WorkshopTelecallerSerializer
+from .models import   Communication, CommunicationHistory, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment,  Roles, Student, Users, Workshop_Leads, WorkshopTelecaller
+from .serializers import  CommunicationHistorySerializer, CommunicationSerializer, CourseSerializer, EnquiryTelecallerSerializer, EnrollmentSerializer, InstallmentSerializer, LeadSerializer, RoleSerializer, StudentSerializer, UsersSerializer, WorkshopSerializer, WorkshopTelecallerSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework import filters 
@@ -336,6 +336,6 @@ class WorkshopTelecallerViewSet(viewsets.ModelViewSet):
     serializer_class = WorkshopTelecallerSerializer
 
 class EnquiryTelecallerViewSet(viewsets.ModelViewSet):
-    queryset = WorkshopTelecaller.objects.all()
-    serializer_class = WorkshopTelecallerSerializer
+    queryset = EnquiryTelecaller.objects.all()
+    serializer_class = EnquiryTelecallerSerializer
        
