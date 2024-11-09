@@ -9,6 +9,7 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Box from '@mui/material/Box';
 
+import { message } from 'antd';
 
 const SideBar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -61,7 +62,38 @@ const SideBar = () => {
       name: 'Panaji GOA',
     },
   ];
-  
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone_number: "",
+    city: "",
+  });
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("http://127.0.0.1:8000/EnquiryTelecaller/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        message.success("Telecaller created successfully!");
+        setFormData({ name: "", email: "", phone_number: "", city: "" });
+        setOpen(false);
+      } else {
+        message.error("Failed to create telecaller.");
+      }
+    } catch (error) {
+      console.error("Error creating telecaller:", error);
+      message.error("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className={`sidebar ${isCollapsed ? "collapsed" : ""}`}>
@@ -155,7 +187,8 @@ const SideBar = () => {
           style={{
             marginBottom: 16,
           }}
-          onClick={showLoading}
+          onClick={handleSubmit}
+          
         >
           Submit
         </Button>
