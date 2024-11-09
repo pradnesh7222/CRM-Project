@@ -17,7 +17,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
-from .models import Communication, Course, Enrollment, Roles, Users, Lead, Student
+from .models import Communication, CommunicationHistory, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, Roles, Users, Student, Workshop_Leads, WorkshopTelecaller
 
 from rest_framework import serializers
 from django.contrib.auth.forms import PasswordResetForm
@@ -116,42 +116,36 @@ class UsersSerializer(serializers.ModelSerializer):
 
 class LeadSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Lead
-        fields = ['id','first_name', 'last_name', 'email', 'phone_number', 'address','assigned_to_user', 'lead_score', 'status', 'notes', 'created_at', 'updated_at','states']
+        model = Enquiry_Leads
+        fields = '__all__'
 
-
+class WorkshopSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Workshop_Leads
+        fields = '__all__'
 class StudentSerializer(serializers.ModelSerializer):
-    # Use SlugRelatedField to refer to the course by its name
-    courses = serializers.SlugRelatedField(
-        queryset=Course.objects.all(),
-        slug_field='name'  # Assuming the Course model has a 'name' field
+    total_fees_paid = serializers.DecimalField(
+        max_digits=10, decimal_places=2, read_only=True
     )
+    next_due_date = serializers.DateField(read_only=True)
 
     class Meta:
         model = Student
         fields = [
-            'id',
-            'first_name',
-            'last_name',
-            'email',
-            'phone_number',
-            'user',
-            'date_of_birth',
-            'address',
-            'enrollment_status',
-            'created_at',
-            'updated_at',
-            'lead_id',
-            'states',
-            'courses'  # Ensure this matches the field name
+            'id', 'first_name', 'last_name', 'email', 'phone_number', 'date_of_birth',
+            'address', 'enrollment_status', 'courses', 'total_fees_paid', 'next_due_date','user'
         ]
-
+class InstallmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Installment
+        fields = '__all__'
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Roles
         fields = '__all__'
 
 class CourseSerializer(serializers.ModelSerializer):
+    #Instructor=UsersSerializer()
     class Meta:
         model = Course
         fields = '__all__'
@@ -162,6 +156,23 @@ class CommunicationSerializer(serializers.ModelSerializer):
         fields = '__all__' 
 
 class EnrollmentSerializer(serializers.ModelSerializer):
+    #student = StudentSerializer()  # Use nested serializer for student
+    #course = CourseSerializer() 
     class Meta:
         model = Enrollment
         fields = '__all__'  
+
+class CommunicationHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CommunicationHistory
+        fields = '__all__'
+
+class EnquiryTelecallerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EnquiryTelecaller
+        fields = '__all__'
+
+class WorkshopTelecallerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkshopTelecaller
+        fields = '__all__'

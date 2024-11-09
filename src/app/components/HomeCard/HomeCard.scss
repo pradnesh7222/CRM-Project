@@ -1,19 +1,38 @@
 .home-card{
-    width: 23.5%;
-    box-shadow: rgba(232, 205, 231, 0.544) 0px 48px 100px 0px;    background-color: rgba(254, 210, 252, 0.524);
+    width: 18%;
+    box-shadow: rgba(237, 100, 233, 0.544) 0px 48px 100px 0px;    background-color: rgba(254, 210, 252, 0.524);
     border-radius: 10px;
-    padding: 10px;
+    padding: 7px;
+    display: flex;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    flex-direction: column;
+    
 
     h1{
-        font-size: 1.5vw;
+        font-size: 1vw;
         color:#6e2e6a;
+        text-align: start;
     }
+
+    .card-content{
+        display: flex;
+        // align-items: center;
+        
+        justify-content: space-between;
+        margin-top: 1vw;
+    
 
     h2{
         padding-left: 5px;
         color: #202671;
-        font-size: 1.3vw;
+        font-size: 2vw;
         font-weight: 500;
     }
+
+    .ri-arrow-right-up-box-fill{
+        color: #202671;
+        font-size: 1.5vw;
+    }
+}
 }
 

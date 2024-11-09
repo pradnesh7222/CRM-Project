@@ -1,41 +1,53 @@
 .dashboard {
   width: 100%;
   display: flex;
+  padding-top: 6vw;
 
-  &_left {
+
+
+  &_left, &_lefttoggleSidebar {
     width: 15%;
-    // height: calc(100vh - 60px);
-
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     display: flex;
     flex-direction: column;
     justify-content: start;
     align-items: start;
     gap: 2vw;
-    padding-top: 2vh;
+    padding-top: 40vw;
+   
 
     .link1 {
       padding-block: 10px;
       border-radius: 5px;
       width: 100%;
       text-align: center;
-      box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+      // box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 
       &:hover {
-        background-color: #202671;
+        // background-color: #202671;
         color: white;
+        transition: color 0.5s ease, background-color 0.5s ease;
+        background-color: #6e2e6a;
       }
     }
   }
 
-  &_right {
+  &_lefttoggleSidebar{
+    width: 5%;
+  }
+
+
+  &_right, &_righttoggleSidebar {
     width: 85%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    // margin-top: 1.5vw;
+
+
+  
 
     &_upper {
-      margin: 1vh;
+      margin: -1vh;
       height: 10%;
       align-items: center;
       width: 98%;
@@ -43,20 +55,15 @@
       justify-content: space-between;
 
       button {
-        height: 3vw;
-        background-color: white;
-        border: 1px solid #6e2e6a;
-        padding: 1vw 1vw;
-        border-radius: 10px;
-        font-size: 1.2vw;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
+        padding: 1vw 2vw;
+            border-radius: 10px;
+            border: none;
+            background-color: #6D2E6A;
+            color: white;
+            font-size: 1vw;
+            font-weight: 600;
 
-        &:hover {
-          background-color: #6e2e6a;
-          color: white;
-        }
+        
       }
 
       .search-btn {
@@ -97,14 +104,21 @@
       overflow-x: scroll;
       width: 98%;
       box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+      margin-top: 1vw;
+      border-radius: 10px;
+
+
       table {
         width: 100%;
         overflow-x: auto;
+        border-radius: 10px;
+
         th,
         td {
           font-size: 1vw;
           padding: 5px 10px;
           text-align: center;
+          color: rgba(0, 0, 0, 0.662);  
           box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
             rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
         }
@@ -114,11 +128,13 @@
         }
 
         th {
+         
           background-color: #f9f9f9;
         }
 
         td {
           border: 1px solid rgba(0, 0, 0, 0.1);
+
           .actions {
             display: flex;
             gap: 5px;
@@ -136,42 +152,6 @@
             }
           }
         }
-
-        // #srNo {
-        //   width: 2%; /* Further decreased width for srNo column */
-        // }
-        // #firstName {
-        //   width: 15%;
-        // }
-        // #lastName {
-        //   width: 15%;
-        // }
-        // #email {
-        //   width: 8%;
-        // }
-        // #phone {
-        //   width: 9%;
-        // }
-        // #address {
-        //   width: 20%;
-        // }
-        // #status {
-        //   width: 10%;
-        // }
-        // #actions {
-        //   justify-content: space-between;
-        //   width: 13%; /* Increased width for actions column */
-        // }
-        // #lead_source_id{
-        //   width: 20%;
-        // }
-
-        // #assigned_to_user_id{
-        //   width: 20%;
-        // }
-        // #lead_score{
-        //   width: 20%;
-        // }
       }
 
       &_footer {
@@ -223,4 +203,22 @@
       }
     }
   }
+
+  &_righttoggleSidebar{
+    width: 95%;  
+     
+  }
+
+  @media (max-width:768px){
+
+    &_left, &_lefttoggleSidebar{
+      width: 5%;
+    }
+
+    &_right, &_righttoggleSidebar{
+      width: 95%;
+      margin-top: 5vw;
+    }
+    
+   }
 }

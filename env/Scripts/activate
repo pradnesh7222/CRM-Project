@@ -35,7 +35,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Django Projects\crm_backend\CRM-Project\env"
+VIRTUAL_ENV="C:\Django Projects\django_frontend\CRM-Project\env"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

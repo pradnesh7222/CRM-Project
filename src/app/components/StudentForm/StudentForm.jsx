@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/navbar/NavBar";
 import "./StudentForm.scss";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
 const StudentForm = ({ isVisible, setIsVisible, student }) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const navigate = useNavigate();
@@ -14,8 +14,12 @@ const StudentForm = ({ isVisible, setIsVisible, student }) => {
     email: "",
     phone_number: "",
     address: "",
-    course: "",
+    enrollment_status:"",
+    states:"",
+    courses: "",
     notes: "",
+    lead_id:"",
+    user:"",
   });
 
   // Form data state
@@ -25,8 +29,12 @@ const StudentForm = ({ isVisible, setIsVisible, student }) => {
     email: student?.email || "",
     phone_number: student?.phone_number || "",
     address: student?.address || "",
-    course: student?.course || "",
+    enrollment_status:student?.enrollment_status||"",
+    states:student?.states||"",
+    courses: student?.courses || "",
     notes: student?.notes || "",
+    lead_id: student?.lead_id|| "",
+    user: student?.user|| "",
   });
 
   useEffect(() => {
@@ -37,8 +45,12 @@ const StudentForm = ({ isVisible, setIsVisible, student }) => {
         email: student.email || "",
         phone_number: student.phone_number || "",
         address: student.address || "",
-        course: student.course || "",
+        enrollment_status:student?.enrollment_status||"",
+        states:student?.states||"",
+        courses: student.courses || "",
         notes: student.notes || "",
+        lead_id: student?.lead_id|| "",
+        user: student?.user|| "",
       });
     }
   }, [student]);
@@ -55,67 +67,80 @@ const StudentForm = ({ isVisible, setIsVisible, student }) => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Form submitted");
+
     let hasError = false;
     let newError = { ...error };
 
     // Check for empty fields
     for (const key in formData) {
-      if (!formData[key]) {
-        newError[key] = "This field is required";
-        hasError = true;
-      }
+        if (!formData[key] && key !== 'notes') { // Example: allowing notes to be optional
+            newError[key] = "This field is required";
+            hasError = true;
+        }
     }
 
     // Email validation
     if (!emailRegex.test(formData.email)) {
-      newError.email = "Invalid email format!";
-      hasError = true;
+        newError.email = "Invalid email format!";
+        hasError = true;
     }
 
     if (hasError) {
-      setError(newError);
-      return;
+        setError(newError);
+        console.log("Validation errors:", newError);
+        return;
     }
 
     const method = student ? "PUT" : "POST";
-    const url = student
-      ? `http://127.0.0.1:8000/students/${student.id}/`
-      : "http://127.0.0.1:8000/students/";
+    const url = student ? `http://127.0.0.1:8000/students/${student.id}/` : "http://127.0.0.1:8000/students/";
+
+    console.log("API URL:", url);
+    console.log("Request body:", JSON.stringify(formData));
 
     try {
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+        const response = await fetch(url, {
+            method,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+        });
 
-      if (response.ok) {
-        const result = await response.json();
-        console.log("Data successfully submitted:", result);
-        setIsVisible(false);
-        navigate("/Dashboard", { state: { formData } });
-      } else {
-        const errorData = await response.json();
-        console.error("Error:", errorData);
-        alert(JSON.stringify(errorData));
-      }
+        if (response.ok) {
+            const result = await response.json();
+            console.log("Data successfully submitted:", result);
+            setIsVisible(false);
+            navigate("/Dashboard", { state: { formData } });
+        } else {
+            const errorData = await response.json();
+            console.error("Error:", errorData);
+            alert(JSON.stringify(errorData));
+        }
     } catch (error) {
-      console.error("Error during submission:", error);
+        console.error("Error during submission:", error);
     }
-  };
+};
+
   return (
     <>
       <Navbar />
       <div className="StudentForm">
         <div className="StudentForm_Cont">
+        <i className="ri-arrow-left-fill" onClick={() => navigate("/StudentTable")}></i>
           <h1>{student ? "Edit Student" : "Student Form"}</h1>
+          {/* <button
+              id="closebtn"
+              type="button"
+              onClick={() => setIsVisible(!isVisible)}
+            >
+              <i className="ri-close-line"></i>
+            </button> */}
           <form onSubmit={handleSubmit}>
             <div className="form_Cont">
               <div className="form_Cont_col1">
                 <label htmlFor="first_name">First Name</label>
-                <input
+                <input  
                   type="text"
                   id="first_name"
                   name="first_name"
@@ -157,6 +182,7 @@ const StudentForm = ({ isVisible, setIsVisible, student }) => {
                 <label htmlFor="enrollment_status">Enrollment Status</label>
                 <select
                   id="enrollment_status"
+                  type="text"
                   name="enrollment_status"
                   value={formData.enrollment_status}
                   onChange={handleInputChange}
@@ -189,6 +215,7 @@ const StudentForm = ({ isVisible, setIsVisible, student }) => {
 
                 <label htmlFor="courses">Courses</label>
                 <select
+                  type="courses"
                   id="courses"
                   name="courses"
                   value={formData.courses}
@@ -202,6 +229,7 @@ const StudentForm = ({ isVisible, setIsVisible, student }) => {
 
                 <label htmlFor="states">States</label>
                 <select
+                  // type="text"
                   id="states"
                   name="states"
                   value={formData.states}
@@ -252,18 +280,20 @@ const StudentForm = ({ isVisible, setIsVisible, student }) => {
                   onChange={handleInputChange}
                 />
 
-                <label htmlFor="user">User</label>
+                  <label htmlFor="user">user</label>
                 <input
-                  type="number"
+                  type="text"
                   id="user"
                   name="user"
                   placeholder="Enter your user ID"
                   value={formData.user}
                   onChange={handleInputChange}
                 />
+
+                
               </div>
             </div>
-            <button type="submit">{student ? "Update" : "Submit"}</button>
+            <button onClick={() => navigate("/StudentTable")} type="submit">{student ? "Update" : "Submit"} </button>
           </form>
         </div>
       </div>

@@ -114,7 +114,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="mainCont">
+    <div className="main-Cont">
     <div className={`container ${isActive ? 'active' : ''}`} id="container">
       <div className="form-container sign-up">
         <form onSubmit={handleSignUpSubmit}>

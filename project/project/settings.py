@@ -1,3 +1,4 @@
+
 """
 Django settings for project project.
 
@@ -29,6 +30,7 @@ ALLOWED_HOSTS = [
     'localhost',  # Allow localhost
     '127.0.0.1',  # Allow local IP
     'laptop-mnrtbv3b',  # Add your laptop hostname
+    'redis://localhost:6379/0'
     # Optionally add more hosts
 ]
 
@@ -46,6 +48,7 @@ INSTALLED_APPS = [
     'app',
     'rest_framework_simplejwt',
     'corsheaders',
+       'drf_yasg',
 
     
 ]
@@ -169,3 +172,11 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
 }'''
+import os
+
+MEDIA_URL = '/media/'  # URL for accessing media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  
+# settings.py
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Using Redis as the broker
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True

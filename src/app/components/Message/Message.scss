@@ -1,0 +1,48 @@
+.msg{
+    width: 100%;
+    margin: 1vw;
+    
+
+    h1{
+
+        font-size: 1.5vw;
+    }
+   &_cont{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    gap: .5vw;
+    margin-top: .8vw;
+
+    span{
+        font-size: 1.2vw;
+    }
+    input{
+        padding: .7vw;
+        border-radius: 10px;
+    }
+    textarea{
+        padding: 1vw;
+        resize: none;
+        border-radius: 10px;
+        overflow: hidden;
+        scrollbar-width: none;
+    }
+
+    button{
+        background-color: #6e2e6a;
+        color: white;
+        padding: .6vw;
+        font-weight: 600;
+
+        &:hover{
+            color: #6e2e6a;
+            background-color: whitesmoke;
+        }
+
+    }
+   }
+
+    
+}

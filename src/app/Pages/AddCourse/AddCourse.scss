@@ -1,0 +1,85 @@
+
+.addCourseForm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    // background-color: #2c2c2c; // Light black background
+    padding-top: 5vw;
+  
+    .formCont {
+      background-color: #3c3c3c55; // Slightly darker background for form container
+      padding: 30px;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+
+      h1{
+        text-align: center;
+        font-size: 2vw;
+      }
+  
+      form {
+        display: flex;
+        flex-direction: column;
+        
+        .form-group {
+        //   margin-bottom: 5px;
+  
+          label {
+            color: black;
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: block;
+          }
+  
+          .form-group1{
+            display: flex;
+          }
+          .form-control,
+          .form-control-file {
+            width: 100%;
+            padding:5px;
+            color: #ffffff;
+            background-color: white;
+            border: 1px solid #777;
+            border-radius: 10px;
+  
+            &::placeholder {
+              color: #ccc;
+            }
+          }
+  
+          .form-control-file {
+            width: 20%;
+            border: 1px solid black;
+            padding: 0;
+          }
+  
+          textarea.form-control {
+            resize: none;
+            
+          }
+        }
+        .submit-btn {
+            margin-top: 10px;
+            padding: 8px 20px;
+            background-color: black;
+            color: #ffffff;
+            width: 100%;
+            font-weight: bold;
+            text-align: center;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+    
+            &:hover {
+              background-color: #6e2e6a;
+            }
+          }
+      }
+    }
+  }
+  
