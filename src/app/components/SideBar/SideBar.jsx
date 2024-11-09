@@ -100,7 +100,7 @@ const SideBar = () => {
             <div className={`dropdown-content ${submenuActive["telecaller"] ? "active" : ""}`}>
               <div className="addTeleDrawer" onClick={showLoading}>Add Telecaller</div>
               <Link to="/EnquiryTele">Enquiry Telecaller</Link>
-              <Link to="/LeadTracking">Workshop Telecaller</Link>
+              <Link to="/WorkShopTele">Workshop Telecaller</Link>
               
             </div>
           </div>
