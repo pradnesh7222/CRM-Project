@@ -8,6 +8,7 @@ import { color } from "chart.js/helpers";
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Box from '@mui/material/Box';
+import EnquiryTele from "../../Pages/EnquiryTele/EnquiryTele";
 
 
 const SideBar = () => {
@@ -98,7 +99,7 @@ const SideBar = () => {
             </div>
             <div className={`dropdown-content ${submenuActive["telecaller"] ? "active" : ""}`}>
               <div className="addTeleDrawer" onClick={showLoading}>Add Telecaller</div>
-              <Link to="/Dashboard">Enquiry Telecaller</Link>
+              <Link to="/EnquiryTele">Enquiry Telecaller</Link>
               <Link to="/LeadTracking">Workshop Telecaller</Link>
               
             </div>

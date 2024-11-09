@@ -26,6 +26,7 @@ import Email from "../components/Email/Email";
 import Message from "../components/Message/Message";
 import WorkshopLeads from "../components/WorkshopLeads/WorkshopLeads";
 import EnquiryTele from "../Pages/EnquiryTele/EnquiryTele";
+import WorkShopTele from "../Pages/WorkShopTele/WorkShopTele"
 
 
 const RouterComponent = () => {
@@ -60,6 +61,7 @@ const RouterComponent = () => {
         <Route path="/Email" element={<Email/>}/>
         <Route path="/WorkshopLeads" element={<WorkshopLeads/>}/>
         <Route path="/EnquiryTele" element={<EnquiryTele/>}/>
+        <Route path="/WorkShopTele" element={<WorkShopTele/>}/>
 
       </Routes>
     </BrowserRouter>
