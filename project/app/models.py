@@ -121,7 +121,21 @@ class Workshop_Leads(models.Model):
             ('Bengaluru', 'Bengaluru')
         ])
     is_deleted = models.BooleanField(default=False)
+class LeadAssignment(models.Model):
+    LEAD_TYPE_CHOICES = [
+        ('enquiry', 'Enquiry Lead'),
+        ('s', 'Workshop Lead'),
+    ]
+    lead_type = models.CharField(max_length=10, choices=LEAD_TYPE_CHOICES)
+    lead_id = models.PositiveIntegerField() 
+    assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigned_leads')
+    assigned_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ('lead_type', 'lead_id')  
+    def __str__(self):
+        return f"Assignment: {self.lead_type} - Lead ID {self.lead_id} to {self.assigned_to}"
+      
 class Student(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -230,11 +244,11 @@ class Enrollment(models.Model):
         return f"{self.student} enrolled in {self.course} - Status: {self.status}"
 
 class EnquiryTelecaller(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True) 
     phone_number = models.CharField(max_length=10)
-    assigned_lead = models.ForeignKey(Enquiry_Leads, on_delete=models.CASCADE, related_name='assigned_telecaller')
+    assigned_lead = models.ForeignKey(Enquiry_Leads, on_delete=models.CASCADE, related_name='assigned_telecaller',null=True, blank=True)
     follow_up_date = models.DateTimeField(null=True, blank=True)
     status = models.CharField(
         max_length=100,
@@ -251,7 +265,8 @@ class EnquiryTelecaller(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     location=models.CharField(max_length=100,choices=[
             ('Mumbai', 'Mumbai'),
-            ('Bengaluru', 'Bengaluru')
+            ('Bengaluru', 'Bengaluru'),
+            ('Goa', 'Goa')
         ])
     def __str__(self):
         return f"Telecaller: {self.user} - Lead: {self.assigned_lead.name}"

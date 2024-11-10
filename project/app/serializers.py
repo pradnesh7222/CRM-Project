@@ -17,7 +17,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
-from .models import Communication, CommunicationHistory, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, Roles, Users, Student, Workshop_Leads, WorkshopTelecaller
+from .models import Communication, CommunicationHistory, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, LeadAssignment, Roles, Users, Student, Workshop_Leads, WorkshopTelecaller
 
 from rest_framework import serializers
 from django.contrib.auth.forms import PasswordResetForm
@@ -170,9 +170,67 @@ class CommunicationHistorySerializer(serializers.ModelSerializer):
 class EnquiryTelecallerSerializer(serializers.ModelSerializer):
     class Meta:
         model = EnquiryTelecaller
-        fields = '__all__'
+        fields = ['name', 'email', 'location', 'phone_number']  # Only include fields from the frontend
 
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
+    
 class WorkshopTelecallerSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkshopTelecaller
         fields = '__all__'
+
+class LeadAssignmentSerializer(serializers.Serializer):
+    lead_type = serializers.ChoiceField(choices=LeadAssignment.LEAD_TYPE_CHOICES)
+    lead_name = serializers.CharField(write_only=True) 
+    assigned_user = serializers.CharField(write_only=True) 
+
+    def validate(self, data):
+        lead_type = data['lead_type']
+        lead_name = data['lead_name']
+        assigned_user = data['assigned_user']
+        
+        if lead_type == 'enquiry':
+            lead = Enquiry_Leads.objects.filter(name=lead_name).first()
+            if not lead:
+                raise serializers.ValidationError("Enquiry lead with this name does not exist.")
+            lead_id = lead.id
+        elif lead_type == 'workshop':
+            lead = Workshop_Leads.objects.filter(customerName=lead_name).first()
+            if not lead:
+                raise serializers.ValidationError("Workshop lead with this name does not exist.")
+            lead_id = lead.id
+        else:
+            raise serializers.ValidationError("Invalid lead type.")
+
+
+        assigned_to = User.objects.filter(username=assigned_user).first()
+        if not assigned_to:
+            raise serializers.ValidationError("User with this username does not exist.")
+        
+        data['lead_id'] = lead_id
+        data['assigned_to'] = assigned_to
+        return data
+
+    def create(self, validated_data):
+        lead_assignment = LeadAssignment.objects.create(
+            lead_type=validated_data['lead_type'],
+            lead_id=validated_data['lead_id'],
+            assigned_to=validated_data['assigned_to'],
+        )
+        return lead_assignment
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if instance.lead_type == 'enquiry':
+            lead = Enquiry_Leads.objects.filter(id=instance.lead_id).first()
+            lead_name = lead.name if lead else None
+        elif instance.lead_type == 'workshop':
+            lead = Workshop_Leads.objects.filter(id=instance.lead_id).first()
+            lead_name = lead.customerName if lead else None
+        else:
+            lead_name = None
+        representation['lead_name'] = lead_name
+        representation['assigned_user'] = instance.assigned_to.username
+        return representation

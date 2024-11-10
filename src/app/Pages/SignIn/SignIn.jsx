@@ -92,7 +92,10 @@ const SignIn = () => {
 
       console.log('API response status:', response.status);
       const responseData = await response.json();
-
+      const token = responseData.data.access;  // Assuming the token is in the "token" field
+      console.log(token,"token")
+      // Store the token in localStorage (or sessionStorage)
+      localStorage.setItem('authToken', token)
       if (!response.ok) {
         // If the response is not ok, set the error message
         const errors = responseData || { message: 'Failed to sign in' };

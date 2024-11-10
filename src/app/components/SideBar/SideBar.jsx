@@ -2,31 +2,35 @@ import React, { useContext, useState } from "react";
 import "./SideBar.scss";
 import { Link } from "react-router-dom";
 import { SidebarContext } from "../../../App";
-import WorkshopLeads from "../../components/WorkshopLeads/WorkshopLeads";
-import { Button, Drawer } from 'antd';
-import { color } from "chart.js/helpers";
+import { Button, Drawer, message } from 'antd';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
-import Box from '@mui/material/Box';
-
-import { message } from 'antd';
 
 const SideBar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { activeSidebar, setActiveSidebar } = useContext(SidebarContext);
-  const [open, setOpen] =useState(false);
-  const [loading, setLoading] = React.useState(true);
-
-  
-  // Update to track each submenu by a unique identifier
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const token = localStorage.getItem('authToken');
   const [submenuActive, setSubmenuActive] = useState({});
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone_number: "",
+    location: "",
+  });
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    phone_number: "",
+    location: "",
+  });
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
     setActiveSidebar(activeSidebar === "" ? "toggleSidebar" : "");
   };
 
-  // Toggle specific submenu
   const toggleSubmenu = (submenu) => {
     setSubmenuActive((prevState) => ({
       ...prevState,
@@ -37,44 +41,67 @@ const SideBar = () => {
   const showLoading = () => {
     setOpen(true);
     setLoading(true);
-
-    // Simple loading mock. You should add cleanup logic in real world.
     setTimeout(() => {
       setLoading(false);
     }, 2000);
   };
 
-  const places = [
-    {
-      value: null,
-      name: 'Select an option',
-    },
-    {
-      value: 'BLR',
-      name: 'ETA Mall Bangalore',
-    },
-    {
-      value: 'MUM',
-      name: ' Andheri Mumbai',
-    },
-    {
-      value: 'GA',
-      name: 'Panaji GOA',
-    },
-  ];
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone_number: "",
-    city: "",
-  });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
+
+  const validateForm = () => {
+    let isValid = true;
+    let newErrors = {
+      name: "",
+      email: "",
+      phone_number: "",
+      location: "",
+    };
+
+    if (!formData.name) {
+      newErrors.name = "Name is required.";
+      isValid = false;
+    }
+
+    // Email validation
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!formData.email || !emailPattern.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address.";
+      isValid = false;
+    }
+
+    // Phone number validation (basic example: 10 digits)
+    const phonePattern = /^\d{10}$/;
+    if (!formData.phone_number || !phonePattern.test(formData.phone_number)) {
+      newErrors.phone_number = "Please enter a valid 10-digit phone number.";
+      isValid = false;
+    }
+
+    if (!formData.location) {
+      newErrors.location = "Location is required.";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
 
   const handleSubmit = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     setLoading(true);
     try {
-      const response = await fetch("http://127.0.0.1:8000/EnquiryTelecaller/", {
+      const response = await fetch("http://127.0.0.1:8000/create_enquiry_telecaller/", {
         method: "POST",
         headers: {
+          'Authorization': `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
@@ -82,7 +109,7 @@ const SideBar = () => {
 
       if (response.ok) {
         message.success("Telecaller created successfully!");
-        setFormData({ name: "", email: "", phone_number: "", city: "" });
+        setFormData({ name: "", email: "", phone_number: "", location: "" });
         setOpen(false);
       } else {
         message.error("Failed to create telecaller.");
@@ -95,17 +122,23 @@ const SideBar = () => {
     }
   };
 
+  const places = [
+    { value: "", name: 'Select an option' },
+    { value: 'Bengaluru', name: 'ETA Mall Bangalore' },
+    { value: 'Mumbai', name: 'Andheri Mumbai' },
+    { value: 'Goa', name: 'Panaji GOA' },
+  ];
+
   return (
     <div className={`sidebar ${isCollapsed ? "collapsed" : ""}`}>
       <div className="sidebar_left">
         <i className="ri-arrow-left-double-line" onClick={toggleSidebar}></i>
-        
+
         <div className="link1">
           <i className="ri-home-4-line"></i>
           {!isCollapsed && <Link to="/Home">Home</Link>}
         </div>
 
-        {/* Leads Submenu */}
         <div className="link1">
           <div className="dropdown" onClick={() => toggleSubmenu("leads")}>
             <div className="dropdown-inner">
@@ -120,7 +153,6 @@ const SideBar = () => {
           </div>
         </div>
 
-        {/* Telecaller Submenu */}
         <div className="link1">
           <div className="dropdown" onClick={() => toggleSubmenu("telecaller")}>
             <div className="dropdown-inner">
@@ -130,9 +162,8 @@ const SideBar = () => {
             </div>
             <div className={`dropdown-content ${submenuActive["telecaller"] ? "active" : ""}`}>
               <div className="addTeleDrawer" onClick={showLoading}>Add Telecaller</div>
-              <Link to="/Dashboard">Enquiry Telecaller</Link>
-              <Link to="/LeadTracking">Workshop Telecaller</Link>
-              
+              <Link to="/EnquiryTele">Enquiry Telecaller</Link>
+              <Link to="/WorkShopTele">Workshop Telecaller</Link>
             </div>
           </div>
         </div>
@@ -150,63 +181,68 @@ const SideBar = () => {
           {!isCollapsed && <Link to="/EnrolleTable">Enrolled</Link>}
         </div>
       </div>
+
       <Drawer 
-        closable
-        destroyOnClose
-        title={<p>Create Telecaller</p>}
+        title="Create Telecaller"
         placement="right"
         open={open}
-        // loading={loading}
         onClose={() => setOpen(false)}
+        destroyOnClose
       >
-       
-        <h2>Create Telecaller</h2>
         <form>
-          <TextField id="outlined-basic" label="Name" variant="outlined" />
-          <TextField id="outlined-basic" label="Email" variant="outlined" />
-          <TextField id="outlined-basic" label="Phone" variant="outlined" />
-          <TextField id="outlined-basic" label="City" variant="outlined" />
-          <TextField
-          id="outlined-select-currency"
-          select
-          slotProps={{
-            select: {
-              native: true,
-            },
-          }}          label="Select"
-          defaultValue="EUR"
-          helperText="Please select your city"
-        >
-          {places.map((place, key) => (
-            <option key={place.value} value={place.value}>{place.name}</option>
-          ))}
-        </TextField>
-        <div className="btn-cont">
-        <Button
-          type="primary"
-          style={{
-            marginBottom: 16,
-          }}
-          onClick={handleSubmit}
+          <TextField 
+            name="name" 
+            label="Name" 
+            variant="outlined" 
+            value={formData.name} 
+            onChange={handleChange} 
+            placeholder="Enter your name" 
+            error={!!errors.name}
+            helperText={errors.name}
+          />
+          <TextField 
+            name="email" 
+            label="Email" 
+            variant="outlined" 
+            value={formData.email} 
+            onChange={handleChange} 
+            placeholder="Enter your email"
+            error={!!errors.email}
+            helperText={errors.email}
+          />
+          <TextField 
+            name="phone_number" 
+            label="Phone" 
+            variant="outlined" 
+            value={formData.phone_number} 
+            onChange={handleChange} 
+            placeholder="Enter your phone number"  
+            error={!!errors.phone_number}
+            helperText={errors.phone_number}
+          />
+          <TextField 
+            name="location" 
+            select 
+            label="Location" 
+            variant="outlined" 
+            value={formData.location} 
+            onChange={handleChange}
+            error={!!errors.location}
+            helperText={errors.location}
+          >
+            {places.map((place) => (
+              <MenuItem key={place.value} value={place.value}>
+                {place.name}
+              </MenuItem>
+            ))}
+          </TextField>
           
-        >
-          Submit
-        </Button>
-
-        <Button
-          type="primary"
-          style={{
-            marginBottom: 16,
-          }}
-          onClick={showLoading}
-        >
-          Reload
-        </Button>
-
-        </div>
-        
+          <div className="btn-cont">
+            <Button type="primary" onClick={handleSubmit} loading={loading}>
+              Submit
+            </Button>
+          </div>
         </form>
-
       </Drawer>
     </div>
   );

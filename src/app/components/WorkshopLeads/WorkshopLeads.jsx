@@ -10,7 +10,7 @@ const WorkshopLeads = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
-
+  const token = localStorage.getItem('authToken');
   // Fetch data and store in state
   useEffect(() => {
     fetchWorkshopLeads();
@@ -74,6 +74,7 @@ const WorkshopLeads = () => {
         const response = await fetch("http://127.0.0.1:8000/WorkshopLeads/", {
           method: "POST",
           headers: {
+            'Authorization': `Bearer ${token}`, 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(formattedData),

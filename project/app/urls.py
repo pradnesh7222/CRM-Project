@@ -1,12 +1,13 @@
+from app import views
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from .views import (
-    ActiveStudents, CommunicationHistoryViewSet, CommunicationViewSet, Convert_lead_to_student,
+    ActiveStudents, AssignLeadView, CommunicationHistoryViewSet, CommunicationViewSet, Convert_lead_to_student,
     CourseIdView, CourseViewSet, EmailSendViewSet, EnquiryTelecallerViewSet, EnrollStudentView,
     EnrollmentViewSet, InstallmentViewSet, LogoutView, PlacedStudents, UserLoginView,
     UserRegistrationView, WorkshopLeadViewSet, WorkshopTelecallerViewSet, conversion_rate,
     UsersViewSet, LeadViewSet, StudentViewSet, RolesViewSet, monthly_leads_count,
-    LeadsPerStateView, StudentsPerCourseView, MonthlyActiveStudentsView
+    LeadsPerStateView, StudentsPerCourseView, MonthlyActiveStudentsView,create_enquiry_telecaller,get_leads_by_telecaller
 )
 from django.conf import settings
 from django.conf.urls.static import static
@@ -56,6 +57,9 @@ urlpatterns = [
     path('GraduatedStudents/', PlacedStudents.as_view(), name='PlacedStudents'),
     path('EmailSendViewSet/', EmailSendViewSet.as_view(), name='EmailSendViewSet'),
     path('create-lead/', CourseIdView.as_view(), name='get-course-id'),
+     path('assign-lead/', AssignLeadView.as_view(), name='assign-lead'),
+     path('create_enquiry_telecaller/', create_enquiry_telecaller.as_view(), name='create_enquiry_telecaller'),
+     path('get_leads_by_telecaller/', views.get_leads_by_telecaller, name='get_leads_by_telecaller'),
       path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
 
