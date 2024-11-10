@@ -8,13 +8,12 @@ import { Divider, Radio, Table, message } from "antd";
 const EnquiryTele = () => {
   const [data, setData] = useState([]);
   const [telecaller, setTelecaller] = useState();
-  const [telecallers, setTelecallers] = useState([]); // State to store telecallers list
+  const [telecallers, setTelecallers] = useState([]);
   const [selectionType, setSelectionType] = useState("checkbox");
-  const [selectedLeads, setSelectedLeads] = useState([]); // State to track selected leads
+  const [selectedLeads, setSelectedLeads] = useState([]);
   const [numberOfLeads, setNumberOfLeads] = useState("");
   const token = localStorage.getItem("authToken");
 
-  // Function to fetch telecallers data
   const fetchTelecallers = async () => {
     try {
       const response = await axios.get("http://127.0.0.1:8000/EnquiryTelecaller/", {
@@ -23,14 +22,12 @@ const EnquiryTele = () => {
           "Content-Type": "application/json",
         },
       });
-      const telecallersData = response.data;
-      setTelecallers(telecallersData || []);
+      setTelecallers(response.data || []);
     } catch (error) {
       console.error("Error fetching telecallers data:", error);
     }
   };
 
-  // Function to fetch leads data
   const fetchLeads = async () => {
     try {
       const response = await axios.get("http://127.0.0.1:8000/leads/", {
@@ -45,7 +42,6 @@ const EnquiryTele = () => {
     }
   };
 
-  // Fetch data when the component mounts
   useEffect(() => {
     fetchTelecallers();
     fetchLeads();
@@ -77,9 +73,9 @@ const EnquiryTele = () => {
     },
   };
 
-  // Handle form submission to assign leads
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("HandleSubmit triggered");
 
     if (!telecaller || !numberOfLeads || selectedLeads.length === 0) {
       message.warning("Please select a telecaller, number of leads, and at least one lead.");
@@ -124,7 +120,10 @@ const EnquiryTele = () => {
         </div>
         <div className="telemain_right">
           <div className="telemain_right_up">
-            <form onSubmit={handleSubmit}>
+            {/* Added a console log here to check if the form renders correctly */}
+            <form
+             
+            >
               <div className="assignTeleCont">
                 <div style={{ width: "50%" }}>
                   <label htmlFor="telecaller">Select Telecaller</label>
@@ -162,10 +161,7 @@ const EnquiryTele = () => {
                   <Radio.Group
                     onChange={(e) => setSelectionType(e.target.value)}
                     value={selectionType}
-                  >
-                    {/* <Radio value="checkbox">Checkbox</Radio>
-                    <Radio value="radio">Radio</Radio> */}
-                  </Radio.Group>
+                  />
                   <Divider />
                   <Table
                     rowSelection={{
@@ -177,10 +173,11 @@ const EnquiryTele = () => {
                   />
                 </div>
               </div>
-              <div className="submit-button">
-                <button type="submit">Assign Leads</button>
-              </div>
+              
             </form>
+            
+            <button onClick={handleSubmit}>Assign Leads</button>
+        
           </div>
         </div>
       </div>

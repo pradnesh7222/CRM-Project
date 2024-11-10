@@ -10,6 +10,8 @@ from .serializers import  CommunicationHistorySerializer, CommunicationSerialize
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework import filters 
+from django.contrib.auth.models import User
+
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import generics, permissions
@@ -378,16 +380,19 @@ class AssignLeadView(APIView):
 
 @api_view(['POST'])
 def get_leads_by_telecaller(request):
-    telecaller_name = request.query_params.get('telecaller')
-    lead_count = int(request.query_params.get('count', 0))
-    
+    telecaller_name = request.data.get('telecaller')
+    lead_count = int(request.data.get('number_of_leads', 0))
+    print(telecaller_name)
+    print(lead_count)
     # Fetch the telecaller user
-    telecaller = User.objects.filter(username=telecaller_name).first()
-    if not telecaller:
-        return Response({"error": "Telecaller does not exist."}, status=status.HTTP_404_NOT_FOUND)
+    #telecaller = User.objects.get(username=telecaller_name)
+    #print(telecaller)
+    #if not telecaller:
+        #return Response({"error": "Telecaller does not exist."}, status=status.HTTP_404_NOT_FOUND)
     
     # Fetch the specified number of leads assigned to the telecaller
-    leads = Enquiry_Leads.objects.filter(assigned_to=telecaller)[:lead_count]
+    leads = EnquiryTelecaller.objects.filter(name=telecaller_name)
+    print(leads)
     if not leads:
         return Response({"error": "No leads found for the specified telecaller."}, status=status.HTTP_404_NOT_FOUND)
     

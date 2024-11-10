@@ -100,6 +100,7 @@ class Enquiry_Leads(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     course=models.ForeignKey(Course,on_delete=models.CASCADE,null=True)
+   # assigned=models.BooleanField(null=True,blank=True)
     def __str__(self):
         return f"Lead: {self.name} "
 
@@ -268,8 +269,6 @@ class EnquiryTelecaller(models.Model):
             ('Bengaluru', 'Bengaluru'),
             ('Goa', 'Goa')
         ])
-    def __str__(self):
-        return f"Telecaller: {self.user} - Lead: {self.assigned_lead.name}"
     
 class WorkshopTelecaller(models.Model):
     user = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='workshop_calls')
