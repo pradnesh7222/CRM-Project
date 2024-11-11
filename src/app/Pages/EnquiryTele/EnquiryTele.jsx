@@ -69,18 +69,9 @@ const EnquiryTele = () => {
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
-        selectedRows
-      );
-      // setSelectedLeads(selectedRows);
+      
+      setSelectedLeads(selectedRows);
     },
-    getCheckboxProps: (record) => ({
-      disabled: record.name === "Disabled User",
-      // Column configuration not to be checked
-      name: record.name,
-    }),
   };
 
   const handleSubmit = async (e) => {
