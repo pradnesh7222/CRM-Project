@@ -54,8 +54,8 @@ const EnquiryTele = () => {
       render: (text) => <a>{text}</a>,
     },
     {
-      title: "Location",
-      dataIndex: "location",
+      title: "Course",
+      dataIndex: "course",
     },
     {
       title: "Phone Number",
@@ -69,8 +69,18 @@ const EnquiryTele = () => {
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      setSelectedLeads(selectedRows);
+      console.log(
+        `selectedRowKeys: ${selectedRowKeys}`,
+        "selectedRows: ",
+        selectedRows
+      );
+      // setSelectedLeads(selectedRows);
     },
+    getCheckboxProps: (record) => ({
+      disabled: record.name === "Disabled User",
+      // Column configuration not to be checked
+      name: record.name,
+    }),
   };
 
   const handleSubmit = async (e) => {

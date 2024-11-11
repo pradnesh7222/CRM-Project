@@ -100,7 +100,7 @@ class Enquiry_Leads(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     course=models.ForeignKey(Course,on_delete=models.CASCADE,null=True)
-   # assigned=models.BooleanField(null=True,blank=True)
+    assigned=models.BooleanField(null=True,blank=True)
     def __str__(self):
         return f"Lead: {self.name} "
 
@@ -111,6 +111,7 @@ class Workshop_Leads(models.Model):
     customerEmail=models.EmailField()
     orderDate=models.DateTimeField(auto_created=True)
     amount=models.IntegerField()
+    assigned=models.BooleanField(null=True,blank=True)
     paymentStatus=models.CharField(max_length=100,choices=[
             ('Payment not done', 'Payment not done'),
             ('Payment done', 'Payment done')

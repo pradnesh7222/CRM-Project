@@ -5,13 +5,13 @@ from rest_framework import status
 from rest_framework import generics
 from app.serializers import LoginSerializer, RegistrationSerializer
 from rest_framework import viewsets
-from .models import   Communication, CommunicationHistory, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment,  Roles, Student, Users, Workshop_Leads, WorkshopTelecaller
+from .models import   Communication, CommunicationHistory, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, LeadAssignment,  Roles, Student, Users, Workshop_Leads, WorkshopTelecaller
 from .serializers import  CommunicationHistorySerializer, CommunicationSerializer, CourseSerializer, EnquiryTelecallerSerializer, EnrollmentSerializer, InstallmentSerializer, LeadAssignmentSerializer, LeadSerializer, RoleSerializer, StudentSerializer, UsersSerializer, WorkshopSerializer, WorkshopTelecallerSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework import filters 
 from django.contrib.auth.models import User
-
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import generics, permissions
@@ -48,6 +48,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import AllowAny
 class UserRegistrationView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
         serializer = RegistrationSerializer(data=request.data)
         if serializer.is_valid():
@@ -377,26 +378,30 @@ class AssignLeadView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 @api_view(['POST'])
 def get_leads_by_telecaller(request):
     telecaller_name = request.data.get('telecaller')
     lead_count = int(request.data.get('number_of_leads', 0))
-    print(telecaller_name)
-    print(lead_count)
+    lead_id=request.data.get('lead_ids')
+    print("Telecaller:", telecaller_name)
+    print("Lead count:", lead_count)
+
     # Fetch the telecaller user
-    #telecaller = User.objects.get(username=telecaller_name)
-    #print(telecaller)
-    #if not telecaller:
-        #return Response({"error": "Telecaller does not exist."}, status=status.HTTP_404_NOT_FOUND)
-    
-    # Fetch the specified number of leads assigned to the telecaller
-    leads = EnquiryTelecaller.objects.filter(name=telecaller_name)
-    print(leads)
+    # Fetch leads assigned to the telecaller, limiting by lead_count
+    leads = EnquiryTelecaller.objects.filter(name=telecaller_name)[:lead_count]
+    print("Leads:", leads)
+
+    # Check if leads are found
     if not leads:
         return Response({"error": "No leads found for the specified telecaller."}, status=status.HTTP_404_NOT_FOUND)
-    
-    # Serialize leads data
-    serialized_leads = LeadSerializer(leads, many=True).data
+
+    # Assign each lead and create LeadAssignment entries
+    assigned_leads = []
+    for lead in leads:
+        lead.assigned=True
+        lead.save()
+        
+
+    # Serialize and return the assigned leads
+    serialized_leads = LeadSerializer([assignment for assignment in assigned_leads], many=True).data
     return Response(serialized_leads, status=status.HTTP_200_OK)
-    
