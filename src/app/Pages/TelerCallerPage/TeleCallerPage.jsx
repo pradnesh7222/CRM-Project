@@ -11,9 +11,11 @@ const TeleCallerPage = () => {
   const [selectionType, setSelectionType] = useState("checkbox");
   const token = localStorage.getItem("authToken");
   const [leadData, setLeadData] = useState([]);
-  const [remarkData, setRemarkData] = useState([]); // New state for remarks data
+  const [remarkData, setRemarkData] = useState([]);
   const [open, setOpen] = useState(false);
   const [remark, setRemark] = useState("");
+  const [status, setStatus] = useState("Pending");
+  const [selectedLeadId, setSelectedLeadId] = useState(null); // Add state for selected lead ID
 
   const showDrawer = () => {
     setOpen(true);
@@ -23,7 +25,7 @@ const TeleCallerPage = () => {
     setOpen(false);
   };
 
-  const status = [
+  const statusOptions = [
     { value: "Pending", label: "Pending" },
     { value: "Contacted", label: "Contacted" },
     { value: "Follow Up", label: "Follow Up" },
@@ -32,7 +34,20 @@ const TeleCallerPage = () => {
   ];
 
   const columns = [
-    { title: "Name", dataIndex: "name", render: (text) => <a onClick={showDrawer}>{text}</a> },
+    {
+      title: "Name",
+      dataIndex: "name",
+      render: (text, record) => (
+        <a
+          onClick={() => {
+            showDrawer();
+            setSelectedLeadId(record.id); // Set selected lead ID
+          }}
+        >
+          {text}
+        </a>
+      ),
+    },
     { title: "Course", dataIndex: "course" },
     { title: "Phone", dataIndex: "phone_number" },
     { title: "Email", dataIndex: "email" },
@@ -73,9 +88,9 @@ const TeleCallerPage = () => {
   }, [token]);
 
   // Fetch remarks data
-  useEffect(() => {
+  const fetchRemarks = () => {
     axios
-      .post("http://127.0.0.1:8000/remarks/", {
+      .get("http://127.0.0.1:8000/remarks/", {
         headers: {
           accept: "application/json",
           Authorization: `Bearer ${token}`,
@@ -91,9 +106,45 @@ const TeleCallerPage = () => {
       .catch((error) => {
         console.error("Error fetching remarks data:", error);
       });
+  };
+
+  useEffect(() => {
+    fetchRemarks();
   }, [token]);
 
-  // Merge leadData with remarkData
+  // Handle form submission to add new remark
+  const handleRemarkSubmit = () => {
+    if (!selectedLeadId) {
+      console.warn("No lead selected");
+      return;
+    }
+
+    axios
+      .post(
+        "http://127.0.0.1:8000/remarks/",
+        {
+          remark_text: remark,
+          status: status,
+          enquiry_lead: selectedLeadId, // Use selectedLeadId here
+        },
+        {
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        fetchRemarks(); // Refresh the remarks
+        setRemark(""); // Clear the input after submission
+        setStatus("Pending");
+        onClose(); // Close the drawer after submission
+      })
+      .catch((error) => {
+        console.error("Error submitting remark:", error);
+      });
+  };
+
   const mergedData = leadData.map((lead) => ({
     ...lead,
     status: remarkData.find((remark) => remark.enquiry_lead === lead.id)?.status || "No Status",
@@ -133,16 +184,17 @@ const TeleCallerPage = () => {
             />
           </div>
         </div>
-        <Drawer title="Lead Details" onClose={onClose} open={open}>
+        <Drawer title="Add Remark" onClose={onClose} open={open}>
           <div className="form-body">
             <TextField
               id="outlined-select-status"
               select
               label="Status"
-              defaultValue="Pending"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
               helperText="Please select status"
             >
-              {status.map((option) => (
+              {statusOptions.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
                 </MenuItem>
@@ -152,11 +204,11 @@ const TeleCallerPage = () => {
               id="remark"
               label="Remark"
               variant="outlined"
+              value={remark}
+              onChange={(e) => setRemark(e.target.value)}
               className="textfield"
             />
-            <Button onClick={() => console.log("Submit clicked")}>
-              Submit
-            </Button>
+            <Button onClick={handleRemarkSubmit}>Submit</Button>
           </div>
         </Drawer>
       </div>
