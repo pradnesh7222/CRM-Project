@@ -434,5 +434,6 @@ def get_assigned_workshop_telecaller(request):
     return Response(serialized_leads, status=status.HTTP_200_OK)
 
 class RemarksViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated] 
     queryset = Remarks.objects.all()
     serializer_class = RemarksSerializer

@@ -5,12 +5,15 @@ import SideBar from "../../components/SideBar/SideBar";
 import { Divider, Radio, Table, Button, Drawer } from "antd";
 import TextField from "@mui/material/TextField";
 import axios from "axios";
+import MenuItem from "@mui/material/MenuItem";
 
 const TeleCallerPage = () => {
   const [selectionType, setSelectionType] = useState("checkbox");
   const token = localStorage.getItem("authToken");
-  const [leadData, setLeadData] = useState([]); 
+  const [leadData, setLeadData] = useState([]);
+  const [remarkData, setRemarkData] = useState([]); // New state for remarks data
   const [open, setOpen] = useState(false);
+  const [remark, setRemark] = useState("");
 
   const showDrawer = () => {
     setOpen(true);
@@ -20,99 +23,35 @@ const TeleCallerPage = () => {
     setOpen(false);
   };
 
+  const status = [
+    { value: "Pending", label: "Pending" },
+    { value: "Contacted", label: "Contacted" },
+    { value: "Follow Up", label: "Follow Up" },
+    { value: "Payment confirmed", label: "Payment confirmed" },
+    { value: "Closed", label: "Closed" },
+  ];
+
   const columns = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      render: (text) => <a onClick={showDrawer}>{text}</a>,
-    },
-    {
-      title: "Course",
-      dataIndex: "course", // Match backend field names exactly
-    },
-    {
-      title: "Phone",
-      dataIndex: "phone",
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-    },
-    {
-      title: "Location",
-      dataIndex: "location",
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-    },
-    {
-      title: "Remark",
-      dataIndex: "remark",
-    },
+    { title: "Name", dataIndex: "name", render: (text) => <a onClick={showDrawer}>{text}</a> },
+    { title: "Course", dataIndex: "course" },
+    { title: "Phone", dataIndex: "phone_number" },
+    { title: "Email", dataIndex: "email" },
+    { title: "Location", dataIndex: "location" },
+    { title: "Status", dataIndex: "status" },
+    { title: "Remark", dataIndex: "remark_text" },
     {
       title: "Sign",
       dataIndex: "sign",
       render: () => (
-        <i className="ri-arrow-up-circle-line" style={{ color: "blue", fontSize: "1.5em" }}></i>
+        <i
+          className="ri-arrow-up-circle-line"
+          style={{ color: "blue", fontSize: "1.5em" }}
+        ></i>
       ),
     },
   ];
-//     const data = [
-//     {
-//       key: "1",
-//       name: <a onClick={showDrawer}>Shivani</a>,
-//       Course: "Python",
-//       Phone: 9073568902,
-//       email: "shivani@gmail.com",
-//       Location: "Bangalore",
-//       Status: "Contacted",
-//       Remark: "student want any othe course",
-//       Sign: (
-//         <i
-//           class="ri-arrow-up-circle-line"
-//           style={{ color: "blue", fontSize: "2vw" }}
-//         ></i>
-//       ),
-//     },
-//     {
-//       key: "2",
-//       name: "Shivganga",
-//       Course: "Python",
-//       Phone: 9073568902,
-//       email: "London No. 1 Lake Park",
-//       Location: "Bangalore",
-//       Status: "Pending",
-//     },
-//     {
-//       key: "3",
-//       name: "Pradnesh",
-//       Course: "java",
-//       Phone: 9073568902,
-//       email: "Sydney No. 1 Lake Park",
-//       Location: "Bangalore",
-//       Status: "Follow Up",
-//     },
-//     {
-//       key: "4",
-//       name: "Rishikesh",
-//       Course: "React Frontend",
-//       Phone: 9073568902,
-//       email: "Sydney No. 1 Lake Park",
-//       Location: "Bangalore",
-//       Status: "Converted",
-//     },
-//     {
-//       key: "4",
-//       name: "Narayan",
-//       Course: "React Frontend",
-//       Phone: 9073568902,
-//       email: "Sydney No. 1 Lake Park",
-//       Location: "Bangalore",
-//       Status: "Closed",
-//     },
-//   ];
 
+  // Fetch lead data
   useEffect(() => {
     axios
       .get("http://127.0.0.1:8000/get_unassigned_enquiry_telecaller/", {
@@ -124,7 +63,7 @@ const TeleCallerPage = () => {
       .then((response) => {
         const dataWithKeys = response.data.map((item, index) => ({
           ...item,
-          key: item.id || index, // Use a unique identifier if available
+          key: item.id || index,
         }));
         setLeadData(dataWithKeys);
       })
@@ -132,6 +71,34 @@ const TeleCallerPage = () => {
         console.error("Error fetching telecaller data:", error);
       });
   }, [token]);
+
+  // Fetch remarks data
+  useEffect(() => {
+    axios
+      .post("http://127.0.0.1:8000/remarks/", {
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        const dataWithKeys = response.data.map((item, index) => ({
+          ...item,
+          key: item.id || index,
+        }));
+        setRemarkData(dataWithKeys);
+      })
+      .catch((error) => {
+        console.error("Error fetching remarks data:", error);
+      });
+  }, [token]);
+
+  // Merge leadData with remarkData
+  const mergedData = leadData.map((lead) => ({
+    ...lead,
+    status: remarkData.find((remark) => remark.enquiry_lead === lead.id)?.status || "No Status",
+    remark_text: remarkData.find((remark) => remark.enquiry_lead === lead.id)?.remark_text || "No Remark",
+  }));
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -153,10 +120,7 @@ const TeleCallerPage = () => {
             <Radio.Group
               onChange={(e) => setSelectionType(e.target.value)}
               value={selectionType}
-            >
-              {/* <Radio value="checkbox">Checkbox</Radio>
-              <Radio value="radio">Radio</Radio> */}
-            </Radio.Group>
+            ></Radio.Group>
             <Divider />
             <Table
               rowSelection={{
@@ -164,21 +128,35 @@ const TeleCallerPage = () => {
                 ...rowSelection,
               }}
               columns={columns}
-              dataSource={leadData.map((item, index) => ({ ...item, key: index }))} // Use the correct data state
+              dataSource={mergedData}
               pagination={{ pageSize: 10 }}
             />
           </div>
         </div>
         <Drawer title="Lead Details" onClose={onClose} open={open}>
           <div className="form-body">
-            <TextField id="name" label="Name" variant="outlined" className="textfield" />
-            <TextField id="course" label="Course" variant="outlined" className="textfield" />
-            <TextField id="email" label="Email" variant="outlined" className="textfield" />
-            <TextField id="phone" label="Phone" variant="outlined" className="textfield" />
-            <TextField id="location" label="Location" variant="outlined" className="textfield" />
-            <TextField id="status" label="Status" variant="outlined" className="textfield" />
-            <TextField id="remark" label="Remark" variant="outlined" className="textfield" />
-            <Button onClick={() => console.log("Submit clicked")}>Submit</Button>
+            <TextField
+              id="outlined-select-status"
+              select
+              label="Status"
+              defaultValue="Pending"
+              helperText="Please select status"
+            >
+              {status.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              id="remark"
+              label="Remark"
+              variant="outlined"
+              className="textfield"
+            />
+            <Button onClick={() => console.log("Submit clicked")}>
+              Submit
+            </Button>
           </div>
         </Drawer>
       </div>
