@@ -27,6 +27,7 @@ import Message from "../components/Message/Message";
 import WorkshopLeads from "../components/WorkshopLeads/WorkshopLeads";
 import EnquiryTele from "../Pages/EnquiryTele/EnquiryTele";
 import WorkShopTele from "../Pages/WorkShopTele/WorkShopTele"
+import TeleCallerPage from "../Pages/TelerCallerPage/TeleCallerPage"
 
 
 const RouterComponent = () => {
@@ -62,6 +63,8 @@ const RouterComponent = () => {
         <Route path="/WorkshopLeads" element={<WorkshopLeads/>}/>
         <Route path="/EnquiryTele" element={<EnquiryTele/>}/>
         <Route path="/WorkShopTele" element={<WorkShopTele/>}/>
+        <Route path="/TeleCallerPage" element={<TeleCallerPage/>}/>
+
 
       </Routes>
     </BrowserRouter>

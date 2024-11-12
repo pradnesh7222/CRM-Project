@@ -1,77 +1,95 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./EnquiryTele.scss";
 import Navbar from "../../components/navbar/NavBar";
 import SideBar from "../../components/SideBar/SideBar";
-import { Divider, Radio, Table } from "antd";
+import { Divider, Radio, Table, message } from "antd";
+import axios from "axios";
 
 const EnquiryTele = () => {
-  const columns = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      render: (text) => <a>{text}</a>,
-    },
-    {
-      title: "Course",
-      dataIndex: "Course",
-    },
-    {
-      title: "Phone",
-      dataIndex: "Phone",
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-    },
-  ];
-
-  const data = [
-    {
-      key: "1",
-      name: "Shivani",
-      Course: "Python",
-      Phone: 9073568902,
-      email: "shivani@gmail.com",
-    },
-    {
-      key: "2",
-      name: "Shivganga",
-      Course: "Python",
-      Phone: 9073568902,
-      email: "London No. 1 Lake Park",
-    },
-    {
-      key: "3",
-      name: "Pradnesh",
-      Course: "java",
-      Phone: 9073568902,
-      email: "Sydney No. 1 Lake Park",
-    },
-    {
-      key: "4",
-      name: "Rishikesh",
-      Course: "React Frontend",
-      Phone: 9073568902,
-      email: "Sydney No. 1 Lake Park",
-    },
-  ];
-
-  const [telecaller, setTelecaller] = useState();
+  const [telecaller, setTelecaller] = useState([]);
   const [selectionType, setSelectionType] = useState("checkbox");
+  const [data, setData] = useState([]);
+  const token = localStorage.getItem("authToken");
+  const [numberOfLeads, setNumberOfLeads] = useState(0);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+  useEffect(() => {
+    // Update selectedRowKeys when numberOfLeads or data changes
+    setSelectedRowKeys(data.slice(0, numberOfLeads).map((item, index) => index));
+  }, [numberOfLeads, data]);
+
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:8000/EnquiryTelecaller/", {
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setTelecaller(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching telecaller data:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:8000/leads/", {
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setData(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching leads data:", error);
+      });
+  }, []);
+
+  const columns = [
+    { title: "Name", dataIndex: "name", render: (text) => <a>{text}</a> },
+    { title: "Course", dataIndex: "course" },
+    { title: "Phone", dataIndex: "phone_number" },
+    { title: "Email", dataIndex: "email" },
+  ];
 
   const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
-        selectedRows
-      );
+    selectedRowKeys,
+    onChange: (newSelectedRowKeys, selectedRows) => {
+      setSelectedRowKeys(newSelectedRowKeys);
+      setNumberOfLeads(selectedRows.length);
     },
-    getCheckboxProps: (record) => ({
-      disabled: record.name === "Disabled User",
-      // Column configuration not to be checked
-      name: record.name,
-    }),
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const selectedLeads = selectedRowKeys.map((key) => data[key]);
+
+    const payload = {
+      telecaller,
+      numberOfLeads,
+      leads: selectedLeads,
+    };
+
+    axios
+      .post("http://127.0.0.1:8000/assign_leads", payload, {
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        message.success("Leads assigned successfully");
+      })
+      .catch((error) => {
+        message.error("Failed to assign leads");
+        console.error("Error assigning leads:", error);
+      });
   };
 
   return (
@@ -85,7 +103,7 @@ const EnquiryTele = () => {
         </div>
         <div className="telemain_right">
           <div className="telemain_right_up">
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="assignTeleCont">
                 <div style={{ width: "50%" }}>
                   <label htmlFor="telecaller">Select Telecaller</label>
@@ -96,9 +114,12 @@ const EnquiryTele = () => {
                     onChange={(e) => setTelecaller(e.target.value)}
                   >
                     <option value="">Select Telecaller</option>
-                    <option value="John Doe">John Doe</option>
-                    <option value="Jane Doe">Jane Doe</option>
-                    <option value="Alex Smith">Alex Smith</option>
+                    {Array.isArray(telecaller) &&
+                      telecaller.map((tc) => (
+                        <option key={tc.id} value={tc.name}>
+                          {tc.name}
+                        </option>
+                      ))}
                   </select>
                 </div>
                 <div style={{ width: "50%" }}>
@@ -107,28 +128,27 @@ const EnquiryTele = () => {
                     type="number"
                     id="numberOfLeads"
                     placeholder="Number of Leads"
+                    value={numberOfLeads}
+                    onChange={(e) => setNumberOfLeads(Number(e.target.value))}
                   />
                 </div>
               </div>
               <div className="leadTable">
-                <div>
-                  <Radio.Group
-                    onChange={(e) => setSelectionType(e.target.value)}
-                    value={selectionType}
-                  >
-                    {/* <Radio value="checkbox">Checkbox</Radio>
-                    <Radio value="radio">radio</Radio> */}
-                  </Radio.Group>
-                  <Divider />
-                  <Table
-                    rowSelection={{
-                      type: selectionType,
-                      ...rowSelection,
-                    }}
-                    columns={columns}
-                    dataSource={data}
-                  />
-                </div>
+                <Radio.Group
+                  onChange={(e) => setSelectionType(e.target.value)}
+                  value={selectionType}
+                >
+                </Radio.Group>
+                <Divider />
+                <Table
+                  rowSelection={{
+                    type: selectionType,
+                    ...rowSelection,
+                  }}
+                  columns={columns}
+                  dataSource={data.map((item, index) => ({ ...item, key: index }))} // Pass data with unique keys
+                  pagination={{ pageSize: 10 }}
+                />
               </div>
               <div className="submit-button">
                 <button type="submit">Assign Leads</button>

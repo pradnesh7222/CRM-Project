@@ -1,0 +1,33 @@
+.telecaller{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 15% 85%;
+    gap: 5px;
+    overflow-x: auto;
+}
+
+.textfield{
+    width: 100%;
+    padding: 1vw;
+}
+
+.ant-drawer-body{
+    gap:10px;
+}
+
+.form-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+   
+}
+
+button{
+    background-color: #4a90e2;
+    color: white;
+    font-weight: 600;
+    border: none;
+    padding: 1vw;
+    border-radius: 5px;
+}
