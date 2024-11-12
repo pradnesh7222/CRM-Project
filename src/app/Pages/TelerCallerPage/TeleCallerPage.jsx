@@ -48,7 +48,7 @@ const TeleCallerPage = () => {
         </a>
       ),
     },
-    { title: "Course", dataIndex: "course" },
+    { title: "Course", dataIndex: "course_name" },
     { title: "Phone", dataIndex: "phone_number" },
     { title: "Email", dataIndex: "email" },
     { title: "Location", dataIndex: "location" },

@@ -52,7 +52,7 @@ const EnquiryTele = () => {
 
   const columns = [
     { title: "Name", dataIndex: "name", render: (text) => <a>{text}</a> },
-    { title: "Course", dataIndex: "course" },
+    { title: "Course", dataIndex: "course_name" },
     { title: "Phone", dataIndex: "phone_number" },
     { title: "Email", dataIndex: "email" },
   ];
