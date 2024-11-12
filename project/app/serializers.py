@@ -115,9 +115,10 @@ class UsersSerializer(serializers.ModelSerializer):
 
 
 class LeadSerializer(serializers.ModelSerializer):
+    course_name = serializers.ReadOnlyField(source='course.name')
     class Meta:
         model = Enquiry_Leads
-        fields = '__all__'
+        fields = ['id', 'name', 'email', 'phone_number', 'course_name','course']
         
 
 class WorkshopSerializer(serializers.ModelSerializer):

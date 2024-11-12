@@ -99,7 +99,7 @@
     }
 
     &_table {
-      overflow-x: scroll;
+      overflow:scroll;
       width: 98%;
       box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
       margin-top: 1vw;
@@ -108,7 +108,7 @@
 
       table {
         width: 100%;
-        overflow-x: auto;
+        overflow:scroll;
         border-radius: 10px;
 
         th,

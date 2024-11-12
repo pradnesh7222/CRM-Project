@@ -6,7 +6,7 @@ import SideBar from "../../components/SideBar/SideBar";
 const Dashboard = () => {
   const [orders, setOrders] = useState([]); // State to store orders
   const [currentPage, setCurrentPage] = useState(1); // For pagination
-  const [ordersPerPage] = useState(5); // Orders per page
+  const [ordersPerPage] = useState(10); // Orders per page
   const [totalCount, setTotalCount] = useState(0); // Total number of orders from the API
   const [searchQuery, setSearchQuery] = useState(""); // For search query
   const token = localStorage.getItem('authToken');
