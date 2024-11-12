@@ -250,7 +250,13 @@ class EnquiryTelecaller(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True) 
     phone_number = models.CharField(max_length=10)
-    assigned_lead = models.ForeignKey(Enquiry_Leads, on_delete=models.CASCADE, related_name='assigned_telecaller',null=True, blank=True)
+    assigned_lead = models.ManyToManyField(
+    Enquiry_Leads, 
+    related_name='assigned_telecaller', 
+    null=True, 
+    blank=True
+)
+
     follow_up_date = models.DateTimeField(null=True, blank=True)
     status = models.CharField(
         max_length=100,

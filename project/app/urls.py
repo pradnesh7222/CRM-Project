@@ -27,8 +27,6 @@ router.register(r'enrollments', EnrollmentViewSet)
 router.register(r'WorkshopLeads', WorkshopLeadViewSet)
 router.register(r'Installments', InstallmentViewSet)
 router.register(r'EnquiryTelecaller', EnquiryTelecallerViewSet)
-
-# Register WorkshopTelecallerViewSet with a unique basename
 router.register(r'WorkshopTelecaller', WorkshopTelecallerViewSet, basename='workshoptelecaller_unique')
 schema_view = get_schema_view(
    openapi.Info(
@@ -57,10 +55,11 @@ urlpatterns = [
     path('GraduatedStudents/', PlacedStudents.as_view(), name='PlacedStudents'),
     path('EmailSendViewSet/', EmailSendViewSet.as_view(), name='EmailSendViewSet'),
     path('create-lead/', CourseIdView.as_view(), name='get-course-id'),
-     path('assign-lead/', AssignLeadView.as_view(), name='assign-lead'),
-     path('create_enquiry_telecaller/', create_enquiry_telecaller.as_view(), name='create_enquiry_telecaller'),
-     path('get_leads_by_telecaller/', views.get_leads_by_telecaller, name='get_leads_by_telecaller'),
-      path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('assign-lead/', AssignLeadView.as_view(), name='assign-lead'),
+    path('create_enquiry_telecaller/', create_enquiry_telecaller.as_view(), name='create_enquiry_telecaller'),
+    path('get_leads_by_telecaller/', views.get_leads_by_telecaller, name='get_leads_by_telecaller'),
+    path('get_unassigned_enquiry_telecaller/', views.get_unassigned_enquiry_telecaller, name='get_unassigned_enquiry_telecaller'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
 
 urlpatterns += router.urls
