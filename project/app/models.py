@@ -301,3 +301,22 @@ class WorkshopTelecaller(models.Model):
         ])
     def __str__(self):
         return f"Workshop Telecaller: {self.user} - Lead: {self.assigned_workshop_lead.customerName}"
+
+class Remarks(models.Model):
+    status = models.CharField(
+        max_length=100,
+        choices=[
+            ('Pending', 'Pending'),
+            ('Contacted', 'Contacted'),
+            ('Follow Up', 'Follow Up'),
+            ('Converted', 'Converted'),
+            ('Closed', 'Closed'),
+        ],
+        default='Pending'
+    )
+    enquiry_lead = models.ForeignKey(Enquiry_Leads, on_delete=models.CASCADE, related_name="remarks")
+    remark_text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Remark for {self.enquiry_lead.name} on {self.created_at.strftime('%Y-%m-%d %H:%M')}"

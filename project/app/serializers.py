@@ -17,7 +17,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
-from .models import Communication, CommunicationHistory, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, LeadAssignment, Roles, Users, Student, Workshop_Leads, WorkshopTelecaller
+from .models import Communication, CommunicationHistory, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, LeadAssignment, Remarks, Roles, Users, Student, Workshop_Leads, WorkshopTelecaller
 
 from rest_framework import serializers
 from django.contrib.auth.forms import PasswordResetForm
@@ -118,6 +118,7 @@ class LeadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Enquiry_Leads
         fields = '__all__'
+        
 
 class WorkshopSerializer(serializers.ModelSerializer):
     class Meta:
@@ -234,3 +235,8 @@ class LeadAssignmentSerializer(serializers.Serializer):
         representation['lead_name'] = lead_name
         representation['assigned_user'] = instance.assigned_to.username
         return representation
+
+class RemarksSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Remarks
+        fields = ['status','id', 'enquiry_lead', 'remark_text', 'created_at']

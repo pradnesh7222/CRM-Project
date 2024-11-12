@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     ActiveStudents, AssignLeadView, CommunicationHistoryViewSet, CommunicationViewSet, Convert_lead_to_student,
     CourseIdView, CourseViewSet, EmailSendViewSet, EnquiryTelecallerViewSet, EnrollStudentView,
-    EnrollmentViewSet, InstallmentViewSet, LogoutView, PlacedStudents, UserLoginView,
+    EnrollmentViewSet, InstallmentViewSet, LogoutView, PlacedStudents, RemarksViewSet, UserLoginView,
     UserRegistrationView, WorkshopLeadViewSet, WorkshopTelecallerViewSet, conversion_rate,
     UsersViewSet, LeadViewSet, StudentViewSet, RolesViewSet, monthly_leads_count,
     LeadsPerStateView, StudentsPerCourseView, MonthlyActiveStudentsView,create_enquiry_telecaller,get_leads_by_telecaller
@@ -28,6 +28,7 @@ router.register(r'WorkshopLeads', WorkshopLeadViewSet)
 router.register(r'Installments', InstallmentViewSet)
 router.register(r'EnquiryTelecaller', EnquiryTelecallerViewSet)
 router.register(r'WorkshopTelecaller', WorkshopTelecallerViewSet, basename='workshoptelecaller_unique')
+router.register(r'remarks', RemarksViewSet)
 schema_view = get_schema_view(
    openapi.Info(
       title="Snippets API",
@@ -59,6 +60,9 @@ urlpatterns = [
     path('create_enquiry_telecaller/', create_enquiry_telecaller.as_view(), name='create_enquiry_telecaller'),
     path('get_leads_by_telecaller/', views.get_leads_by_telecaller, name='get_leads_by_telecaller'),
     path('get_unassigned_enquiry_telecaller/', views.get_unassigned_enquiry_telecaller, name='get_unassigned_enquiry_telecaller'),
+    path('get_unassigned_workshop_telecaller/', views.get_unassigned_workshop_telecaller, name='get_leads_by_telecaller'),
+    path('get_assigned_workshop_telecaller/', views.get_assigned_workshop_telecaller, name='get_leads_by_telecaller'),
+    path('get_assigned_enquiry_telecaller/', views.get_assigned_enquiry_telecaller, name='get_unassigned_enquiry_telecaller'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
 

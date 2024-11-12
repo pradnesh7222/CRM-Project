@@ -5,8 +5,8 @@ from rest_framework import status
 from rest_framework import generics
 from app.serializers import LoginSerializer, RegistrationSerializer
 from rest_framework import viewsets
-from .models import   Communication, CommunicationHistory, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, LeadAssignment,  Roles, Student, Users, Workshop_Leads, WorkshopTelecaller
-from .serializers import  CommunicationHistorySerializer, CommunicationSerializer, CourseSerializer, EnquiryTelecallerSerializer, EnrollmentSerializer, InstallmentSerializer, LeadAssignmentSerializer, LeadSerializer, RoleSerializer, StudentSerializer, UsersSerializer, WorkshopSerializer, WorkshopTelecallerSerializer
+from .models import   Communication, CommunicationHistory, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, LeadAssignment, Remarks,  Roles, Student, Users, Workshop_Leads, WorkshopTelecaller
+from .serializers import  CommunicationHistorySerializer, CommunicationSerializer, CourseSerializer, EnquiryTelecallerSerializer, EnrollmentSerializer, InstallmentSerializer, LeadAssignmentSerializer, LeadSerializer, RemarksSerializer, RoleSerializer, StudentSerializer, UsersSerializer, WorkshopSerializer, WorkshopTelecallerSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.decorators import api_view, permission_classes
@@ -413,7 +413,26 @@ def get_unassigned_enquiry_telecaller(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
+def get_assigned_enquiry_telecaller(request):
+    leads = Enquiry_Leads.objects.filter(assigned=True)
+    serialized_leads = LeadSerializer(leads, many=True).data
+    return Response(serialized_leads, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_unassigned_workshop_telecaller(request):
-    leads = Workshop_Leads.objects.filter(assigned__isnull=True)
+    leads = Workshop_Leads.objects.filter(assigned_isnull=True)
     serialized_leads = WorkshopSerializer(leads, many=True).data
     return Response(serialized_leads, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_assigned_workshop_telecaller(request):
+    leads =Workshop_Leads.objects.filter(assigned=True)
+    serialized_leads = Workshop_Leads(leads, many=True).data
+    return Response(serialized_leads, status=status.HTTP_200_OK)
+
+class RemarksViewSet(viewsets.ModelViewSet):
+    queryset = Remarks.objects.all()
+    serializer_class = RemarksSerializer
