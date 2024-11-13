@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./TeleCallerPage.scss";
+import "./WorkShopTeleCallerPage.scss";
 import Navbar from "../../components/navbar/NavBar";
 import SideBar from "../../components/SideBar/SideBar";
 import { Divider, Radio, Table, Button, Drawer } from "antd";
@@ -8,7 +8,7 @@ import axios from "axios";
 import MenuItem from "@mui/material/MenuItem";
 import { Link } from "react-router-dom";
 
-const TeleCallerPage = () => {
+const WorkShopTeleCallerPage = () => {
   const [selectionType, setSelectionType] = useState("checkbox");
   const token = localStorage.getItem("authToken");
   const [leadData, setLeadData] = useState([]);
@@ -223,4 +223,4 @@ const TeleCallerPage = () => {
   );
 };
 
-export default TeleCallerPage;
+export default WorkShopTeleCallerPage;
