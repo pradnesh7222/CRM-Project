@@ -36,6 +36,8 @@ const Communication = () => {
               <i class="ri-mail-line" onClick={() => handleIconClick(<Email />)}></i>
               <i class="ri-message-2-line" onClick={() => handleIconClick(<Message />)}></i>
               <i class="ri-whatsapp-fill"></i>
+              {/* <a href="https://wa.me/<9975707222>" target="_blank"><button class="ri-whatsapp-fillx"></button> </a> */}
+
             </div>
             <button>Convert Lead to student</button>
 

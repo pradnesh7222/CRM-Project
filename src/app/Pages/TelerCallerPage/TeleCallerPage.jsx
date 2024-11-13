@@ -6,7 +6,6 @@ import { Divider, Radio, Table, Button, Drawer } from "antd";
 import TextField from "@mui/material/TextField";
 import axios from "axios";
 import MenuItem from "@mui/material/MenuItem";
-import { color } from "chart.js/helpers";
  
 import { Link } from "react-router-dom";
 
@@ -183,10 +182,10 @@ const TeleCallerPage = () => {
             ></Radio.Group>
             <Divider />
             <Table
-              rowSelection={{
-                type: selectionType,
-                ...rowSelection,
-              }}
+            //   rowSelection={{
+            //     type: selectionType,
+            //     ...rowSelection,
+            //   }}
               columns={columns}
               dataSource={mergedData}
               pagination={{ pageSize: 10 }}
