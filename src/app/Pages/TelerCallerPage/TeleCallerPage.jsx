@@ -6,6 +6,9 @@ import { Divider, Radio, Table, Button, Drawer } from "antd";
 import TextField from "@mui/material/TextField";
 import axios from "axios";
 import MenuItem from "@mui/material/MenuItem";
+import { color } from "chart.js/helpers";
+ 
+import { Link } from "react-router-dom";
 
 const TeleCallerPage = () => {
   const [selectionType, setSelectionType] = useState("checkbox");
@@ -26,18 +29,19 @@ const TeleCallerPage = () => {
   };
 
   const statusOptions = [
-    { value: "Pending", label: "Pending" },
+    { value: "Pending", label: "Pending"},
     { value: "Contacted", label: "Contacted" },
     { value: "Follow Up", label: "Follow Up" },
-    { value: "Payment confirmed", label: "Payment confirmed" },
+    { value: "Converted", label: "Converted" },
     { value: "Closed", label: "Closed" },
   ];
 
   const columns = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      render: (text, record) => (
+    { title: "Name", dataIndex: "name", render: (text) => <Link to={`/Communication/`}>{text}</Link> },
+    { title: "Course", dataIndex: "course_name" },
+    { title: "Phone", dataIndex: "phone_number" },
+    { title: "Email", dataIndex: "email" },
+    { title: "Status", dataIndex: "status", render: (text, record) => (
         <a
           onClick={() => {
             showDrawer();
@@ -46,30 +50,35 @@ const TeleCallerPage = () => {
         >
           {text}
         </a>
-      ),
-    },
-    { title: "Course", dataIndex: "course_name" },
-    { title: "Phone", dataIndex: "phone_number" },
-    { title: "Email", dataIndex: "email" },
-    { title: "Location", dataIndex: "location" },
-    { title: "Status", dataIndex: "status" },
+      ), },
     { title: "Remark", dataIndex: "remark_text" },
     {
       title: "Sign",
-      dataIndex: "sign",
-      render: () => (
-        <i
-          className="ri-arrow-up-circle-line"
-          style={{ color: "blue", fontSize: "1.5em" }}
-        ></i>
-      ),
+      dataIndex: "status",
+      render: (text) => {
+        const statusColorMap = {
+          "Pending": "#A9A9A9",
+          "Contacted": "#1E90FF",
+          "Follow Up": "#FFA500",
+          "Converted": "#32CD32",
+          "Closed": "red",
+        };
+        return (
+          <i
+            className="ri-verified-badge-fill"
+            style={{ color: statusColorMap[text], fontSize: "1.5em" }}
+            fill={statusColorMap[text]}
+          ></i>
+        );
+      },
+      
     },
   ];
 
   // Fetch lead data
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/get_unassigned_enquiry_telecaller/", {
+      .get("http://127.0.0.1:8000/get_assigned_enquiry_telecaller/", {
         headers: {
           accept: "application/json",
           Authorization: `Bearer ${token}`,

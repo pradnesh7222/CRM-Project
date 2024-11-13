@@ -79,6 +79,11 @@
 
         .dropdown-inner {
           display: flex;
+          align-items: center;
+          
+          button {
+            padding: 0;
+          }
         }
 
         .ri-arrow-down-wide-line {
@@ -170,6 +175,6 @@ form{
   .btn-cont{
     margin-top: 2vw;
     display: flex;
-    justify-content: center;
+    justify-content:space-between;
   }
 }
