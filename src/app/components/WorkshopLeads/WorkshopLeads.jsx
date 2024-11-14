@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./WorkshopLeads.scss";
-import Navbar from "../../components/navbar/NavBar";
-import SideBar from "../../components/SideBar/SideBar";
 import TablePagination from '@mui/material/TablePagination';
+import CustomLayout from "../CustomLayout/CustomLayout";
+
 
 const WorkshopLeads = () => {
   const [enrolledStudents, setEnrolledStudents] = useState([]);
@@ -105,12 +105,8 @@ const WorkshopLeads = () => {
   };
 
   return (
-    <div style={{ width: "100%" }}>
-      <Navbar />
-      <div className="workshopLead">
-        <div className="workshopLead_left">
-          <SideBar />
-        </div>
+       <CustomLayout>
+        <div className="workshopLead">
         <div className="workshopLead_right">
           <div className="workshopLead_right_upper">
             <div className="search-btn">
@@ -176,8 +172,10 @@ const WorkshopLeads = () => {
             />
           </div>
         </div>
-      </div>
-    </div>
+        </div>
+        </CustomLayout>
+      
+    
   );
 };
 
