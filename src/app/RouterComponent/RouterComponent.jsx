@@ -27,9 +27,9 @@ import Message from "../components/Message/Message";
 import WorkshopLeads from "../components/WorkshopLeads/WorkshopLeads";
 import EnquiryTele from "../Pages/EnquiryTele/EnquiryTele";
 import WorkShopTele from "../Pages/WorkShopTele/WorkShopTele"
-import TeleCallerPage from "../Pages/TelerCallerPage/TeleCallerPage"
-import { CustomLayout } from "../components/CustomLayout/CustomLayout";
-import WorkShopTeleCallerPage from "../Pages/WorkShopTeleCallerPage/WorkShopTeleCallerPage"
+import TeleCallerPage from "../Pages/TelerCallerPage/TeleCallerPage";
+import CustomLayout  from "../components/CustomLayout/CustomLayout";
+import WorkShopTeleCallerPage from "../Pages/WorkShopTeleCallerPage/WorkShopTeleCallerPage";
 
 
 const RouterComponent = () => {
@@ -66,7 +66,7 @@ const RouterComponent = () => {
         <Route path="/EnquiryTele" element={<EnquiryTele/>}/>
         <Route path="/WorkShopTele" element={<WorkShopTele/>}/>
         <Route path="/TeleCallerPage" element={<TeleCallerPage/>}/>
-        <Route path="/CustomLayout" element={<CustomLayout/>}/>
+        <Route path="/customlayout" element={<CustomLayout/>}/>
         <Route path="WorkShopTeleCallerPage" element={<WorkShopTeleCallerPage/>}/>
       </Routes>
     </BrowserRouter>

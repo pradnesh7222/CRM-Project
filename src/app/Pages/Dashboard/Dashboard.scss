@@ -1,18 +1,17 @@
 .dashboard {
   width: 100%;
   display: flex;
-  padding-top: 6vw;
+  margin-left: 1.5vw;
+  
 
-
-
-  &_left, &_lefttoggleSidebar {
-    width: 15%;
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: start;
-    gap: 2vw;
-    padding-top: 40vw;
+  // &_left, &_lefttoggleSidebar {
+  //   width: 15%;
+  //   display: flex;
+  //   flex-direction: column;
+  //   justify-content: start;
+  //   align-items: start;
+  //   gap: 2vw;
+  //   padding-top: 40vw;
    
 
     .link1 {
@@ -20,35 +19,40 @@
       border-radius: 5px;
       width: 100%;
       text-align: center;
-      // box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 
       &:hover {
-        // background-color: #202671;
         color: white;
         transition: color 0.5s ease, background-color 0.5s ease;
         background-color: #6e2e6a;
       }
     }
-  }
+// }
 
   &_lefttoggleSidebar{
     width: 5%;
   }
 
-
-  &_right, &_righttoggleSidebar {
-    width: 85%;
+  &_right  {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    // margin-top: 1.5vw;
+    margin-top: 1.5vw;
+
+      // &_righttoggleSidebar{
+      //   width: 100%;
+      //   display: flex;
+      //   flex-direction: column;
+      //   align-items: center;
+      //   margin-top: 1.5vw;
+      // }
 
 
     &_upper {
       margin: -1vh;
       height: 10%;
       align-items: center;
-      width: 98%;
+      width: 100%;
       display: flex;
       justify-content: space-between;
 
@@ -100,15 +104,16 @@
 
     &_table {
       overflow:scroll;
-      width: 98%;
+      width: 100%;
       box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-      margin-top: 1vw;
+      margin-top: 2vw;
       border-radius: 10px;
 
 
       table {
         width: 100%;
         overflow:scroll;
+        scrollbar-width: none;
         border-radius: 10px;
 
         th,
@@ -126,8 +131,7 @@
         }
 
         th {
-         
-          background-color: #f9f9f9;
+          background-color:#e4e4e4;
         }
 
         td {
@@ -153,8 +157,9 @@
       }
 
       &_footer {
-        width: 98%;
+        width: 100%;
         display: flex;
+        justify-content: end;
         box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
         justify-content: space-between;
 

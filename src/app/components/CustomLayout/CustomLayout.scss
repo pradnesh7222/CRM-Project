@@ -1,0 +1,22 @@
+.layout {
+  width: 100%;
+
+  &_header {
+    width: 100%;
+    height: 60px;
+  }
+
+  &_section {
+    width: 100%;
+    display: flex;
+
+    &_sidenav {
+      width: 250px;
+    }
+
+    &_content {
+      width: calc(100% - 300px);
+    //   padding: 14px
+    }
+  }
+}
