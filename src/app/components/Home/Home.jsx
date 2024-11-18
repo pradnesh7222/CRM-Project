@@ -10,6 +10,7 @@ import HomePieChart from '../HomePieChart/HomePieChart';
 import HomeLineGraph from '../HomeLineGraph/HomeLineGraph';
 
 const Home = () => {
+    const token = localStorage.getItem('authToken');
     const [data, setData] = useState({
         totalLeads: 0,
         conversionRate: '0%',
@@ -23,7 +24,13 @@ const Home = () => {
         if (!hasFetchedData.current) {
             const fetchData = async () => {
                 try {
-                    const response = await fetch('http://127.0.0.1:8000/conversion_rate/');
+                    const response = await fetch('http://127.0.0.1:8000/conversion_rate/', {
+                        method: 'GET', // Optional as GET is default, but included for clarity
+                        headers: {
+                            'Authorization': `Bearer ${token}`,  // Add the token to the Authorization header
+                            'Content-Type': 'application/json',  // Optional if server expects JSON content
+                        }
+                    });
                     const result = await response.json();
                     console.log('Dashboard data response:', result);
 

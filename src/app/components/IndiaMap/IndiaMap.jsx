@@ -1,130 +1,114 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { VectorMap } from "react-jvectormap";
 import "./IndiaMap.scss";
-
-// Define the initial state mapping
-const initialMapData = [
-
-  { code: "IN-AP", value: 0 },
-  { code: "IN-AR", value: 0 },
-  { code: "IN-AS", value: 0 },
-  { code: "IN-BR", value: 0 },
-  { code: "IN-CT", value: 0 },
-  { code: "IN-GA", value: 0 },
-  { code: "IN-GJ", value: 0 },
-  { code: "IN-HR", value: 0 },
-  { code: "IN-HP", value: 0 },
-  { code: "IN-JK", value: 0 },
-  { code: "IN-JH", value: 0 },
-  { code: "IN-KA", value: 0 },
-  { code: "IN-KL", value: 0 },
-  { code: "IN-MP", value: 0 },
-  { code: "IN-MH", value: 0 },
-  { code: "IN-MN", value: 0 },
-  { code: "IN-ML", value: 0 },
-  { code: "IN-MZ", value: 0 },
-  { code: "IN-NL", value: 0 },
-  { code: "IN-OR", value: 0 },
-  { code: "IN-PB", value: 0 },
-  { code: "IN-RJ", value: 0 },
-  { code: "IN-SK", value: 0 },
-  { code: "IN-TN", value: 0 },
-  { code: "IN-TG", value: 0 },
-  { code: "IN-TR", value: 0 },
-  { code: "IN-UP", value: 0 },
-  { code: "IN-UT", value: 0 },
-  { code: "IN-WB", value: 0 },
-  { code: "IN-AN", value: 0 },
-  { code: "IN-CH", value: 0 },
-  { code: "IN-DN", value: 0 },
-  { code: "IN-DD", value: 0 },
-  { code: "IN-LD", value: 0 },
-  { code: "IN-PY", value: 0 },
-  { code: "IN-LA", value: 0 }
-];
-
-// Mapping of API keys to map codes
-const apiToMapCode = {
-
-  ap: "IN-AP",
-  ar: "IN-AR",
-  as: "IN-AS",
-  br: "IN-BR",
-  ct: "IN-CT",
-  ga: "IN-GA",
-  gj: "IN-GJ",
-  hr: "IN-HR",
-  hp: "IN-HP",
-  jk: "IN-JK",
-  jh: "IN-JH",
-  ka: "IN-KA",
-  kl: "IN-KL",
-  mp: "IN-MP",
-  mh: "IN-MH",
-  mn: "IN-MN",
-  ml: "IN-ML",
-  mz: "IN-MZ",
-  nl: "IN-NL",
-  or: "IN-OR",
-  pb: "IN-PB",
-  rj: "IN-RJ",
-  sk: "IN-SK",
-  tn: "IN-TN",
-  tg: "IN-TG",
-  tr: "IN-TR",
-  up: "IN-UP",
-  ut: "IN-UT",
-  wb: "IN-WB",
-  an: "IN-AN",
-  ch: "IN-CH",
-  dn: "IN-DN",
-  dd: "IN-DD",
-  ld: "IN-LD",
-  py: "IN-PY",
-  la: "IN-LA"
+const token = localStorage.getItem('authToken');
+const stateToRegionCode = {
+  "Andhra Pradesh": "IN-AP",
+  "Arunachal Pradesh": "IN-AR",
+  "Assam": "IN-AS",
+  "Bihar": "IN-BR",
+  "Chhattisgarh": "IN-CT",
+  "Delhi": "IN-DD",
+  "Goa": "IN-GA",
+  "Gujarat": "IN-GJ",
+  "Himachal Pradesh": "IN-HP",
+  "Haryana": "IN-HR",
+  "Jharkhand": "IN-JH",
+  "Jammu and Kashmir": "IN-JK",
+  "Karnataka": "IN-KA",
+  "Kerala": "IN-KL",
+  "Madhya Pradesh": "IN-MP",
+  "Maharashtra": "IN-MH",
+  "Manipur": "IN-ML",
+  "Meghalaya": "IN-MG",
+  "Mizoram": "IN-MZ",
+  "Nagaland": "IN-NL",
+  "Odisha": "IN-OR",
+  "Punjab": "IN-PB",
+  "Rajasthan": "IN-RJ",
+  "Sikkim": "IN-SK",
+  "Tamil Nadu": "IN-TN",
+  "Tripura": "IN-TR",
+  "Uttar Pradesh": "IN-UP",
+  "Uttarakhand": "IN-UT",
+  "West Bengal": "IN-WB"
 };
 
+const initialMapData = {
+  "IN-AP": 0,
+  "IN-AR": 0,
+  "IN-AS": 0,
+  "IN-BR": 0,
+  "IN-CT": 0,
+  "IN-DD": 0,
+  "IN-DN": 0,
+  "IN-GA": 0,
+  "IN-GJ": 0,
+  "IN-HP": 0,
+  "IN-HR": 0,
+  "IN-JH": 0,
+  "IN-JK": 0,
+  "IN-KA": 0,
+  "IN-KL": 0,
+  "IN-LA": 0,
+  "IN-LD": 0,
+  "IN-MH": 0,
+  "IN-ML": 0,
+  "IN-MN": 0,
+  "IN-MP": 0,
+  "IN-MZ": 0,
+  "IN-NL": 0,
+  "IN-OR": 0,
+  "IN-PB": 0,
+  "IN-PY": 0,
+  "IN-RJ": 0,
+  "IN-SK": 0,
+  "IN-TG": 0,
+  "IN-TN": 0,
+  "IN-TR": 0,
+  "IN-UP": 0,
+  "IN-UT": 0,
+  "IN-WB": 0
+};
 
 // Function to format map data for VectorMap
 const formatMapData = (data) => {
-  const formattedData = {};
-  initialMapData.forEach((region) => {
-    // Map API data to map region codes
-    const apiKey = Object.keys(apiToMapCode).find(
-      (key) => apiToMapCode[key] === region.code
-    );
-    formattedData[region.code] = Number(data[apiKey]) || 0;
-  });
-  console.log("Formatted Map Data:", formattedData); // Log formatted data
-  return formattedData;
+  const mapData = { ...initialMapData };
+
+  // Iterate over the states in the API data and map them to region codes
+  for (const state in data["India"]) {
+    if (stateToRegionCode[state]) {
+      const regionCode = stateToRegionCode[state];
+      mapData[regionCode] = data["India"][state]; // Set value for the corresponding region code
+    }
+  }
+
+  return mapData;
 };
 
 const IndiaMap = () => {
-  const [mapData, setMapData] = useState(formatMapData({})); // Initialize with default values
+  const [mapData, setMapData] = useState(formatMapData({})); // Initialize with empty data
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchLeadsPerState = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/leads-per-state/");
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-          throw new Error("Received non-JSON response from API");
-        }
+        const response = await fetch("http://127.0.0.1:8000/api/leads-per-state/", {
+          method: "GET", // Specify the method if necessary (GET is the default)
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json' // Optional: Specify content type if needed
+          }
+        });
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
         const data = await response.json();
-        console.log("Fetched Data:", data);
-        setMapData(formatMapData(data)); // Format and set fetched data
+        setMapData(formatMapData(data)); // Format and update the map data
       } catch (error) {
         console.error("Error fetching leads per state:", error);
-        setMapData(formatMapData({})); // Use default data if error occurs
+        setMapData(formatMapData({})); // In case of error, set empty data
       } finally {
-        setLoading(false);
+        setLoading(false); // Finish loading state
       }
     };
 
@@ -132,7 +116,7 @@ const IndiaMap = () => {
   }, []);
 
   const handleshow2 = (e, el, code) => {
-    el.html(`${el.html()} <br> Leads: ${mapData[code] || 0}`);
+    el.html(`${el.html()} <br> Leads: ${mapData[code] || 0}`); // Show leads count on hover
   };
 
   if (loading) {
@@ -141,31 +125,16 @@ const IndiaMap = () => {
 
   return (
     <div>
-      <h1
-        style={{
-          textAlign: "center",
-          fontSize: "1.5vw",
-          color: "#202671",
-          padding: "1vw",
-        }}
-      >
+      <h1 style={{ textAlign: "center", fontSize: "1.5vw", color: "#202671", padding: "1vw" }}>
         Leads Across India
       </h1>
       <VectorMap
         map={"in_mill"}
         backgroundColor="transparent"
         style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-        focusOn={{
-          x: 0.5,
-          y: 0.5,
-          scale: 0,
-          animate: false,
-        }}
+        focusOn={{ x: 0.5, y: 0.5, scale: 0, animate: false }}
         zoomOnScroll={true}
-        containerStyle={{
-          width: "85%",
-          height: "320px",
-        }}
+        containerStyle={{ width: "85%", height: "320px" }}
         onRegionClick={(e, countryCode) => console.log(countryCode)}
         onRegionTipShow={handleshow2}
         containerClassName="map"
@@ -174,8 +143,6 @@ const IndiaMap = () => {
             fill: "#e4e4e4",
             "fill-opacity": 0.9,
             stroke: "none",
-            "stroke-width": 0,
-            "stroke-opacity": 0,
           },
           hover: {
             "fill-opacity": 0.8,

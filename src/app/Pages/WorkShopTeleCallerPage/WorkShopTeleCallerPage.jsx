@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import "./WorkShopTeleCallerPage.scss";
 import Navbar from "../../components/navbar/NavBar";
 import SideBar from "../../components/SideBar/SideBar";
-import { Divider, Radio, Table, Button, Drawer } from "antd";
+import { Divider, Radio, Button, Drawer } from "antd";
+import Table from '../../components/Table/Table'
 import TextField from "@mui/material/TextField";
 import axios from "axios";
+import TablePagination from "@mui/material/TablePagination";
+import CustomLayout from "../../components/CustomLayout/CustomLayout";
 import MenuItem from "@mui/material/MenuItem";
 import { Link } from "react-router-dom";
 
@@ -16,6 +19,9 @@ const WorkShopTeleCallerPage = () => {
   const [open, setOpen] = useState(false);
   const [remark, setRemark] = useState("");
   const [status, setStatus] = useState("Pending");
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(0);
   const [selectedLeadId, setSelectedLeadId] = useState(null); // Add state for selected lead ID
 
   const showDrawer = () => {
@@ -35,10 +41,10 @@ const WorkShopTeleCallerPage = () => {
   ];
 
   const columns = [
-    { title: "Name", dataIndex: "name", render: (text) => <Link to={`/Communication/`}>{text}</Link> },
-    { title: "Course", dataIndex: "course_name" },
-    { title: "Phone", dataIndex: "phone_number" },
-    { title: "Email", dataIndex: "email" },
+    { title: "Name", dataIndex: "customerName", render: (text) => <Link to={`/Communication/`}>{text}</Link> },
+    { title: "Email", dataIndex: "customerEmail" },
+    { title: "Phone", dataIndex: "customerNumber" },
+    { title: "location", dataIndex: "location" },
     { title: "Status", dataIndex: "status", render: (text, record) => (
         <a
           onClick={() => {
@@ -76,7 +82,7 @@ const WorkShopTeleCallerPage = () => {
   // Fetch lead data
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/get_assigned_enquiry_telecaller/", {
+      .get("http://127.0.0.1:8000/get_assigned_workshop_telecaller/", {
         headers: {
           accept: "application/json",
           Authorization: `Bearer ${token}`,
@@ -164,33 +170,32 @@ const WorkShopTeleCallerPage = () => {
     },
   };
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset to first page on rows per page change
+  };
+
   return (
-    <>
-      <div style={{ width: "100%" }}>
-        <Navbar />
-      </div>
-      <div className="telecaller">
-        <div className="telecaller_side">
-          <SideBar />
+    <CustomLayout>
+      <div className="workshopTelecaller">
+        <div className="workshopTelecaller_table">
+           <Table columns={columns} datasource={mergedData}/>
         </div>
-        <div className="telecaller_table">
-          <div style={{ width: "85vw" }}>
-            <Radio.Group
-              onChange={(e) => setSelectionType(e.target.value)}
-              value={selectionType}
-            ></Radio.Group>
-            <Divider />
-            <Table
-            //   rowSelection={{
-            //     type: selectionType,
-            //     ...rowSelection,
-            //   }}
-              columns={columns}
-              dataSource={mergedData}
-              pagination={{ pageSize: 10 }}
-            />
-          </div>
+        <div className="workshopTelecaller_pagination">
+        <TablePagination
+            component="div"
+            count={totalCount}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </div>
+
         <Drawer title="Add Remark" onClose={onClose} open={open}>
           <div className="form-body">
             <TextField
@@ -219,7 +224,7 @@ const WorkShopTeleCallerPage = () => {
           </div>
         </Drawer>
       </div>
-    </>
+      </CustomLayout>
   );
 };
 

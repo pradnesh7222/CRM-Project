@@ -107,7 +107,15 @@ class LoginSerializer(serializers.Serializer):
                 'access': str(refresh.access_token)
             }
         }
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+    confirm_password = serializers.CharField(required=True)
 
+    def validate(self, data):
+        if data['new_password'] != data['confirm_password']:
+            raise serializers.ValidationError("New password and confirm password do not match.")
+        return data
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
@@ -240,4 +248,4 @@ class LeadAssignmentSerializer(serializers.Serializer):
 class RemarksSerializer(serializers.ModelSerializer):
     class Meta:
         model = Remarks
-        fields = ['status','id', 'enquiry_lead', 'remark_text', 'created_at']
+        fields = ['status','id', 'enquiry_lead', 'remark_text', 'created_at','workshop_lead']

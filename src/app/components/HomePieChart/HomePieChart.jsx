@@ -10,11 +10,15 @@ Chartjs.register(ArcElement, Tooltip, Legend);
 const HomePieChart = () => {
     const [chartData, setChartData] = useState(null);
     const [error, setError] = useState(null);
-
+    const token = localStorage.getItem('authToken');
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/api/students-per-course/');
+                const response = await axios.get('http://127.0.0.1:8000/api/students-per-course/', {
+                    headers: {
+                      'Authorization': `Bearer ${token}`
+                    }
+                  });
                 console.log('API response:', response.data);
 
                 if (response.data && typeof response.data === 'object') {
@@ -26,7 +30,7 @@ const HomePieChart = () => {
                         datasets: [
                             {
                                 data: dataValues,
-                                backgroundColor: ['pink', 'purple', 'Lavender   '],
+                                backgroundColor: ['pink', 'purple', 'Lavender', '#ADD8E6', '#FFCC99', '#98FF98'],
                                 label: 'Students Per Course',
                             },
                         ],

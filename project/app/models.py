@@ -315,6 +315,7 @@ class Remarks(models.Model):
         default='Pending'
     )
     enquiry_lead = models.ForeignKey(Enquiry_Leads, on_delete=models.CASCADE, related_name="remarks")
+    workshop_lead = models.ForeignKey(Workshop_Leads, on_delete=models.CASCADE, related_name="Workshop_Leads_remarks")
     remark_text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 

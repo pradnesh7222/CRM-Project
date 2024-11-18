@@ -8,11 +8,17 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 const HomeLineGraph = () => {
     const [chartData, setChartData] = useState({ labels: [], datasets: [] });
     const [loading, setLoading] = useState(true);
-
+    const token = localStorage.getItem('authToken');
     useEffect(() => {
         const fetchMonthlyActiveStudents = async () => {
             try {
-                const response = await fetch("http://127.0.0.1:8000/api/active-students-per-month/");
+                const response = await fetch("http://127.0.0.1:8000/api/active-students-per-month/", {
+                    method: 'GET', // You can also specify the method, which is GET by default
+                    headers: {
+                        'Authorization': `Bearer ${token}`,  // Add the token to the Authorization header
+                        'Content-Type': 'application/json',  // Ensure content type is set to JSON if required
+                    }
+                });
                 if (!response.ok) {
                     throw new Error("Failed to fetch data");
                 }
