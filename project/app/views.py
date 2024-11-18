@@ -437,3 +437,35 @@ class RemarksViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated] 
     queryset = Remarks.objects.all()
     serializer_class = RemarksSerializer
+
+class TelecallerPageView(APIView):
+    def get(self, request):
+        leads = Enquiry_Leads.objects.all()
+        remarks = Remarks.objects.all()
+
+        # Debugging to confirm the fetched data
+        #print("Leads:", leads)
+        #for i in remarks:
+           #print("Remarks:", i.enquiry_lead.id)
+        matching_data = []
+
+        for lead in leads:
+            for remark in remarks:
+                if lead.id == remark.enquiry_lead.id:  # Adjust field name if necessary
+                    matching_data.append({
+                        "lead_id": lead.id,
+                        "lead_name": lead.name,
+                        "lead_email": lead.email,
+                        "remark_id": remark.id,
+                        "course": lead.course.name,  # Adjust field name as necessary
+                        "phone_number": lead.phone_number,
+                        "remark_text": remark.remark_text,
+                        "status": remark.status,
+                        "remark_date": remark.created_at,
+                    })
+        print(matching_data)
+        if matching_data:
+            return Response({"message": "data sent successfully", "data": matching_data},
+                status=status.HTTP_200_OK)
+
+        return Response({"message": "No matching data found"}, status=status.HTTP_400_BAD_REQUEST)

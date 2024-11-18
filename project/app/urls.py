@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     ActiveStudents, AssignLeadView, CommunicationHistoryViewSet, CommunicationViewSet, Convert_lead_to_student,
     CourseIdView, CourseViewSet, EmailSendViewSet, EnquiryTelecallerViewSet, EnrollStudentView,
-    EnrollmentViewSet, InstallmentViewSet, LogoutView, PlacedStudents, RemarksViewSet, UserLoginView,
+    EnrollmentViewSet, InstallmentViewSet, LogoutView, PlacedStudents, RemarksViewSet, TelecallerPageView, UserLoginView,
     UserRegistrationView, WorkshopLeadViewSet, WorkshopTelecallerViewSet, conversion_rate,
     UsersViewSet, LeadViewSet, StudentViewSet, RolesViewSet, monthly_leads_count,
     LeadsPerStateView, StudentsPerCourseView, MonthlyActiveStudentsView,create_enquiry_telecaller,get_leads_by_telecaller
@@ -64,6 +64,7 @@ urlpatterns = [
     path('get_assigned_workshop_telecaller/', views.get_assigned_workshop_telecaller, name='get_leads_by_telecaller'),
     path('get_assigned_enquiry_telecaller/', views.get_assigned_enquiry_telecaller, name='get_unassigned_enquiry_telecaller'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('TelecallerPageView/', TelecallerPageView.as_view(), name='TelecallerPageView'),
 ]
 
 urlpatterns += router.urls
