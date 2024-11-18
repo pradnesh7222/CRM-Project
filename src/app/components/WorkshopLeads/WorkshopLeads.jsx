@@ -3,7 +3,6 @@ import "./WorkshopLeads.scss";
 import TablePagination from '@mui/material/TablePagination';
 import CustomLayout from "../CustomLayout/CustomLayout";
 
-
 const WorkshopLeads = () => {
   const [enrolledStudents, setEnrolledStudents] = useState([]);
   const [page, setPage] = useState(0);

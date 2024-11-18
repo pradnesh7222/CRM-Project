@@ -1,7 +1,7 @@
 .dashboard {
   width: 100%;
   display: flex;
-  margin-left: 1.5vw;
+  // margin-left: 1.5vw;
   
 
   // &_left, &_lefttoggleSidebar {
@@ -37,7 +37,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 1.5vw;
+    // margin-top: 1.5vw;
+    padding: 1vw;
 
       // &_righttoggleSidebar{
       //   width: 100%;
@@ -49,8 +50,6 @@
 
 
     &_upper {
-      margin: -1vh;
-      height: 10%;
       align-items: center;
       width: 100%;
       display: flex;

@@ -35,8 +35,8 @@ const Communication = () => {
               <i class="ri-phone-fill" onClick={() => handleIconClick(<Phone />)}></i>
               <i class="ri-mail-line" onClick={() => handleIconClick(<Email />)}></i>
               <i class="ri-message-2-line" onClick={() => handleIconClick(<Message />)}></i>
-              <i class="ri-whatsapp-fill"></i>
-              {/* <a href="https://wa.me/<9975707222>" target="_blank"><button class="ri-whatsapp-fillx"></button> </a> */}
+              {/* <i class="ri-whatsapp-fill"></i> */}
+              <a href="https:/wa.me/+919845723456"  target="_blank" class="whatsapp_float"><i class="ri-whatsapp-fill"></i></a>
 
             </div>
             <button>Convert Lead to student</button>
@@ -79,7 +79,7 @@ const Communication = () => {
             </div>
             </div>
             <div className="com_right_history">
-               
+               <h1>History</h1>
             </div>
         </div>
       </div>

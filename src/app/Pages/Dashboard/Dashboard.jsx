@@ -24,6 +24,8 @@ const Dashboard = () => {
     }
   };
 
+  
+
   const fetchOrders = async () => {
     try {
       const payload = {
@@ -152,6 +154,8 @@ const Dashboard = () => {
                   <th>Email</th>
                   <th>Phone Number</th>
                   <th>Course</th>
+                  <th>Actions</th>
+
                 </tr>
               </thead>
               <tbody>
@@ -163,11 +167,15 @@ const Dashboard = () => {
                       <td>{order.email}</td>
                       <td>{order.phoneNumber}</td>
                       <td>{order.course}</td>
+                      <td>
+                      <i class="ri-delete-bin-6-line"></i>
+                      <i class="ri-edit-line"></i>
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="5">No orders found</td>
+                    <td colSpan="6">No orders found</td>
                   </tr>
                 )}
               </tbody>

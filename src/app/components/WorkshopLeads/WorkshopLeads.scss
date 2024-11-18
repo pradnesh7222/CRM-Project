@@ -2,16 +2,16 @@
 .workshopLead{
     width: 100%;
     display: flex;
-    margin-left: 1vw;
+    // margin-left: 1vh;
   
 
     &_left{
-        width: 15%;
+        width: 15vw;
     }
 
     &_right{
         width: 100%;
-        padding-top: 1vw;
+        padding: 1vw;
 
         &_upper{
             width: 100%;
@@ -20,7 +20,7 @@
                 width: 20%;
                 display: flex;
                 align-items: center;
-                margin-left: 1vw;
+                // margin-left: 1vw;
                 border: 1.5px solid #6e2e6a;
                 border-radius: 10px;
         

@@ -3,7 +3,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 250px;
+  width: 15vw;
   height: 100vh;
   padding-top: 5vw;
   background-color: #f0f0f0;
@@ -53,6 +53,7 @@
       padding: 8px;
       color: #6e2e6a;
       font-weight: 700;
+      font-size: 1.3vw;
       border-radius: 5px;
       // text-decoration: none;
       transition: background-color 0.3s ease, color 0.3s ease;
@@ -93,7 +94,7 @@
         button {
           background: none;
           border: none;
-          font-size: 1.2vw;
+          font-size: 1.3vw;
           font-weight: bold;
           color: inherit;
           cursor: pointer;
@@ -170,11 +171,16 @@ form{
     padding: .1vw;
   }
 
-  
+ 
 
   .btn-cont{
     margin-top: 2vw;
     display: flex;
     justify-content:space-between;
   }
+}
+
+.ri-delete-bin-6-line,.ri-edit-line{
+  color: #6e2e6a;
+  margin: 0 .5vw;
 }

@@ -1,0 +1,41 @@
+ .tablecomponent{
+    overflow: auto; /* Enables scrolling for the table */
+    width: 100%;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    // margin-top: 1vw;
+    border-radius: 10px;
+    padding: 1vw;
+
+    table {
+      width: 100%;
+      border-spacing: 0; /* Removes spacing between cells */
+      border-collapse: collapse; /* Ensures borders are shared between cells */
+      text-align: center;
+      border-radius: 10px;
+
+      th,
+      td {
+        font-size: 1vw;
+        padding: 10px;
+
+        text-align: center;
+        color: rgba(0, 0, 0, 0.662);
+      }
+
+      th {
+        background-color: #e4e4e4;
+      }
+
+      td {
+        border: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      tr:hover {
+        background-color: #f0f0f0;
+      }
+    }
+  }

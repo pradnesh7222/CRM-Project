@@ -30,6 +30,7 @@ import WorkShopTele from "../Pages/WorkShopTele/WorkShopTele"
 import TeleCallerPage from "../Pages/TelerCallerPage/TeleCallerPage";
 import CustomLayout  from "../components/CustomLayout/CustomLayout";
 import WorkShopTeleCallerPage from "../Pages/WorkShopTeleCallerPage/WorkShopTeleCallerPage";
+import Table from "../components/Table/Table";
 
 
 const RouterComponent = () => {
@@ -68,6 +69,7 @@ const RouterComponent = () => {
         <Route path="/TeleCallerPage" element={<TeleCallerPage/>}/>
         <Route path="/customlayout" element={<CustomLayout/>}/>
         <Route path="WorkShopTeleCallerPage" element={<WorkShopTeleCallerPage/>}/>
+        <Route path="Table" element={<Table/>}/>
       </Routes>
     </BrowserRouter>
   );

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "./TeleCallerPage.scss";
-import Navbar from "../../components/navbar/NavBar";
-import SideBar from "../../components/SideBar/SideBar";
-import { Divider, Radio, Table, Button, Drawer } from "antd";
+import {Button, Drawer } from "antd";
 import TextField from "@mui/material/TextField";
+import Table from '../../components/Table/Table';
 import axios from "axios";
 import MenuItem from "@mui/material/MenuItem";
+import TablePagination from "@mui/material/TablePagination";
 import { Link } from "react-router-dom";
+import { message } from "antd";
+import CustomLayout from "../../components/CustomLayout/CustomLayout";
 
 const TeleCallerPage = () => {
   const [selectionType, setSelectionType] = useState("checkbox");
@@ -14,7 +16,16 @@ const TeleCallerPage = () => {
   const [leadData, setLeadData] = useState([]);
   const [remarkData, setRemarkData] = useState([]);
   const [open, setOpen] = useState(false);
+  const [page, setPage] = useState(0);
+  const [numberOfLeads, setNumberOfLeads] = useState(0);
+
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [telecaller, setTelecaller] = useState("");
+
   const [remark, setRemark] = useState("");
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
   const [status, setStatus] = useState("Pending");
   const [selectedLeadId, setSelectedLeadId] = useState(null); // Add state for selected lead ID
 
@@ -34,8 +45,18 @@ const TeleCallerPage = () => {
     { value: "Closed", label: "Closed" },
   ];
 
+
   const columns = [
-    { title: "Name", dataIndex: "name", render: (text) => <Link to={`/Communication/`}>{text}</Link> },
+    {
+      title: "Name",
+      dataIndex: "name",
+      render: (text, record) => (
+       // console.log(record.id)
+        <Link to={`/Communication/${record.id}/`}>{text}</Link> // Pass the 'id' of the student/lead in the URL
+      ),
+      
+    },
+    
     { title: "Course", dataIndex: "course_name" },
     { title: "Phone", dataIndex: "phone_number" },
     { title: "Email", dataIndex: "email" },
@@ -72,6 +93,53 @@ const TeleCallerPage = () => {
       
     },
   ];
+ 
+  
+  const data = [
+    { id: 1, name: "John Doe", age: 28 },
+    { id: 2, name: "Jane Smith", age: 32 },
+  ];
+  
+  <Table columns={columns} data={data} />;
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset to first page on rows per page change
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const selectedLeads = selectedRowKeys.map((key) => data[key]);
+
+    const payload = {
+      telecaller,
+      numberOfLeads,
+      leads: selectedLeads,
+    };
+
+    axios
+      .post("http://127.0.0.1:8000/get_workshopleads_by_telecaller/", payload, {
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(() => {
+        message.success("Leads assigned successfully");
+        setSelectedRowKeys([]);
+        setNumberOfLeads(0);
+      })
+      .catch((error) => {
+        message.error("Failed to assign leads");
+        console.error("Error assigning leads:", error);
+      });
+  };
+
+  
 
   // Fetch lead data
   useEffect(() => {
@@ -164,34 +232,28 @@ const TeleCallerPage = () => {
     },
   };
 
+
   return (
-    <>
-      <div style={{ width: "100%" }}>
-        <Navbar />
-      </div>
-      <div className="telecaller">
-        <div className="telecaller_side">
-          <SideBar />
-        </div>
+    <CustomLayout>
+        <div className="telecaller">
         <div className="telecaller_table">
-          <div style={{ width: "85vw" }}>
-            <Radio.Group
-              onChange={(e) => setSelectionType(e.target.value)}
-              value={selectionType}
-            ></Radio.Group>
-            <Divider />
-            <Table
-            //   rowSelection={{
-            //     type: selectionType,
-            //     ...rowSelection,
-            //   }}
-              columns={columns}
-              dataSource={mergedData}
-              pagination={{ pageSize: 10 }}
+          <Table columns={columns} data={data}/>
+          </div>
+
+          <div className="telecaller_pagination">
+            <div className="submit-button" onClick={handleSubmit}>
+              <button type="submit">Assign Leads</button>
+            </div>
+            <TablePagination
+              component="div"
+              count={totalCount}
+              page={page}
+              onPageChange={handleChangePage}
+              rowsPerPage={rowsPerPage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
             />
           </div>
-        </div>
-        <Drawer title="Add Remark" onClose={onClose} open={open}>
+         <Drawer title="Add Remark" onClose={onClose} open={open}>
           <div className="form-body">
             <TextField
               id="outlined-select-status"
@@ -219,7 +281,8 @@ const TeleCallerPage = () => {
           </div>
         </Drawer>
       </div>
-    </>
+      </CustomLayout>
+    
   );
 };
 

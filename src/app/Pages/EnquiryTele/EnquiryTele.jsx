@@ -14,11 +14,25 @@ const EnquiryTele = () => {
   const token = localStorage.getItem("authToken");
   const [numberOfLeads, setNumberOfLeads] = useState(0);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [manualSelection, setManualSelection] = useState(false);
 
   useEffect(() => {
-    // Automatically select the top 'numberOfLeads' entries when 'numberOfLeads' changes
-    setSelectedRowKeys(data.slice(0, numberOfLeads).map((_, index) => index));
-  }, [numberOfLeads, data]);
+    if (!manualSelection) {
+      setSelectedRowKeys(data.slice(0, numberOfLeads).map((_, index) => index));
+    }
+  }, [numberOfLeads, data, manualSelection]);
+  
+  const handleSelectLead = (index) => {
+    setManualSelection(true); // Set manual selection flag
+    let newSelectedRowKeys = [...selectedRowKeys];
+    if (newSelectedRowKeys.includes(index)) {
+      newSelectedRowKeys = newSelectedRowKeys.filter((key) => key !== index);
+    } else if (newSelectedRowKeys.length < numberOfLeads) {
+      newSelectedRowKeys.push(index);
+    }
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+  
 
   useEffect(() => {
     axios
@@ -59,15 +73,15 @@ const EnquiryTele = () => {
     setSelectedRowKeys(isChecked ? keys : []);
   };
 
-  const handleSelectLead = (index) => {
-    let newSelectedRowKeys = [...selectedRowKeys];
-    if (newSelectedRowKeys.includes(index)) {
-      newSelectedRowKeys = newSelectedRowKeys.filter((key) => key !== index);
-    } else if (newSelectedRowKeys.length < numberOfLeads) {
-      newSelectedRowKeys.push(index);
-    }
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
+  // const handleSelectLead = (index) => {
+  //   let newSelectedRowKeys = [...selectedRowKeys];
+  //   if (newSelectedRowKeys.includes(index)) {
+  //     newSelectedRowKeys = newSelectedRowKeys.filter((key) => key !== index);
+  //   } else if (newSelectedRowKeys.length < numberOfLeads) {
+  //     newSelectedRowKeys.push(index);
+  //   }
+  //   setSelectedRowKeys(newSelectedRowKeys);
+  // };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -184,8 +198,11 @@ const EnquiryTele = () => {
             </table>
           </div>
           <div className="enquiryTele_right_pagination">
-            <div className="submit-button" onClick={handleSubmit}>
-              <button type="submit">Assign Leads</button>
+            <div className="submit-button">
+              <button type="submit"
+              onClick={handleSubmit}
+              disabled={!telecaller || selectedRowKeys.length === 0}
+              >Assign Leads</button>
             </div>
             <TablePagination
               component="div"

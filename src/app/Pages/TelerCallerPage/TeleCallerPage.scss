@@ -1,40 +1,37 @@
-// .telecaller{
-//     width: 100%;
-//     height: 90vh;
-//     scrollbar-width: none;
-//     display: grid;
-//     grid-template-columns: 15% 85%;
-//     overflow: scroll;
-//     overflow-x: auto;
-// }
+.telecaller{
+    width: 100%;
 
-// .textfield{
-//     width: 100%;
-//     padding: 1vw;
-// }
+    &_table{
+        width: 100%;
+        padding: 1vw;
+    }
 
-// .ant-drawer-body{
-//     gap:10px;
-// }
-
-// .form-body {
-//     display: flex;
-//     flex-direction: column;
-//     gap: 10px;
-
-   
-// }
-
-// button{
-//     background-color: #4a90e2;
-//     color: white;
-//     font-weight: 600;
-//     border: none;
-//     padding: 1vw;
-//     border-radius: 5px;
-// }
-
-// :where(.css-dev-only-do-not-override-vryruh).ant-divider-horizontal{
-//     margin: 0;
-
-// }
+    &_pagination {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        // margin: 1vw 0;
+        padding: 0 1vw;
+  
+        .submit-button {
+          display: flex;
+          justify-content: center;
+  
+          button {
+            border: none;
+            background-color: #6e2e6a;
+            cursor: pointer;
+            font-size: 1vw;
+            font-weight: 600;
+            color: white;
+            border-radius: 5px;
+            padding: 0.7vw 1vw;
+  
+            &:hover {
+              background-color: #8e3e7e;
+            }
+          }
+        }
+      }
+}

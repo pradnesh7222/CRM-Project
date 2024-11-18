@@ -1,9 +1,10 @@
 .enquiryTele {
   width: 100%;
-  margin-left: 1vw;
+  // margin-left: 1vw;
 
   &_right {
     width: 100%;
+    padding: 1vw;
 
     &_up {
       display: flex;
@@ -17,7 +18,7 @@
         // align-items: center;
 
         .assignTeleCont1 {
-          width: 50%;
+          width: 50vw;
           text-align: start;
 
           label {
@@ -34,7 +35,7 @@
         }
 
         .assignTeleCont2 {
-          width: 50%;
+          width: 50vw;
           text-align: end;
 
           label {
@@ -57,7 +58,7 @@
       overflow:scroll;
       width: 100%;
       box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-      margin-top: 1vw;
+      // margin-top: 1vw;
       border-radius: 10px;
 
       table {
@@ -113,7 +114,7 @@
       justify-content: space-between;
       align-items: center;
       // margin: 1vw;
-      box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+      // box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
       
 
       .submit-button {
