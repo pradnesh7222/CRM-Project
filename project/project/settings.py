@@ -93,13 +93,13 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'crm_sample1',  
         'USER': 'root',    
-        'PASSWORD': '1234',  
+        'PASSWORD': 'SV01@joshi',  
         'HOST': 'localhost',           
         'PORT': '3306',                
     }
 }
 
-
+DJSMS_BACKEND = 'djsms.backends.FileBasedBackend'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -163,7 +163,7 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 # settings.py
-
+''''''
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -180,3 +180,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Using Redis as the broker
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_WORKER_POOL = 'solo'
+# Twilio configuration
+# settings.py
+VONAGE_API_KEY = '0610294c'
+VONAGE_API_SECRET = 'SrFT97n3ljfpkaEh'
+VONAGE_PHONE_NUMBER = '8904116759'  # Your Vonage virtual number

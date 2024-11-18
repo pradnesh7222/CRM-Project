@@ -8,7 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import TablePagination from "@mui/material/TablePagination";
 import { Link } from "react-router-dom";
 import { message } from "antd";
-// import 'remixicon/fonts/remixicon.css';
+import 'remixicon/fonts/remixicon.css';
 import CustomLayout from "../../components/CustomLayout/CustomLayout";
 
 const TeleCallerPage = () => {
@@ -48,7 +48,7 @@ const TeleCallerPage = () => {
 
   const columns = [
     {
-      title: "Name",
+         title: "Name",
       dataIndex: "lead_name",
       render: (text, record) => (
         // console.log(record.id)
@@ -56,7 +56,7 @@ const TeleCallerPage = () => {
       ),
     },
 
-    { title: "Course", dataIndex: "course_name" },
+    { title: "Course", dataIndex: "course" },
     { title: "Phone", dataIndex: "phone_number" },
     { title: "Email", dataIndex: "lead_email" },
     {
@@ -76,25 +76,26 @@ const TeleCallerPage = () => {
     { title: "Remark", dataIndex: "remark_text" },
     {
       title: "Sign",
-      dataIndex: "Sign",
-      render: (status) => {
+      dataIndex: "status",
+      render: (text) => {
         const statusColorMap = {
-          Pending: "#A9A9A9", // Grey
-          Contacted: "#1E90FF", // Blue
-          Follow_Up: "#FFA500", // Orange
-          Converted: "#32CD32", // Green
-          Closed: "red", // Red
+          "Pending": "#A9A9A9", // Grey
+          "Contacted": "#1E90FF", // Blue
+          "Follow_Up": "#FFA500", // Orange
+          "Converted": "#32CD32", // Green
+          "Closed": "red", // Red
         };
 
         return (
           <i
-            className="ri-verified-badge-fill"
-            style={{
-              color: statusColorMap[status] || "#000", // Default to black
-              fontSize: "1.5em", // Icon size
-            }}
-            aria-hidden="true" // Accessibility improvement
-          ></i>
+  className="ri-verified-badge-fill"
+  style={{
+    color: statusColorMap[text],
+    fontSize: "1.5em"
+  }}
+></i>
+
+
         );
       },
     },
@@ -115,34 +116,7 @@ const TeleCallerPage = () => {
     setPage(0); // Reset to first page on rows per page change
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const selectedLeads = selectedRowKeys.map((key) => data[key]);
-
-    const payload = {
-      telecaller,
-      numberOfLeads,
-      leads: selectedLeads,
-    };
-
-    axios
-      .post("http://127.0.0.1:8000/get_workshopleads_by_telecaller/", payload, {
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then(() => {
-        message.success("Leads assigned successfully");
-        setSelectedRowKeys([]);
-        setNumberOfLeads(0);
-      })
-      .catch((error) => {
-        message.error("Failed to assign leads");
-        console.error("Error assigning leads:", error);
-      });
-  };
+  
 
   // Fetch lead data
   useEffect(() => {
@@ -227,9 +201,7 @@ const TeleCallerPage = () => {
         </div>
 
         <div className="telecaller_pagination">
-          <div className="submit-button" onClick={handleSubmit}>
-            <button type="submit">Assign Leads</button>
-          </div>
+          
           <TablePagination
             component="div"
             count={totalCount}

@@ -545,7 +545,7 @@ class SendSMSView(APIView):
 class TelecallerPageView(APIView):
     def get(self, request):
         leads = Enquiry_Leads.objects.all()
-        remarks = Remarks.objects.all()
+        remarks = Remarks.objects.exclude(enquiry_lead__isnull=True)
 
         # Debugging to confirm the fetched data
         #print("Leads:", leads)
@@ -571,5 +571,45 @@ class TelecallerPageView(APIView):
         if matching_data:
             return Response({"message": "data sent successfully", "data": matching_data},
                 status=status.HTTP_200_OK)
+
+        return Response({"message": "No matching data found"}, status=status.HTTP_400_BAD_REQUEST)
+    
+class WorkshopTelecallerPageView(APIView):
+    def get(self, request):
+        leads = Workshop_Leads.objects.all()
+        remarks = Remarks.objects.exclude(workshop_lead__isnull=True)  # Filter out NULL workshop_leads
+
+        # Debugging to confirm the fetched data
+        print("Leads:", leads)
+        for i in Remarks.objects.all():
+            if i.workshop_lead:  # Check if workshop_lead is not None
+                print("Remarks (workshop lead exists):", i.workshop_lead.id)
+            else:
+                print("Remarks: No workshop lead assigned")
+
+        matching_data = []
+
+        for lead in leads:
+            for remark in remarks:
+                # Match leads with remarks based on workshop_lead
+                if lead.id == remark.workshop_lead.id:  # Ensure correct comparison
+                    matching_data.append({
+                        "lead_id": lead.orderId,
+                        "lead_name": lead.customerName,
+                        "lead_email": lead.customerEmail,
+                        "remark_id": remark.id,
+                        "amount": lead.amount,
+                        "phone_number": lead.customerNumber,
+                        "remark_text": remark.remark_text,
+                        "status": remark.status,
+                        "remark_date": remark.created_at,
+                    })
+
+        print("Matching Data:", matching_data)  # Debugging output
+        if matching_data:
+            return Response(
+                {"message": "data sent successfully", "data": matching_data},
+                status=status.HTTP_200_OK,
+            )
 
         return Response({"message": "No matching data found"}, status=status.HTTP_400_BAD_REQUEST)

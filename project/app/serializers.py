@@ -178,9 +178,16 @@ class CommunicationHistorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class EnquiryTelecallerSerializer(serializers.ModelSerializer):
+    assigned_lead = LeadSerializer(many=True, read_only=True)  # Nested serializer for Enquiry_Leads
+    assigned_workshop_lead = WorkshopSerializer(many=True, read_only=True)  # Nested serializer for Workshop_Leads
+    #assigned_to = serializers.CharField(source='user.name')  # This will return the name of the telecaller
+
     class Meta:
         model = EnquiryTelecaller
-        fields = ['name', 'email', 'location', 'phone_number']  # Only include fields from the frontend
+        fields = [
+            'id', 'name', 'email', 'phone_number',  
+            'status', 'follow_up_date', 'assigned_lead', 'assigned_workshop_lead', 'location'
+        ]
 
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user

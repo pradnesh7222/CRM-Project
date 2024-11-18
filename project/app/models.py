@@ -256,6 +256,12 @@ class EnquiryTelecaller(models.Model):
     null=True, 
     blank=True
 )
+    assigned_workshop_lead = models.ManyToManyField(
+    Workshop_Leads, 
+    related_name='workshop_telecaller_leads', 
+    null=True, 
+    blank=True
+)
 
     follow_up_date = models.DateTimeField(null=True, blank=True)
     status = models.CharField(
@@ -315,7 +321,7 @@ class Remarks(models.Model):
         default='Pending'
     )
     enquiry_lead = models.ForeignKey(Enquiry_Leads, on_delete=models.CASCADE, related_name="remarks")
-    workshop_lead = models.ForeignKey(Workshop_Leads, on_delete=models.CASCADE, related_name="Workshop_Leads_remarks")
+    workshop_lead=models.ForeignKey(Workshop_Leads,null=True, on_delete=models.CASCADE, related_name='Workshop_Leads_remarks'),
     remark_text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 

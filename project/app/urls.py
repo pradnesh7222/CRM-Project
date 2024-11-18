@@ -5,7 +5,7 @@ from .views import (
     ActiveStudents, AssignLeadView, ChangePasswordView, CommunicationHistoryViewSet, CommunicationViewSet, Convert_lead_to_student,
     CourseIdView, CourseViewSet, EmailSendViewSet, EnquiryTelecallerViewSet, EnrollStudentView,
     EnrollmentViewSet, InstallmentViewSet, LogoutView, PlacedStudents, RemarksViewSet, SendSMSView, TelecallerPageView, UserLoginView,
-    UserRegistrationView, WorkshopLeadViewSet, WorkshopTelecallerViewSet, conversion_rate,
+    UserRegistrationView, WorkshopLeadViewSet, WorkshopTelecallerPageView, WorkshopTelecallerViewSet, conversion_rate,
     UsersViewSet, LeadViewSet, StudentViewSet, RolesViewSet, monthly_leads_count,
     LeadsPerStateView, StudentsPerCourseView, MonthlyActiveStudentsView,create_enquiry_telecaller,get_leads_by_telecaller
 )
@@ -67,6 +67,7 @@ urlpatterns = [
      path('send_sms/', SendSMSView.as_view(), name='send_sms'),
      path('api/change-password/', ChangePasswordView.as_view(), name='change_password'),
      path('TelecallerPageView/', TelecallerPageView.as_view(), name='TelecallerPageView'),
+      path('WorkshopTelecallerPageView/', WorkshopTelecallerPageView.as_view(), name='TelecallerPageView'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
 
