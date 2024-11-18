@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "./TeleCallerPage.scss";
-import {Button, Drawer } from "antd";
+import { Button, Drawer } from "antd";
 import TextField from "@mui/material/TextField";
-import Table from '../../components/Table/Table';
+import Table from "../../components/Table/Table";
 import axios from "axios";
 import MenuItem from "@mui/material/MenuItem";
 import TablePagination from "@mui/material/TablePagination";
 import { Link } from "react-router-dom";
 import { message } from "antd";
+// import 'remixicon/fonts/remixicon.css';
 import CustomLayout from "../../components/CustomLayout/CustomLayout";
 
 const TeleCallerPage = () => {
@@ -28,7 +29,7 @@ const TeleCallerPage = () => {
 
   const [status, setStatus] = useState("Pending");
   const [selectedLeadId, setSelectedLeadId] = useState(null); // Add state for selected lead ID
-
+  const [tableData, setTableData] = useState();
   const showDrawer = () => {
     setOpen(true);
   };
@@ -38,29 +39,30 @@ const TeleCallerPage = () => {
   };
 
   const statusOptions = [
-    { value: "Pending", label: "Pending"},
+    { value: "Pending", label: "Pending" },
     { value: "Contacted", label: "Contacted" },
     { value: "Follow Up", label: "Follow Up" },
     { value: "Converted", label: "Converted" },
     { value: "Closed", label: "Closed" },
   ];
 
-
   const columns = [
     {
       title: "Name",
-      dataIndex: "name",
+      dataIndex: "lead_name",
       render: (text, record) => (
-       // console.log(record.id)
+        // console.log(record.id)
         <Link to={`/Communication/${record.id}/`}>{text}</Link> // Pass the 'id' of the student/lead in the URL
       ),
-      
     },
-    
+
     { title: "Course", dataIndex: "course_name" },
     { title: "Phone", dataIndex: "phone_number" },
-    { title: "Email", dataIndex: "email" },
-    { title: "Status", dataIndex: "status", render: (text, record) => (
+    { title: "Email", dataIndex: "lead_email" },
+    {
+      title: "Status",
+      dataIndex: "status",
+      render: (text, record) => (
         <a
           onClick={() => {
             showDrawer();
@@ -69,37 +71,40 @@ const TeleCallerPage = () => {
         >
           {text}
         </a>
-      ), },
+      ),
+    },
     { title: "Remark", dataIndex: "remark_text" },
     {
       title: "Sign",
-      dataIndex: "status",
-      render: (text) => {
+      dataIndex: "Sign",
+      render: (status) => {
         const statusColorMap = {
-          "Pending": "#A9A9A9",
-          "Contacted": "#1E90FF",
-          "Follow Up": "#FFA500",
-          "Converted": "#32CD32",
-          "Closed": "red",
+          Pending: "#A9A9A9", // Grey
+          Contacted: "#1E90FF", // Blue
+          Follow_Up: "#FFA500", // Orange
+          Converted: "#32CD32", // Green
+          Closed: "red", // Red
         };
+
         return (
           <i
             className="ri-verified-badge-fill"
-            style={{ color: statusColorMap[text], fontSize: "1.5em" }}
-            fill={statusColorMap[text]}
+            style={{
+              color: statusColorMap[status] || "#000", // Default to black
+              fontSize: "1.5em", // Icon size
+            }}
+            aria-hidden="true" // Accessibility improvement
           ></i>
         );
       },
-      
     },
   ];
- 
-  
+
   const data = [
     { id: 1, name: "John Doe", age: 28 },
     { id: 2, name: "Jane Smith", age: 32 },
   ];
-  
+
   <Table columns={columns} data={data} />;
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -139,18 +144,17 @@ const TeleCallerPage = () => {
       });
   };
 
-  
-
   // Fetch lead data
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/get_assigned_enquiry_telecaller/", {
+      .get("http://127.0.0.1:8000/TelecallerPageView", {
         headers: {
           accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
+        setTableData(response.data.data);
         const dataWithKeys = response.data.map((item, index) => ({
           ...item,
           key: item.id || index,
@@ -162,29 +166,8 @@ const TeleCallerPage = () => {
       });
   }, [token]);
 
-  // Fetch remarks data
-  const fetchRemarks = () => {
-    axios
-      .get("http://127.0.0.1:8000/remarks/", {
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        const dataWithKeys = response.data.map((item, index) => ({
-          ...item,
-          key: item.id || index,
-        }));
-        setRemarkData(dataWithKeys);
-      })
-      .catch((error) => {
-        console.error("Error fetching remarks data:", error);
-      });
-  };
-
   useEffect(() => {
-    fetchRemarks();
+    // fetchRemarks();
   }, [token]);
 
   // Handle form submission to add new remark
@@ -210,7 +193,7 @@ const TeleCallerPage = () => {
         }
       )
       .then((response) => {
-        fetchRemarks(); // Refresh the remarks
+        // fetchRemarks(); // Refresh the remarks
         setRemark(""); // Clear the input after submission
         setStatus("Pending");
         onClose(); // Close the drawer after submission
@@ -222,8 +205,12 @@ const TeleCallerPage = () => {
 
   const mergedData = leadData.map((lead) => ({
     ...lead,
-    status: remarkData.find((remark) => remark.enquiry_lead === lead.id)?.status || "No Status",
-    remark_text: remarkData.find((remark) => remark.enquiry_lead === lead.id)?.remark_text || "No Remark",
+    status:
+      remarkData.find((remark) => remark.enquiry_lead === lead.id)?.status ||
+      "No Status",
+    remark_text:
+      remarkData.find((remark) => remark.enquiry_lead === lead.id)
+        ?.remark_text || "No Remark",
   }));
 
   const rowSelection = {
@@ -232,28 +219,27 @@ const TeleCallerPage = () => {
     },
   };
 
-
   return (
     <CustomLayout>
-        <div className="telecaller">
+      <div className="telecaller">
         <div className="telecaller_table">
-          <Table columns={columns} data={data}/>
-          </div>
+          <Table columns={columns} data={tableData} />
+        </div>
 
-          <div className="telecaller_pagination">
-            <div className="submit-button" onClick={handleSubmit}>
-              <button type="submit">Assign Leads</button>
-            </div>
-            <TablePagination
-              component="div"
-              count={totalCount}
-              page={page}
-              onPageChange={handleChangePage}
-              rowsPerPage={rowsPerPage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+        <div className="telecaller_pagination">
+          <div className="submit-button" onClick={handleSubmit}>
+            <button type="submit">Assign Leads</button>
           </div>
-         <Drawer title="Add Remark" onClose={onClose} open={open}>
+          <TablePagination
+            component="div"
+            count={totalCount}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </div>
+        <Drawer title="Add Remark" onClose={onClose} open={open}>
           <div className="form-body">
             <TextField
               id="outlined-select-status"
@@ -281,8 +267,7 @@ const TeleCallerPage = () => {
           </div>
         </Drawer>
       </div>
-      </CustomLayout>
-    
+    </CustomLayout>
   );
 };
 
