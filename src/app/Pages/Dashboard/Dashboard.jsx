@@ -24,8 +24,6 @@ const Dashboard = () => {
     }
   };
 
-  
-
   const fetchOrders = async () => {
     try {
       const payload = {
@@ -42,8 +40,7 @@ const Dashboard = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlY2hlbnRyeUB5b3BtYWlsLmNvbSIsIm5hbWVpZCI6IjIiLCJ1bmlxdWVfbmFtZSI6IlRlY2hFbnRyeUFkbWluIiwicm9sZSI6IjIiLCJuYmYiOjE3MzA3ODYzNzcsImV4cCI6MTczNDM4NjM3NywiaWF0IjoxNzMwNzg2Mzc3LCJpc3MiOiJUZWNoRW50cnkuY29tIiwiYXVkIjoiVGVjaEVudHJ5LmNvbSJ9.7tuhMMh_5Nzc1woXHPPrG3lbT-PmWkQ98at5_ccqg6M",
+           'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlY2hlbnRyeUB5b3BtYWlsLmNvbSIsIm5hbWVpZCI6IjIiLCJ1bmlxdWVfbmFtZSI6IlRlY2hFbnRyeUFkbWluIiwicm9sZSI6IjIiLCJuYmYiOjE3MzA3ODYzNzcsImV4cCI6MTczNDM4NjM3NywiaWF0IjoxNzMwNzg2Mzc3LCJpc3MiOiJUZWNoRW50cnkuY29tIiwiYXVkIjoiVGVjaEVudHJ5LmNvbSJ9.7tuhMMh_5Nzc1woXHPPrG3lbT-PmWkQ98at5_ccqg6M',
           },
           body: JSON.stringify(payload),
         }
@@ -65,7 +62,6 @@ const Dashboard = () => {
   const sendOrderToLeads = async (order) => {
     try {
       const courseName = order.course;
-      console.log(courseName);
 
       const courseResponse = await fetch("http://127.0.0.1:8000/create-lead/", {
         method: "POST",
@@ -124,6 +120,36 @@ const Dashboard = () => {
     setCurrentPage(0);
   };
 
+  const handleDownloadExcel = async () => {
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/download-excel/",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "enquiry_leads.xlsx"; // Set the desired file name
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        console.log("Excel file downloaded successfully!");
+      } else {
+        console.error("Failed to download Excel file.");
+      }
+    } catch (error) {
+      console.error("Error downloading Excel file:", error);
+    }
+  };
+
   useEffect(() => {
     fetchOrders();
   }, [currentPage, ordersPerPage, searchQuery]); // Add searchQuery as a dependency
@@ -142,7 +168,7 @@ const Dashboard = () => {
               />
               <i className="ri-search-line"></i>
             </div>
-            <button>Download Excel</button>
+            <button onClick={handleDownloadExcel}>Download Excel</button>
           </div>
 
           <div className="dashboard_right_table">
@@ -155,7 +181,6 @@ const Dashboard = () => {
                   <th>Phone Number</th>
                   <th>Course</th>
                   <th>Actions</th>
-
                 </tr>
               </thead>
               <tbody>
@@ -168,8 +193,8 @@ const Dashboard = () => {
                       <td>{order.phoneNumber}</td>
                       <td>{order.course}</td>
                       <td>
-                      <i class="ri-delete-bin-6-line"></i>
-                      <i class="ri-edit-line"></i>
+                        <i className="ri-delete-bin-6-line"></i>
+                        <i className="ri-edit-line"></i>
                       </td>
                     </tr>
                   ))
@@ -180,7 +205,7 @@ const Dashboard = () => {
                 )}
               </tbody>
             </table>
-          </div>
+          </div> 
 
           <div className="dashboard_right_table_footer">
             <TablePagination

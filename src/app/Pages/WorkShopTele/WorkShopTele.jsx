@@ -167,8 +167,14 @@ const WorkShopTele = () => {
             </table>
           </div>
           <div className="workShopTele_right_pagination">
-            <div className="submit-button" onClick={handleSubmit}>
-              <button type="submit">Assign Leads</button>
+            <div className="submit-button">
+              <button type="submit"
+               onClick={handleSubmit}
+               style={{
+                opacity: !telecaller || selectedRowKeys.length === 0 ? 0.5 : 1,
+                cursor: !telecaller || selectedRowKeys.length === 0 ? "not-allowed" : "pointer",
+              }}
+              >Assign Leads</button>
             </div>
             <TablePagination
               component="div"

@@ -2,17 +2,22 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.db.models import Q
 from rest_framework import generics
 from app.serializers import LoginSerializer, RegistrationSerializer
 from rest_framework import viewsets
 from .models import   Communication, CommunicationHistory, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, LeadAssignment, Remarks,  Roles, Student, Users, Workshop_Leads, WorkshopTelecaller
-from .serializers import  ChangePasswordSerializer, CommunicationHistorySerializer, CommunicationSerializer, CourseSerializer, EnquiryTelecallerSerializer, EnrollmentSerializer, InstallmentSerializer, LeadAssignmentSerializer, LeadSerializer, RemarksSerializer, RoleSerializer, StudentSerializer, UsersSerializer, WorkshopSerializer, WorkshopTelecallerSerializer
+from .serializers import  ChangePasswordSerializer, CommunicationHistorySerializer, CommunicationSerializer, CourseSerializer, EnquiryLeadsSerializer, EnquiryTelecallerSerializer, EnrollmentSerializer, InstallmentSerializer, LeadAssignmentSerializer, LeadSerializer, RemarksSerializer, RoleSerializer, StudentSerializer, UsersSerializer, WorkshopLeadSerializer, WorkshopSerializer, WorkshopTelecallerSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import filters 
 from django.contrib.auth.models import User
 from django.utils import timezone
+from datetime import datetime
+import pandas as pd
+from django.http import HttpResponse
+import io
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import generics, permissions
@@ -427,26 +432,40 @@ class AssignLeadView(APIView):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def get_leads_by_telecaller(request):
+    # Retrieve data from request
     telecaller_name = request.data.get('telecaller')
     lead_count = int(request.data.get('numberOfLeads', 0))
-    sample_leads=request.data.get('leads')
-    print(sample_leads)
-    print(lead_count)
+    sample_leads = request.data.get('leads', [])
+    print("Sample Leads:", sample_leads)
+    print("Lead Count:", lead_count)
+    ids = [item['id'] for item in sample_leads]
+    # Validate the telecaller
     telecaller = EnquiryTelecaller.objects.filter(name=telecaller_name).first()
-    print(telecaller)
+    print("Telecaller:", telecaller)
     if not telecaller:
         return Response({"error": "Telecaller not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    leads = Enquiry_Leads.objects.filter(assigned__isnull=True)[lead_count:]
-    print(leads) 
-    i=0       
+    # Filter leads that are unassigned and match IDs in sample_leads
+    leads = Enquiry_Leads.objects.filter(
+        Q(assigned__isnull=True) & Q(id__in=ids)
+    )[:lead_count]  # Limit results to lead_count
+    print("Filtered Leads:", leads)
+
+    if not leads:
+        return Response({"error": "No matching leads found"}, status=status.HTTP_404_NOT_FOUND)
+
+    # Assign leads to telecaller and save
     for lead in leads:
-        print(i+1)
         telecaller.assigned_lead.add(lead)
         telecaller.save()
-        lead.assigned = True  
+        lead.assigned = True
         lead.save()
-    
+        Remarks.objects.create(
+            enquiry_lead=lead,  # Link the remark to the current lead
+            status='default',   # Default status for the remark
+            remark_text='none'  # Default remark text
+        )
+    # Serialize and return the leads
     serialized_leads = LeadSerializer(leads, many=True).data
     return Response(serialized_leads, status=status.HTTP_200_OK)
 
@@ -457,6 +476,7 @@ def get_workshopleads_by_telecaller(request):
     telecaller_name = request.data.get('telecaller')
     lead_count = int(request.data.get('numberOfLeads', 0))
     sample_leads=request.data.get('leads')
+    ids = [item['id'] for item in sample_leads]
     print(sample_leads)
     print(lead_count)
     telecaller = EnquiryTelecaller.objects.filter(name=telecaller_name).first()
@@ -464,7 +484,11 @@ def get_workshopleads_by_telecaller(request):
     if not telecaller:
         return Response({"error": "Telecaller not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    leads =Workshop_Leads.objects.filter(assigned__isnull=True)[lead_count:]
+    #leads =Workshop_Leads.objects.filter(assigned__isnull=True)[lead_count:]
+    leads =Workshop_Leads.objects.filter(
+        Q(assigned__isnull=True) & Q(id__in=ids)
+    )[:lead_count]  # Limit results to lead_count
+    print("Filtered Leads:", leads)
     print(leads) 
     i=0       
     for lead in leads:
@@ -473,6 +497,11 @@ def get_workshopleads_by_telecaller(request):
         telecaller.save()
         lead.assigned = True  
         lead.save()
+        Remarks.objects.create(
+            workshop_lead=lead,  # Link the remark to the current lead
+            status='default',   # Default status for the remark
+            remark_text='none'  # Default remark text
+        )
     
     serialized_leads = WorkshopSerializer(leads, many=True).data
     return Response(serialized_leads, status=status.HTTP_200_OK)
@@ -613,3 +642,162 @@ class WorkshopTelecallerPageView(APIView):
             )
 
         return Response({"message": "No matching data found"}, status=status.HTTP_400_BAD_REQUEST)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def download_excel(request):
+    """
+    API endpoint to download Excel containing data from the EnquiryLeads model.
+    """
+    # Query data from the EnquiryLeads model
+    leads = Enquiry_Leads.objects.all().values('name', 'email', 'phone_number', 'course', 'created_at')
+    #print(leads)
+    # Convert queryset to DataFrame
+    data = list(leads)
+    for record in data:
+        if isinstance(record['created_at'], datetime) and record['created_at'].tzinfo is not None:
+            # Convert timezone-aware datetime to naive
+            record['created_at'] = record['created_at'].astimezone().replace(tzinfo=None)
+    
+    df = pd.DataFrame(data)
+    #print(df)
+    # If the queryset is empty, provide default column names
+    if df.empty:
+        df = pd.DataFrame(columns=['name', 'email', 'phone_number', 'course', 'created_at'])
+
+    # Create an in-memory Excel file
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Enquiry Leads')
+    output.seek(0)  # Move to the beginning of the file
+
+    # Define the filename
+    filename = "enquiry_leads.xlsx"
+
+    # Prepare the response
+    response = HttpResponse(
+        output, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def download_excel_workshop(request):
+    # Query data from the Workshop_Leads model, excluding the created_at field
+    leads = Workshop_Leads.objects.all().values(
+        'customerName', 'customerEmail', 'customerNumber', 'orderDate', 
+        'paymentStatus', 'location'  # Excluding 'created_at'
+    )
+    
+    # Convert queryset to DataFrame
+    data = list(leads)
+
+    # Convert datetime fields to timezone-naive if needed
+    for record in data:
+        if isinstance(record['orderDate'], datetime) and record['orderDate'].tzinfo is not None:
+            # Convert timezone-aware datetime to naive
+            record['orderDate'] = record['orderDate'].astimezone().replace(tzinfo=None)
+
+    # Create the DataFrame
+    df = pd.DataFrame(data)
+
+    # If the queryset is empty, provide default column names
+    if df.empty:
+        df = pd.DataFrame(columns=['customerName', 'customerEmail', 'customerNumber', 'orderDate', 'paymentStatus', 'location'])
+
+    # Create an in-memory Excel file
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Workshop Leads')
+    
+    output.seek(0)  # Move to the beginning of the file
+
+    # Define the filename
+    filename = "workshop_leads.xlsx"
+
+    # Prepare the response
+    response = HttpResponse(
+        output, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
+
+
+class EnquiryLeadsList(APIView):
+    def get(self, request):
+        # Fetch leads with prefetch_related for optimization
+        leads = Enquiry_Leads.objects.prefetch_related('assigned_telecaller', 'remarks').all()
+        
+        # Serialize leads data
+        lead_serializer = EnquiryLeadsSerializer(leads, many=True)
+        data = lead_serializer.data
+        
+        # Customize response to include status and followup_date directly
+        for lead in data:
+            # Process assigned_telecaller
+            telecaller_data = lead.get('assigned_telecaller')
+            if telecaller_data and isinstance(telecaller_data, list) and telecaller_data:
+                lead['assigned_telecaller'] = telecaller_data[0].get('name', None)
+            else:
+                lead['assigned_telecaller'] = None
+            
+            # Process remarks to extract the first remark's status and followup_date
+            remarks_data = lead.get('remarks')
+            if remarks_data and isinstance(remarks_data, list) and len(remarks_data) > 0:
+                # Extract the first remark
+                first_remark = remarks_data[0]
+                lead['status'] = first_remark.get('status', "None")
+                lead['followup_date'] = first_remark.get('created_at', "NULL")
+            else:
+                # Default values if no remarks
+                lead['status'] = "None"
+                lead['followup_date'] = "NULL"
+            
+            # Remove the remarks key as it's no longer needed
+            lead.pop('remarks', None)
+        
+        return Response(data, status=status.HTTP_200_OK)
+    
+class WorkshopLeadsList(APIView):
+    def get(self, request):
+        # Fetch leads with prefetch_related for optimization
+        leads = Workshop_Leads.objects.prefetch_related('workshop_telecaller_leads', 'Workshop_Leads_remarks').all()
+
+        # Serialize leads data
+        lead_serializer = WorkshopLeadSerializer(leads, many=True)
+        data = lead_serializer.data
+
+        # Customize response to include status and followup_date directly
+        for lead in data:
+            # Process assigned_telecaller
+            telecaller_data = lead.get('assigned_telecaller')
+            if telecaller_data and isinstance(telecaller_data, list) and telecaller_data:
+                lead['assigned_telecaller'] = telecaller_data[0].get('customerName', None)
+            else:
+                lead['assigned_telecaller'] = "NULL"
+
+
+            # Process remarks to extract the first remark's status and followup_date
+            remarks_data = lead.get('remarks')
+            if remarks_data and isinstance(remarks_data, list) and len(remarks_data) > 0:
+                # Extract the first remark
+                first_remark = remarks_data[0]
+                lead['status'] = first_remark.get('status', "None")
+                lead['followup_date'] = first_remark.get('followup_date', "NULL")
+            else:
+                # Default values if no remarks
+                lead['status'] = "None"
+                lead['followup_date'] = "NULL"
+
+            # Rename fields for consistency in response
+            lead['name'] = lead.pop('customerName', None)  # Rename customerName to Name
+            lead['email'] = lead.pop('customerEmail', None)  # Rename customerEmail to Email
+            lead['phone_number'] = lead.pop('customerNumber', None)  # Rename customerNumber to Phone
+            lead['assigned_telecaller'] = lead.pop('assigned_telecaller', "NULL")  # Rename assigned_telecaller to Assigned_to
+            lead['status'] = lead.pop('status', "None")  # Rename status to Lead Status
+            lead['followup_date'] = lead.pop('followup_date', "NULL")  # Rename followup_date to Follow up date
+
+            # Remove the remarks key as it's no longer needed
+            lead.pop('remarks', None)
+
+        return Response(data, status=status.HTTP_200_OK)

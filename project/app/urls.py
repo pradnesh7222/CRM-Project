@@ -3,9 +3,9 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from .views import (
     ActiveStudents, AssignLeadView, ChangePasswordView, CommunicationHistoryViewSet, CommunicationViewSet, Convert_lead_to_student,
-    CourseIdView, CourseViewSet, EmailSendViewSet, EnquiryTelecallerViewSet, EnrollStudentView,
+    CourseIdView, CourseViewSet, EmailSendViewSet, EnquiryLeadsList, EnquiryTelecallerViewSet, EnrollStudentView,
     EnrollmentViewSet, InstallmentViewSet, LogoutView, PlacedStudents, RemarksViewSet, SendSMSView, TelecallerPageView, UserLoginView,
-    UserRegistrationView, WorkshopLeadViewSet, WorkshopTelecallerPageView, WorkshopTelecallerViewSet, conversion_rate,
+    UserRegistrationView, WorkshopLeadViewSet, WorkshopLeadsList, WorkshopTelecallerPageView, WorkshopTelecallerViewSet, conversion_rate,
     UsersViewSet, LeadViewSet, StudentViewSet, RolesViewSet, monthly_leads_count,
     LeadsPerStateView, StudentsPerCourseView, MonthlyActiveStudentsView,create_enquiry_telecaller,get_leads_by_telecaller
 )
@@ -68,6 +68,10 @@ urlpatterns = [
      path('api/change-password/', ChangePasswordView.as_view(), name='change_password'),
      path('TelecallerPageView/', TelecallerPageView.as_view(), name='TelecallerPageView'),
       path('WorkshopTelecallerPageView/', WorkshopTelecallerPageView.as_view(), name='TelecallerPageView'),
+       path('api/download-excel/', views.download_excel, name='download_excel'),
+       path('api/leads/', EnquiryLeadsList.as_view(), name='enquiry-leads-list'),
+       path('api/workshopleadsAdminpage/', WorkshopLeadsList.as_view(), name='enquiry-leads-list'),
+        path('api/workshop_leads/', views.download_excel_workshop, name='download_excel_workshop'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
 

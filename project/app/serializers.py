@@ -124,9 +124,11 @@ class UsersSerializer(serializers.ModelSerializer):
 
 class LeadSerializer(serializers.ModelSerializer):
     course_name = serializers.ReadOnlyField(source='course.name')
+    lead_name = serializers.ReadOnlyField(source='lead_source.name')
+    print(lead_name)
     class Meta:
         model = Enquiry_Leads
-        fields = ['id', 'name', 'email', 'phone_number', 'course_name','course']
+        fields = ['id', 'name', 'email', 'phone_number', 'course_name','course','lead_source','lead_name']
         
 
 class WorkshopSerializer(serializers.ModelSerializer):
@@ -255,4 +257,18 @@ class LeadAssignmentSerializer(serializers.Serializer):
 class RemarksSerializer(serializers.ModelSerializer):
     class Meta:
         model = Remarks
-        fields = ['status','id', 'enquiry_lead', 'remark_text', 'created_at','workshop_lead']
+        fields = '__all__'
+
+class EnquiryLeadsSerializer(serializers.ModelSerializer):
+    assigned_telecaller = LeadSerializer(many=True, read_only=True)
+    remarks=RemarksSerializer(many=True, read_only=True)
+    class Meta:
+        model = EnquiryTelecaller
+        fields = ['name', 'email', 'phone_number', 'assigned_telecaller','remarks']
+
+class WorkshopLeadSerializer(serializers.ModelSerializer):
+    assigned_telecaller = WorkshopSerializer(many=True, read_only=True)
+    remarks=RemarksSerializer(many=True, read_only=True)
+    class Meta:
+        model = Workshop_Leads
+        fields = ['orderId', 'customerName', 'customerNumber', 'customerEmail', 'assigned_telecaller', 'remarks']

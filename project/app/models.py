@@ -7,7 +7,12 @@ class Roles(models.Model):
 
     def __str__(self):
         return self.role_name
-    
+class LeadSource(models.Model):
+    name = models.CharField(max_length=255, unique=True,default="website")
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
 class BaseModel(models.Model):
     states=models.CharField(max_length=100,choices=[
             ('ap', 'Andhra Pradesh'),
@@ -101,6 +106,7 @@ class Enquiry_Leads(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     course=models.ForeignKey(Course,on_delete=models.CASCADE,null=True)
     assigned=models.BooleanField(null=True,blank=True)
+    lead_source = models.ForeignKey(LeadSource, on_delete=models.SET_NULL, null=True, related_name='leads')
     def __str__(self):
         return f"Lead: {self.name} "
 
@@ -320,8 +326,8 @@ class Remarks(models.Model):
         ],
         default='Pending'
     )
-    enquiry_lead = models.ForeignKey(Enquiry_Leads, on_delete=models.CASCADE, related_name="remarks")
-    workshop_lead=models.ForeignKey(Workshop_Leads,null=True, on_delete=models.CASCADE, related_name='Workshop_Leads_remarks'),
+    enquiry_lead = models.ForeignKey(Enquiry_Leads, on_delete=models.CASCADE, related_name="remarks",null=True)
+    workshop_lead=models.ForeignKey(Workshop_Leads,null=True, on_delete=models.CASCADE, related_name='Workshop_Leads_remarks')
     remark_text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 

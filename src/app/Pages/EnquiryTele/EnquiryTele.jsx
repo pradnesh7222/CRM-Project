@@ -201,7 +201,10 @@ const EnquiryTele = () => {
             <div className="submit-button">
               <button type="submit"
               onClick={handleSubmit}
-              disabled={!telecaller || selectedRowKeys.length === 0}
+              style={{
+                opacity: !telecaller || selectedRowKeys.length === 0 ? 0.5 : 1,
+                cursor: !telecaller || selectedRowKeys.length === 0 ? "not-allowed" : "pointer",
+              }}
               >Assign Leads</button>
             </div>
             <TablePagination

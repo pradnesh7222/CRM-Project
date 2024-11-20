@@ -10,7 +10,8 @@ const WorkshopLeads = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const token = localStorage.getItem('authToken');
-  // Fetch data and store in state
+
+  // Fetch data when page, rowsPerPage, or searchQuery changes
   useEffect(() => {
     fetchWorkshopLeads();
   }, [page, rowsPerPage, searchQuery]);
@@ -35,7 +36,6 @@ const WorkshopLeads = () => {
       });
 
       const data = await response.json();
-      console.log(data);
       if (data) {
         setEnrolledStudents(Array.isArray(data.data) ? data.data : []);
         setTotalCount(data.totalCount || 0);
@@ -49,7 +49,6 @@ const WorkshopLeads = () => {
   };
 
   const saveWorkshopLeads = async (leadsData) => {
-    console.log(`Fetching data for page ${page + 1} with page size ${rowsPerPage}`);
     if (!Array.isArray(leadsData)) {
       console.error("Error: leadsData is not an array.");
       return;
@@ -67,8 +66,6 @@ const WorkshopLeads = () => {
           paymentStatus: lead.paymentStatus,
           location: lead.location,
         };
-
-        console.log(formattedData, "formattedData");
 
         const response = await fetch("http://127.0.0.1:8000/WorkshopLeads/", {
           method: "POST",
@@ -89,6 +86,37 @@ const WorkshopLeads = () => {
     }
   };
 
+  // Handle the Excel download
+  const handleDownloadExcel = async () => {
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/workshop_leads/", // Correct endpoint for Excel file
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "workshop_leads.xlsx"; // Set the desired file name
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        console.log("Excel file downloaded successfully!");
+      } else {
+        console.error("Failed to download Excel file.");
+      }
+    } catch (error) {
+      console.error("Error downloading Excel file:", error);
+    }
+  };
+
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
     setPage(0); // Reset to page 1 when search changes
@@ -104,8 +132,8 @@ const WorkshopLeads = () => {
   };
 
   return (
-       <CustomLayout>
-        <div className="workshopLead">
+    <CustomLayout>
+      <div className="workshopLead">
         <div className="workshopLead_right">
           <div className="workshopLead_right_upper">
             <div className="search-btn">
@@ -117,6 +145,7 @@ const WorkshopLeads = () => {
               />
               <i className="ri-search-line"></i>
             </div>
+            <button onClick={handleDownloadExcel}>Download Excel</button>
           </div>
 
           {/* Workshop Leads Table */}
@@ -160,7 +189,7 @@ const WorkshopLeads = () => {
           </div>
 
           {/* Pagination */}
-          <div className="pagination">
+          <div className="workshopLead_right_table_pagination">
             <TablePagination
               component="div"
               count={totalCount}
@@ -171,10 +200,8 @@ const WorkshopLeads = () => {
             />
           </div>
         </div>
-        </div>
-        </CustomLayout>
-      
-    
+      </div>
+    </CustomLayout>
   );
 };
 
