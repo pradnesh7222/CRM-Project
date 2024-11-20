@@ -60,7 +60,7 @@ const RouterComponent = () => {
         <Route path="/AddCourse" element={<AddCourse />}/>
         <Route path="/EnrolleTable" element={<EnrolleTable/>}/>
         <Route path="/EnrollForm" element={<EnrollForm/>}/>
-        <Route path="/Communication" element={<Communication/>}/>
+        <Route path="/Communication/:id"  element={<Communication/>}/>
         <Route path="/Phone" element={<Phone/>}/>
         <Route path="/Message" element={<Message/>}/>
         <Route path="/Email" element={<Email/>}/>

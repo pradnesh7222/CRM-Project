@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "./TeleCallerPage.scss";
-import { Button, Drawer } from "antd";
+import { Button, Drawer, message } from "antd";
 import TextField from "@mui/material/TextField";
-import Table from "../../components/Table/Table";
-import axios from "axios";
 import MenuItem from "@mui/material/MenuItem";
 import TablePagination from "@mui/material/TablePagination";
-import { Link } from "react-router-dom";
-import { message } from "antd";
-import 'remixicon/fonts/remixicon.css';
+import { Link, useNavigate } from "react-router-dom";
+import "remixicon/fonts/remixicon.css";
+import axios from "axios";
 import CustomLayout from "../../components/CustomLayout/CustomLayout";
+import Table from "../../components/Table/Table";
 
 const TeleCallerPage = () => {
   const [selectionType, setSelectionType] = useState("checkbox");
@@ -18,25 +17,16 @@ const TeleCallerPage = () => {
   const [remarkData, setRemarkData] = useState([]);
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(0);
-  const [numberOfLeads, setNumberOfLeads] = useState(0);
-
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
   const [telecaller, setTelecaller] = useState("");
-
   const [remark, setRemark] = useState("");
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-
+  const [selectedLeadId, setSelectedLeadId] = useState(null);
   const [status, setStatus] = useState("Pending");
-  const [selectedLeadId, setSelectedLeadId] = useState(null); // Add state for selected lead ID
-  const [tableData, setTableData] = useState();
-  const showDrawer = () => {
-    setOpen(true);
-  };
-
-  const onClose = () => {
-    setOpen(false);
-  };
+  const [date_time, setDateTime] = useState(""); // Updated variable name for date_time
+  const navigate = useNavigate();
+  const showDrawer = () => setOpen(true);
+  const onClose = () => setOpen(false);
 
   const statusOptions = [
     { value: "Pending", label: "Pending" },
@@ -48,14 +38,18 @@ const TeleCallerPage = () => {
 
   const columns = [
     {
-         title: "Name",
+      title: "Name",
       dataIndex: "lead_name",
+      key: "lead_name",
       render: (text, record) => (
-        // console.log(record.id)
-        <Link to={`/Communication/${record.id}/`}>{text}</Link> // Pass the 'id' of the student/lead in the URL
+        <Link
+          to={`/Communication/${record.id}/`}
+          style={{ textDecoration: "none", color: "#007BFF", cursor: "pointer" }}
+        >
+          {text}
+        </Link>
       ),
     },
-
     { title: "Course", dataIndex: "course" },
     { title: "Phone", dataIndex: "phone_number" },
     { title: "Email", dataIndex: "lead_email" },
@@ -63,14 +57,19 @@ const TeleCallerPage = () => {
       title: "Status",
       dataIndex: "status",
       render: (text, record) => (
-        <a
-          onClick={() => {
+        <div
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent table row click interference
             showDrawer();
-            setSelectedLeadId(record.id); // Set selected lead ID
+            setSelectedLeadId(record.id);
+          }}
+          style={{
+            cursor: "pointer",
+            color: "#007BFF",
           }}
         >
           {text}
-        </a>
+        </div>
       ),
     },
     { title: "Remark", dataIndex: "remark_text" },
@@ -79,46 +78,35 @@ const TeleCallerPage = () => {
       dataIndex: "status",
       render: (text) => {
         const statusColorMap = {
-          "Pending": "#A9A9A9", // Grey
-          "Contacted": "#1E90FF", // Blue
-          "Follow_Up": "#FFA500", // Orange
-          "Converted": "#32CD32", // Green
-          "Closed": "red", // Red
+          Pending: "#A9A9A9",
+          Contacted: "#1E90FF",
+          Follow_Up: "#FFA500",
+          Converted: "#32CD32",
+          Closed: "red",
         };
-
         return (
           <i
-  className="ri-verified-badge-fill"
-  style={{
-    color: statusColorMap[text],
-    fontSize: "1.5em"
-  }}
-></i>
-
-
+            className="ri-verified-badge-fill"
+            style={{
+              color: statusColorMap[text],
+              fontSize: "1.5em",
+            }}
+          />
         );
       },
     },
   ];
 
-  const data = [
-    { id: 1, name: "John Doe", age: 28 },
-    { id: 2, name: "Jane Smith", age: 32 },
-  ];
-
-  <Table columns={columns} data={data} />;
+  // Handle pagination changes
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0); // Reset to first page on rows per page change
+    setPage(0); // Reset page to 0 whenever rowsPerPage changes
   };
 
-  
-
-  // Fetch lead data
   useEffect(() => {
     axios
       .get("http://127.0.0.1:8000/TelecallerPageView", {
@@ -126,25 +114,24 @@ const TeleCallerPage = () => {
           accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
+        params: {
+          page: page + 1, // API expects page to start from 1
+          limit: rowsPerPage, // Limit based on the rows per page
+        },
       })
       .then((response) => {
-        setTableData(response.data.data);
-        const dataWithKeys = response.data.map((item, index) => ({
+        const dataWithKeys = response.data.data.map((item, index) => ({
           ...item,
           key: item.id || index,
         }));
         setLeadData(dataWithKeys);
+        setTotalCount(response.data.totalCount || dataWithKeys.length);
       })
       .catch((error) => {
         console.error("Error fetching telecaller data:", error);
       });
-  }, [token]);
+  }, [token, page, rowsPerPage]); // Run when page or rowsPerPage changes
 
-  useEffect(() => {
-    // fetchRemarks();
-  }, [token]);
-
-  // Handle form submission to add new remark
   const handleRemarkSubmit = () => {
     if (!selectedLeadId) {
       console.warn("No lead selected");
@@ -157,7 +144,7 @@ const TeleCallerPage = () => {
         {
           remark_text: remark,
           status: status,
-          enquiry_lead: selectedLeadId, // Use selectedLeadId here
+          enquiry_lead: selectedLeadId,
         },
         {
           headers: {
@@ -166,14 +153,15 @@ const TeleCallerPage = () => {
           },
         }
       )
-      .then((response) => {
-        // fetchRemarks(); // Refresh the remarks
-        setRemark(""); // Clear the input after submission
+      .then(() => {
+        setRemark("");
         setStatus("Pending");
-        onClose(); // Close the drawer after submission
+        onClose();
+        message.success("Remark added successfully!");
       })
       .catch((error) => {
         console.error("Error submitting remark:", error);
+        message.error("Failed to add remark.");
       });
   };
 
@@ -187,21 +175,13 @@ const TeleCallerPage = () => {
         ?.remark_text || "No Remark",
   }));
 
-  const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log("Selected Rows:", selectedRows);
-    },
-  };
-
   return (
     <CustomLayout>
       <div className="telecaller">
         <div className="telecaller_table">
-          <Table columns={columns} data={tableData} />
+          <Table columns={columns} data={mergedData} />
         </div>
-
         <div className="telecaller_pagination">
-          
           <TablePagination
             component="div"
             count={totalCount}
@@ -209,6 +189,7 @@ const TeleCallerPage = () => {
             onPageChange={handleChangePage}
             rowsPerPage={rowsPerPage}
             onRowsPerPageChange={handleChangeRowsPerPage}
+            rowsPerPageOptions={[10, 15, 25]} // Options for rows per page
           />
         </div>
         <Drawer title="Add Remark" onClose={onClose} open={open}>
@@ -227,6 +208,19 @@ const TeleCallerPage = () => {
                 </MenuItem>
               ))}
             </TextField>
+
+            <TextField
+              id="datetime-local"
+              label="Date & Time"
+              type="datetime-local"
+              value={date_time} // Use date_time for storing the selected date & time
+              onChange={(e) => setDateTime(e.target.value)} // Update the correct state for date_time
+              className="textfield"
+              InputLabelProps={{
+                shrink: true, // Ensures the label positions correctly
+              }}
+            />
+
             <TextField
               id="remark"
               label="Remark"

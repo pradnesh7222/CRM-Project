@@ -1,9 +1,11 @@
 .telecaller{
     width: 100%;
+    padding: 1vw;
+
 
     &_table{
         width: 100%;
-        padding: 1vw;
+      
     }
 
     &_pagination {
@@ -33,4 +35,21 @@
           }
         }
       }
+
+    
+}
+
+.form-body{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5vw;
+
+  button{
+    padding: 1.5vw;
+  }
+
+  TextField{
+    width: 90%;
+  }
 }
