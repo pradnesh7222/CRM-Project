@@ -10,7 +10,7 @@ const Dashboard = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const token = localStorage.getItem("authToken");
-
+  const [leadSource, setLeadSource] = useState("");
   const saveOrdersToLeads = async (orders) => {
     if (Array.isArray(orders)) {
       try {
@@ -92,7 +92,7 @@ const Dashboard = () => {
         });
 
         const data = await leadResponse.json();
-
+        console.log(data)
         if (leadResponse.ok) {
           console.log("Order sent to leads API:", data);
         } else {
@@ -119,7 +119,29 @@ const Dashboard = () => {
     setOrdersPerPage(parseInt(event.target.value, 10));
     setCurrentPage(0);
   };
-
+  const handleLeadSource = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/leads/", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      // Check if the response is successful
+      if (response.ok) {
+        const data = await response.json();
+        const lead_source=data[0].lead_source;
+        setLeadSource(lead_source);
+        console.log(lead_source); // You can handle the data here as needed
+      } else {
+        console.error("Failed to fetch data:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  
   const handleDownloadExcel = async () => {
     try {
       const response = await fetch(
@@ -149,6 +171,9 @@ const Dashboard = () => {
       console.error("Error downloading Excel file:", error);
     }
   };
+  useEffect(()=>{
+    handleLeadSource()
+  })
 
   useEffect(() => {
     fetchOrders();
@@ -180,7 +205,7 @@ const Dashboard = () => {
                   <th>Email</th>
                   <th>Phone Number</th>
                   <th>Course</th>
-                  <th>Actions</th>
+                  <th>Lead Source</th>
                 </tr>
               </thead>
               <tbody>
@@ -192,10 +217,8 @@ const Dashboard = () => {
                       <td>{order.email}</td>
                       <td>{order.phoneNumber}</td>
                       <td>{order.course}</td>
-                      <td>
-                        <i className="ri-delete-bin-6-line"></i>
-                        <i className="ri-edit-line"></i>
-                      </td>
+                      <td>{leadSource}</td>
+                     
                     </tr>
                   ))
                 ) : (

@@ -17,7 +17,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
-from .models import Communication, CommunicationHistory, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, LeadAssignment, Remarks, Roles, Users, Student, Workshop_Leads, WorkshopTelecaller
+from .models import Communication, CommunicationHistory, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, LeadAssignment, LeadSource, Remarks, Roles, Users, Student, Workshop_Leads, WorkshopTelecaller
 
 from rest_framework import serializers
 from django.contrib.auth.forms import PasswordResetForm
@@ -125,7 +125,7 @@ class UsersSerializer(serializers.ModelSerializer):
 class LeadSerializer(serializers.ModelSerializer):
     course_name = serializers.ReadOnlyField(source='course.name')
     lead_name = serializers.ReadOnlyField(source='lead_source.name')
-    print(lead_name)
+    print(LeadSource)
     class Meta:
         model = Enquiry_Leads
         fields = ['id', 'name', 'email', 'phone_number', 'course_name','course','lead_source','lead_name']
@@ -258,7 +258,10 @@ class RemarksSerializer(serializers.ModelSerializer):
     class Meta:
         model = Remarks
         fields = '__all__'
-
+class RemarkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Remarks
+        fields = ['status', 'remark_text', 'created_at'] 
 class EnquiryLeadsSerializer(serializers.ModelSerializer):
     assigned_telecaller = LeadSerializer(many=True, read_only=True)
     remarks=RemarksSerializer(many=True, read_only=True)
@@ -268,7 +271,15 @@ class EnquiryLeadsSerializer(serializers.ModelSerializer):
 
 class WorkshopLeadSerializer(serializers.ModelSerializer):
     assigned_telecaller = WorkshopSerializer(many=True, read_only=True)
+    print(assigned_telecaller,"asbbbbbbbbbb")
     remarks=RemarksSerializer(many=True, read_only=True)
     class Meta:
-        model = Workshop_Leads
-        fields = ['orderId', 'customerName', 'customerNumber', 'customerEmail', 'assigned_telecaller', 'remarks']
+        model = EnquiryTelecaller
+        fields = ['name', 'email', 'phone_number', 'assigned_telecaller','remarks']
+
+        
+
+class LeadSourceserializer(serializers.ModelSerializer):
+    class Meta:
+        model = LeadSource
+        fields = '__all__'

@@ -14,7 +14,7 @@ const TeleCallerPage = () => {
   const [selectionType, setSelectionType] = useState("checkbox");
   const token = localStorage.getItem("authToken");
   const [leadData, setLeadData] = useState([]);
-  const [remarkData, setRemarkData] = useState([]);
+  const [remarkData, setRemarkData] = useState(null); // State to store the remark data for the selected lead
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -31,7 +31,7 @@ const TeleCallerPage = () => {
   const statusOptions = [
     { value: "Pending", label: "Pending" },
     { value: "Contacted", label: "Contacted" },
-    { value: "Follow Up", label: "Follow Up" },
+    { value: "Follow Up", label: "Follow_Up" },
     { value: "Converted", label: "Converted" },
     { value: "Closed", label: "Closed" },
   ];
@@ -43,14 +43,18 @@ const TeleCallerPage = () => {
       key: "lead_name",
       render: (text, record) => (
         <Link
-          to={`/Communication/${record.id}/`}
+          to={`/Communication/${record.lead_id}/`}
           style={{ textDecoration: "none", color: "#007BFF", cursor: "pointer" }}
         >
           {text}
         </Link>
       ),
     },
-    { title: "Course", dataIndex: "course" },
+    {
+      title: "Course",
+      dataIndex: "course",
+      render: (text) => text ? text : "None",  // If the course is null or undefined, display "None"
+    },    
     { title: "Phone", dataIndex: "phone_number" },
     { title: "Email", dataIndex: "lead_email" },
     {
@@ -60,8 +64,8 @@ const TeleCallerPage = () => {
         <div
           onClick={(e) => {
             e.stopPropagation(); // Prevent table row click interference
+            setSelectedLeadId(record.lead_id); // Set the selected lead ID
             showDrawer();
-            setSelectedLeadId(record.id);
           }}
           style={{
             cursor: "pointer",
@@ -80,7 +84,7 @@ const TeleCallerPage = () => {
         const statusColorMap = {
           Pending: "#A9A9A9",
           Contacted: "#1E90FF",
-          Follow_Up: "#FFA500",
+          "Follow Up": "#FFA500",
           Converted: "#32CD32",
           Closed: "red",
         };
@@ -120,78 +124,108 @@ const TeleCallerPage = () => {
         },
       })
       .then((response) => {
-        const dataWithKeys = response.data.data.map((item, index) => ({
-          ...item,
-          key: item.id || index,
-        }));
-        setLeadData(dataWithKeys);
-        setTotalCount(response.data.totalCount || dataWithKeys.length);
+        setLeadData(response.data.data || []);  // Ensure data is correctly extracted from response
+        setTotalCount(response.data.totalCount || 0);
       })
       .catch((error) => {
         console.error("Error fetching telecaller data:", error);
       });
   }, [token, page, rowsPerPage]); // Run when page or rowsPerPage changes
 
+  useEffect(() => {
+    if (selectedLeadId) {
+      axios
+        .get(`http://127.0.0.1:8000/remarks/${selectedLeadId}`, {
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setRemarkData(response.data); // Set the remark data for the selected lead
+          setRemark(response.data.remark_text); // Pre-fill the remark input field
+          setStatus(response.data.status); // Pre-fill the status dropdown
+          setDateTime(response.data.created_at); // Pre-fill the date/time field
+        })
+        .catch((error) => {
+          console.error("Error fetching remark data:", error);
+        });
+    }
+  }, [selectedLeadId, token]); // Fetch remark data for selected lead
+
   const handleRemarkSubmit = () => {
     if (!selectedLeadId) {
       console.warn("No lead selected");
       return;
     }
-
-    axios
-      .post(
-        "http://127.0.0.1:8000/remarks/",
-        {
+    console.log(remarkData)
+    const url = `http://localhost:8000/remarks/${selectedLeadId}/update_remark/` ;
+    const method = remarkData ? "PUT" : "PUT"; // Use PUT if updating an existing remark, POST if adding a new one
+    console.log(url)
+    axios({
+      method: method,
+      url: url,
+      data: {
+        remark_text: remark,
+        status: status,
+        enquiry_lead: selectedLeadId,
+        created_at: date_time,
+      },
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        message.success("Remark submitted successfully!"); // Show success message
+  
+        // Update the leadData with the new or updated remark
+        const updatedLeadData = leadData.map((lead) => {
+          if (lead.lead_id === selectedLeadId) {
+            return {
+              ...lead,
+              remark_text: remark, // Update the remark text
+              status: status,      // Update the status
+            };
+          }
+          return lead;
+        });
+  
+        setLeadData(updatedLeadData); // Update the state with new data
+  
+        setRemarkData({
+          ...remarkData,
           remark_text: remark,
           status: status,
-          enquiry_lead: selectedLeadId,
-        },
-        {
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then(() => {
-        setRemark("");
-        setStatus("Pending");
-        onClose();
-        message.success("Remark added successfully!");
+          created_at: date_time,
+        }); // Update local remarkData
+        onClose(); // Close the drawer
       })
       .catch((error) => {
         console.error("Error submitting remark:", error);
-        message.error("Failed to add remark.");
+        message.error("Failed to submit remark."); // Show error message
       });
   };
-
-  const mergedData = leadData.map((lead) => ({
-    ...lead,
-    status:
-      remarkData.find((remark) => remark.enquiry_lead === lead.id)?.status ||
-      "No Status",
-    remark_text:
-      remarkData.find((remark) => remark.enquiry_lead === lead.id)
-        ?.remark_text || "No Remark",
-  }));
+  
 
   return (
     <CustomLayout>
       <div className="telecaller">
         <div className="telecaller_table">
-          <Table columns={columns} data={mergedData} />
+          <Table columns={columns} data={leadData} />
         </div>
         <div className="telecaller_pagination">
-        <TablePagination
-         component="div"
-         count={100}
-         page={page}
-         onPageChange={handleChangePage}
-         rowsPerPage={rowsPerPage}
-         onRowsPerPageChange={handleChangeRowsPerPage}
-/>
+          <TablePagination
+            component="div"
+            count={totalCount}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            rowsPerPageOptions={[10, 15, 25]}
+          />
         </div>
-        <Drawer title="Add Remark" onClose={onClose} open={open}>
+        <Drawer title="Add/Edit Remark" onClose={onClose} open={open}>
           <div className="form-body">
             <TextField
               id="outlined-select-status"
@@ -212,11 +246,11 @@ const TeleCallerPage = () => {
               id="datetime-local"
               label="Date & Time"
               type="datetime-local"
-              value={date_time} // Use date_time for storing the selected date & time
-              onChange={(e) => setDateTime(e.target.value)} // Update the correct state for date_time
+              value={date_time}
+              onChange={(e) => setDateTime(e.target.value)}
               className="textfield"
               InputLabelProps={{
-                shrink: true, // Ensures the label positions correctly
+                shrink: true,
               }}
             />
 
@@ -228,7 +262,10 @@ const TeleCallerPage = () => {
               onChange={(e) => setRemark(e.target.value)}
               className="textfield"
             />
-            <Button onClick={handleRemarkSubmit}>Submit</Button>
+
+            <Button type="primary" style={{ marginTop: "20px" }} onClick={handleRemarkSubmit}>
+              Submit
+            </Button>
           </div>
         </Drawer>
       </div>

@@ -6,8 +6,8 @@ from django.db.models import Q
 from rest_framework import generics
 from app.serializers import LoginSerializer, RegistrationSerializer
 from rest_framework import viewsets
-from .models import   Communication, CommunicationHistory, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, LeadAssignment, Remarks,  Roles, Student, Users, Workshop_Leads, WorkshopTelecaller
-from .serializers import  ChangePasswordSerializer, CommunicationHistorySerializer, CommunicationSerializer, CourseSerializer, EnquiryLeadsSerializer, EnquiryTelecallerSerializer, EnrollmentSerializer, InstallmentSerializer, LeadAssignmentSerializer, LeadSerializer, RemarksSerializer, RoleSerializer, StudentSerializer, UsersSerializer, WorkshopLeadSerializer, WorkshopSerializer, WorkshopTelecallerSerializer
+from .models import   Communication, CommunicationHistory, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, LeadAssignment, LeadSource, Remarks,  Roles, Student, Users, Workshop_Leads, WorkshopTelecaller
+from .serializers import  ChangePasswordSerializer, CommunicationHistorySerializer, CommunicationSerializer, CourseSerializer, EnquiryLeadsSerializer, EnquiryTelecallerSerializer, EnrollmentSerializer, InstallmentSerializer, LeadAssignmentSerializer, LeadSerializer, LeadSourceserializer, RemarkSerializer, RemarksSerializer, RoleSerializer, StudentSerializer, UsersSerializer, WorkshopLeadSerializer, WorkshopSerializer, WorkshopTelecallerSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.decorators import api_view, permission_classes
@@ -55,11 +55,28 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import AllowAny
 class UserRegistrationView(APIView):
     permission_classes = [AllowAny]
-    def post(self, request):
+    def post(self,request):
         serializer = RegistrationSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            return Response({"message": "User created successfully!"}, status=status.HTTP_201_CREATED)
+            user_instance=Users.objects.get(id=1)
+            # Check if the user is the first user
+            #print(User.objects.count())
+            if User.objects.count() >= 1:
+                # Add default courses for the first user
+                default_courses = [
+                    {"name": "Business Analyst", "description": "Business Analyst", "price": "100000.00", "Instructor": user_instance},
+                    {"name": "Fullstack / Python", "description": "Fullstack / Python", "price": "100000.00", "Instructor": user_instance},
+                    {"name": "Mobile App", "description": "Mobile App", "price": "100000.00", "Instructor": user_instance},
+                    {"name": "MERN && MEAN", "description": "MERN && MEAN", "price": "100000.00", "Instructor": user_instance},
+                    {"name": "nodejs-fullstack-mean-mern-course", "description": "nodejs-fullstack-mean-mern-course", "price": "100000.00", "Instructor": user_instance},
+                ]
+                #print(default_courses)
+                for course in default_courses:
+                    Course.objects.create(**course)
+                #course=Course.objects.all()
+                print(course)
+            return Response({"message": "Registration successful!"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserLoginView(APIView):
@@ -217,7 +234,9 @@ class EnrollmentViewSet(viewsets.ModelViewSet):
 class CommunicationHistoryViewSet(viewsets.ModelViewSet):
     queryset = CommunicationHistory.objects.all()
     serializer_class = CommunicationHistorySerializer
-
+class LeadsSourceViewSet(viewsets.ModelViewSet):
+    queryset = LeadSource.objects.all()
+    serializer_class = LeadSourceserializer
 
 @permission_classes([IsAuthenticated])
 def monthly_leads_count(request):
@@ -469,7 +488,6 @@ def get_leads_by_telecaller(request):
     serialized_leads = LeadSerializer(leads, many=True).data
     return Response(serialized_leads, status=status.HTTP_200_OK)
 
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def get_workshopleads_by_telecaller(request):
@@ -535,10 +553,53 @@ def get_assigned_workshop_telecaller(request):
     serializer = WorkshopSerializer(leads, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
-class RemarksViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated] 
+class RemarkViewSet(viewsets.ViewSet):
     queryset = Remarks.objects.all()
-    serializer_class = RemarksSerializer
+
+    @action(detail=True, methods=['put'], url_path='update_remark')
+    def update_remark(self, request, pk=None):
+        """
+        Update the remark for a specific Enquiry Lead
+        """
+        print(pk)
+        try:
+            # Retrieve the Remark instance based on enquiry_lead_id (passed as `pk`)
+            remark = Remarks.objects.get(enquiry_lead_id=pk)
+            
+            # Validate and update the Remark using the RemarkSerializer
+            serializer = RemarkSerializer(remark, data=request.data, partial=True)  # partial=True to allow partial updates
+            if serializer.is_valid():
+                serializer.save()  # Save the updated remark
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except Remarks.DoesNotExist:
+            return Response({"detail": "Remark not found."}, status=status.HTTP_404_NOT_FOUND)
+
+class RemarkWorkshopLeadViewSet(viewsets.ViewSet):
+    queryset = Remarks.objects.all()
+
+    @action(detail=True, methods=['put'], url_path='update_remark_workshop')
+    def update_remark(self, request, pk=None):
+        """
+        Update the remark for a specific Enquiry Lead
+        """
+        print(pk)
+        try:
+            # Retrieve the Remark instance based on enquiry_lead_id (passed as `pk`)
+            remark = Remarks.objects.get(workshop_lead_id=pk)
+            print("sss")
+            # Validate and update the Remark using the RemarkSerializer
+            serializer = RemarkSerializer(remark, data=request.data, partial=True)  # partial=True to allow partial updates
+            print(serializer)
+            if serializer.is_valid():
+                serializer.save()  # Save the updated remark
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except Remarks.DoesNotExist:
+            return Response({"detail": "Remark not found."}, status=status.HTTP_404_NOT_FOUND)
+
 
 class SendSMSView(APIView):
     def post(self, request):
@@ -573,13 +634,14 @@ class SendSMSView(APIView):
         
 class TelecallerPageView(APIView):
     def get(self, request):
-        leads = Enquiry_Leads.objects.all()
+        leads = Enquiry_Leads.objects.filter(assigned=True)
+        print(leads)
         remarks = Remarks.objects.exclude(enquiry_lead__isnull=True)
-
+        print(leads)
         # Debugging to confirm the fetched data
         #print("Leads:", leads)
-        #for i in remarks:
-           #print("Remarks:", i.enquiry_lead.id)
+        for i in leads:
+           print("Remarks:", i.course)
         matching_data = []
 
         for lead in leads:
@@ -590,7 +652,8 @@ class TelecallerPageView(APIView):
                         "lead_name": lead.name,
                         "lead_email": lead.email,
                         "remark_id": remark.id,
-                        "course": lead.course.name,  # Adjust field name as necessary
+                        "course" :getattr(lead.course, 'name', None),
+  # Adjust field name as necessary
                         "phone_number": lead.phone_number,
                         "remark_text": remark.remark_text,
                         "status": remark.status,
@@ -623,6 +686,7 @@ class WorkshopTelecallerPageView(APIView):
                 # Match leads with remarks based on workshop_lead
                 if lead.id == remark.workshop_lead.id:  # Ensure correct comparison
                     matching_data.append({
+                        "id":lead.id,
                         "lead_id": lead.orderId,
                         "lead_name": lead.customerName,
                         "lead_email": lead.customerEmail,
@@ -761,20 +825,27 @@ class EnquiryLeadsList(APIView):
 class WorkshopLeadsList(APIView):
     def get(self, request):
         # Fetch leads with prefetch_related for optimization
-        leads = Workshop_Leads.objects.prefetch_related('workshop_telecaller_leads', 'Workshop_Leads_remarks').all()
+        leads = Workshop_Leads.objects.prefetch_related('workshop_telecaller_leads', 'Workshop_Leads_remarks').filter(assigned=True)
+        #print(leads)
+        for i in leads:
+            print(i.customerName)
 
+        leads = EnquiryTelecaller.objects.all()
+        for lead in leads:
+            print(lead.assigned_workshop_lead.all())
         # Serialize leads data
         lead_serializer = WorkshopLeadSerializer(leads, many=True)
+        print(lead_serializer.data, "asbbbbbbbbbb") 
         data = lead_serializer.data
-
+        #print(data)
         # Customize response to include status and followup_date directly
         for lead in data:
             # Process assigned_telecaller
-            telecaller_data = lead.get('assigned_telecaller')
+            telecaller_data = lead.get('workshop_telecaller_leads')
             if telecaller_data and isinstance(telecaller_data, list) and telecaller_data:
-                lead['assigned_telecaller'] = telecaller_data[0].get('customerName', None)
+                lead['workshop_telecaller_leads'] = telecaller_data[0].get('customerName', None)
             else:
-                lead['assigned_telecaller'] = "NULL"
+                lead['workshop_telecaller_leads'] = "NULL"
 
 
             # Process remarks to extract the first remark's status and followup_date
@@ -793,7 +864,7 @@ class WorkshopLeadsList(APIView):
             lead['name'] = lead.pop('customerName', None)  # Rename customerName to Name
             lead['email'] = lead.pop('customerEmail', None)  # Rename customerEmail to Email
             lead['phone_number'] = lead.pop('customerNumber', None)  # Rename customerNumber to Phone
-            lead['assigned_telecaller'] = lead.pop('assigned_telecaller', "NULL")  # Rename assigned_telecaller to Assigned_to
+            lead['assigned_telecaller'] = lead.pop('workshop_telecaller_leads', "NULL")  # Rename assigned_telecaller to Assigned_to
             lead['status'] = lead.pop('status', "None")  # Rename status to Lead Status
             lead['followup_date'] = lead.pop('followup_date', "NULL")  # Rename followup_date to Follow up date
 
