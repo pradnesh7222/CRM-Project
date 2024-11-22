@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     ActiveStudents, AssignLeadView, ChangePasswordView, CommunicationHistoryViewSet, CommunicationViewSet, Convert_lead_to_student,
     CourseIdView, CourseViewSet, EmailSendViewSet, EnquiryLeadsList, EnquiryTelecallerViewSet, EnrollStudentView,
-    EnrollmentViewSet, InstallmentViewSet, LogoutView, PlacedStudents, RemarksViewSet, SendSMSView, TelecallerPageView, UserLoginView,
+    EnrollmentViewSet, InstallmentViewSet, LeadsSourceViewSet, LogoutView, PlacedStudents, RemarkViewSet, RemarkWorkshopLeadViewSet, SendSMSView, TelecallerPageView, UserLoginView,
     UserRegistrationView, WorkshopLeadViewSet, WorkshopLeadsList, WorkshopTelecallerPageView, WorkshopTelecallerViewSet, conversion_rate,
     UsersViewSet, LeadViewSet, StudentViewSet, RolesViewSet, monthly_leads_count,
     LeadsPerStateView, StudentsPerCourseView, MonthlyActiveStudentsView,create_enquiry_telecaller,get_leads_by_telecaller
@@ -28,7 +28,9 @@ router.register(r'WorkshopLeads', WorkshopLeadViewSet)
 router.register(r'Installments', InstallmentViewSet)
 router.register(r'EnquiryTelecaller', EnquiryTelecallerViewSet)
 router.register(r'WorkshopTelecaller', WorkshopTelecallerViewSet, basename='workshoptelecaller_unique')
-router.register(r'remarks', RemarksViewSet)
+router.register(r'remarks', RemarkViewSet)
+router.register(r'RemarkWorkshopLeadViewSet', RemarkWorkshopLeadViewSet,basename='remark')
+router.register(r'LeadsSource', LeadsSourceViewSet)
 schema_view = get_schema_view(
    openapi.Info(
       title="Snippets API",

@@ -6,43 +6,30 @@ import virat from "../../Assets/viratDPjpg.jpg";
 import Phone from "../../components/Phone/Phone";
 import Message from "../../components/Message/Message";
 import axios from "axios";
+import { Steps } from "antd";
 import { useParams } from "react-router-dom";
-import Box from '@mui/material/Box';
 
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import { Alert } from 'antd';
+import { Alert } from "antd";
 
+const description = "";
 const Communication = () => {
   const [displayComponent, setDisplayComponent] = useState("phone");
   const [leadData, setLeadData] = useState(null); // State to store lead data
-  const token = localStorage.getItem('authToken'); // Retrieve token
+  const token = localStorage.getItem("authToken"); // Retrieve token
   const { id } = useParams(); // Get id from URL params
 
   const phoneNumberRef = useRef(null);
   const dateTimeRef = useRef(null);
 
-
-  const steps = [
-    'Enquiry',
-    'contacted',
-    'followupUp',
-    'enrolled',
-    'payment',
-    'training start',
-    'completed',
-
-  ];
   // Fetch lead data when the component mounts or id changes
   useEffect(() => {
     // console.log("Lead ID:", id); // Check if id is correctly received
     axios
-    .get(`http://127.0.0.1:8000/leads/${id}/`, {
-      headers: {
-        Authorization: `Bearer ${token}`, // Add token to Authorization header
-      },
-    })
+      .get(`http://127.0.0.1:8000/leads/${id}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Add token to Authorization header
+        },
+      })
       .then((response) => {
         setLeadData(response.data); // Store the lead data in state
         console.log("Lead Data:", response.data);
@@ -58,7 +45,7 @@ const Communication = () => {
 
   const handleComponentButtonClick = () => {
     console.log(phoneNumberRef.current.value);
-    
+
     phoneNumberRef.current.value = null;
     dateTimeRef.current.value = null;
   };
@@ -108,17 +95,28 @@ const Communication = () => {
             </div>
             <h1>{leadData ? leadData.name : "Loading..."}</h1>
             <div className="com_left_profile_iconCont">
-              <i className="ri-phone-fill" onClick={() => setDisplayComponent("phone")}></i>
-              <i className="ri-mail-line" onClick={() => setDisplayComponent("Email")}></i>
-              <i className="ri-message-2-line" onClick={() => setDisplayComponent("msg")}></i>
+              <i
+                className="ri-phone-fill"
+                onClick={() => setDisplayComponent("phone")}
+              ></i>
+              <i
+                className="ri-mail-line"
+                onClick={() => setDisplayComponent("Email")}
+              ></i>
+              <i
+                className="ri-message-2-line"
+                onClick={() => setDisplayComponent("msg")}
+              ></i>
               <a href="https://wa.me/918904116759" target="blank">
                 <i className="ri-whatsapp-line"></i>
               </a>
             </div>
-            <button onClick={handleConvertLeadToStudent}>Convert Lead to student</button>
+            <button onClick={handleConvertLeadToStudent}>
+              Convert Lead to student
+            </button>
           </div>
           <div className="com_left_info">
-            <h3>Lead Info</h3>
+            <h3>Lead Info</h3>  
             <div className="bind">
               <label htmlFor="email">Email</label>
               <h4>{leadData ? leadData.email : "Loading..."}</h4>
@@ -136,12 +134,18 @@ const Communication = () => {
               <h4>{leadData ? leadData.course_name : "Not provided"}</h4>
             </div>
           </div>
-        </div>
+        </div>  
         <div className="com_right">
           <div className="com_right_up">
             <div className="com_right_up_action">
               <button onClick={handleComponentButtonClick}>Clear</button>
-              {displayComponent === "phone" && <Phone handleComponentButtonClick={handleComponentButtonClick} phoneNumberRef={phoneNumberRef} dateTimeRef={dateTimeRef}/>}
+              {displayComponent === "phone" && (
+                <Phone
+                  handleComponentButtonClick={handleComponentButtonClick}
+                  phoneNumberRef={phoneNumberRef}
+                  dateTimeRef={dateTimeRef}
+                />
+              )}
               {displayComponent === "Email" && <Email />}
               {displayComponent === "msg" && <Message />}
             </div>
@@ -153,17 +157,35 @@ const Communication = () => {
               <Alert message="Success Text" type="success" />
             </div>
           </div>
-          <div className="com_right_history" style={{padding:'2vw'}}>
-          <h1>Progress Tracking</h1>
-          <Box sx={{ width: '100%' }}>
-          <Stepper activeStep={3} alternativeLabel>
-           {steps.map((label) => (
-          <Step key={label}>
-            <StepLabel>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
-    </Box>
+          <div className="com_right_history" style={{ padding: "2vw" }}>
+            <h1>Progress Tracking</h1>
+            <Steps
+              direction="horizontal"
+              size="large"
+              current={3}
+              items={[
+                {
+                  title: "Pending",
+                  description:"10/10/2023"
+                },
+                {
+                  title: "Contacted",
+                  description:"11/10/23"
+                },
+                {
+                  title: "Follow Up",
+                  description:"12/10/23"
+                },
+                {
+                  title: "Converted",
+                  description:"13/10/23"
+                },
+                {
+                  title: "Closed",
+                  description:"14/10/23"
+                },
+              ]}
+            />
           </div>
         </div>
       </div>

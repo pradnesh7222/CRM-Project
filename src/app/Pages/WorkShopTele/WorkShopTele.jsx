@@ -26,7 +26,9 @@ const WorkShopTele = () => {
       .then((response) => {
         setTelecaller(response.data);
       })
-      .catch((error) => console.error("Error fetching telecaller data:", error));
+      .catch((error) =>
+        console.error("Error fetching telecaller data:", error)
+      );
   }, []);
 
   useEffect(() => {
@@ -43,10 +45,6 @@ const WorkShopTele = () => {
       .catch((error) => console.error("Error fetching leads data:", error));
   }, []);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0); // Reset to first page on rows per page change
@@ -58,6 +56,19 @@ const WorkShopTele = () => {
       : [...selectedRowKeys, index];
     setSelectedRowKeys(updatedSelection);
     setNumberOfLeads(updatedSelection.length);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleNumberOfLeadsChange = (e) => {
+    const numLeads = Number(e.target.value);
+    setNumberOfLeads(numLeads);
+
+    // Automatically select the number of leads entered
+    const updatedSelection = data.slice(0, numLeads).map((_, index) => index);
+    setSelectedRowKeys(updatedSelection);
   };
 
   const handleSubmit = (e) => {
@@ -94,7 +105,10 @@ const WorkShopTele = () => {
       <div className="workShopTele">
         <div className="workShopTele_right">
           <div className="workShopTele_right_up">
-            <form className="workShopTele_right_up_form" onSubmit={handleSubmit}>
+            <form
+              className="workShopTele_right_up_form"
+              onSubmit={handleSubmit}
+            >
               <div className="workShopTele_right_up_form_assignTeleCont1">
                 <label htmlFor="telecaller">Select Telecaller</label>
                 <select
@@ -119,8 +133,9 @@ const WorkShopTele = () => {
                   id="numberOfLeads"
                   placeholder="Number of Leads"
                   value={numberOfLeads}
-                  onChange={(e) => setNumberOfLeads(Number(e.target.value))}
+                  onChange={handleNumberOfLeadsChange}
                 />
+                ;
               </div>
             </form>
           </div>
@@ -168,13 +183,20 @@ const WorkShopTele = () => {
           </div>
           <div className="workShopTele_right_pagination">
             <div className="submit-button">
-              <button type="submit"
-               onClick={handleSubmit}
-               style={{
-                opacity: !telecaller || selectedRowKeys.length === 0 ? 0.5 : 1,
-                cursor: !telecaller || selectedRowKeys.length === 0 ? "not-allowed" : "pointer",
-              }}
-              >Assign Leads</button>
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                style={{
+                  opacity:
+                    !telecaller || selectedRowKeys.length === 0 ? 0.5 : 1,
+                  cursor:
+                    !telecaller || selectedRowKeys.length === 0
+                      ? "not-allowed"
+                      : "pointer",
+                }}
+              >
+                Assign Leads
+              </button>
             </div>
             <TablePagination
               component="div"

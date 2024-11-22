@@ -16,28 +16,35 @@ const EnquiryTele = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [manualSelection, setManualSelection] = useState(false);
 
-  useEffect(() => {
-    if (!manualSelection) {
-      setSelectedRowKeys(data.slice(0, numberOfLeads).map((_, index) => index));
-    }
-  }, [numberOfLeads, data, manualSelection]);
-  
+  // useEffect(() => {
+  //   if (!manualSelection) {
+  //     setSelectedRowKeys(data.slice(0, numberOfLeads).map((_, index) => index));
+  //   }
+  // }, [numberOfLeads, data, manualSelection]);
+
   // const handleSelectLead = (index) => {
   //   let newSelectedRowKeys = [...selectedRowKeys];
   //   let updatedNumberOfLeads = numberOfLeads;
-  
+
   //   if (newSelectedRowKeys.includes(index)) {
   //     newSelectedRowKeys = newSelectedRowKeys.filter((key) => key !== index);
   //     updatedNumberOfLeads = Math.max(0, updatedNumberOfLeads - 1); // Decrease the count but ensure it doesn't go below 0
   //   } else if (newSelectedRowKeys.length < numberOfLeads) {
   //     newSelectedRowKeys.push(index);
   //   }
-  
+
   //   setSelectedRowKeys(newSelectedRowKeys);
   //   setNumberOfLeads(updatedNumberOfLeads); // Update the input box value
   // };
-  
-  
+
+  const handleNumberOfLeadsChange = (e) => {
+    const numLeads = Number(e.target.value);
+    setNumberOfLeads(numLeads);
+
+    // Automatically select the number of leads entered
+    const updatedSelection = data.slice(0, numLeads).map((_, index) => index);
+    setSelectedRowKeys(updatedSelection);
+  };
 
   useEffect(() => {
     axios
@@ -78,33 +85,21 @@ const EnquiryTele = () => {
   //   setSelectedRowKeys(isChecked ? keys : []);
   // };
 
-  const handleSelectLead = (index) => {
-    let newSelectedRowKeys = [...selectedRowKeys];
-    let updatedNumberOfLeads = numberOfLeads;
-  
-    if (newSelectedRowKeys.includes(index)) {
-      // Deselect action
-      newSelectedRowKeys = newSelectedRowKeys.filter((key) => key !== index);
-      updatedNumberOfLeads = Math.max(0, updatedNumberOfLeads - 1); // Decrease count but ensure it doesn't go below 0
-    } else if (newSelectedRowKeys.length < numberOfLeads + 1) {
-      // Select action
-      newSelectedRowKeys.push(index);
-      updatedNumberOfLeads += 1; // Increase the count
-    }
-  
-    setSelectedRowKeys(newSelectedRowKeys);
-    setNumberOfLeads(updatedNumberOfLeads); // Update the input box value
-  };
-  
-  
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0); // Reset to first page on rows per page change
+  };
+
+  const handleRowSelection = (index) => {
+    const updatedSelection = selectedRowKeys.includes(index)
+      ? selectedRowKeys.filter((key) => key !== index)
+      : [...selectedRowKeys, index];
+    setSelectedRowKeys(updatedSelection);
+    setNumberOfLeads(updatedSelection.length);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
   };
 
   const handleSubmit = (e) => {
@@ -164,8 +159,9 @@ const EnquiryTele = () => {
                   id="numberOfLeads"
                   placeholder="Number of Leads"
                   value={numberOfLeads}
-                  onChange={(e) => setNumberOfLeads(Number(e.target.value))}
+                  onChange={handleNumberOfLeadsChange}
                 />
+                ;
               </div>
             </div>
           </div>
@@ -191,13 +187,12 @@ const EnquiryTele = () => {
               <tbody>
                 {data.length > 0 ? (
                   data.map((item, index) => (
-                    
                     <tr key={item.id}>
                       <td>
                         <input
                           type="checkbox"
                           checked={selectedRowKeys.includes(index)}
-                          onChange={() => handleSelectLead(index)}
+                          onChange={() => handleRowSelection(index)}
                         />
                       </td>
                       <td>{item.name}</td>
@@ -216,13 +211,20 @@ const EnquiryTele = () => {
           </div>
           <div className="enquiryTele_right_pagination">
             <div className="submit-button">
-              <button type="submit"
-              onClick={handleSubmit}
-              style={{
-                opacity: !telecaller || selectedRowKeys.length === 0 ? 0.5 : 1,
-                cursor: !telecaller || selectedRowKeys.length === 0 ? "not-allowed" : "pointer",
-              }}
-              >Assign Leads</button>
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                style={{
+                  opacity:
+                    !telecaller || selectedRowKeys.length === 0 ? 0.5 : 1,
+                  cursor:
+                    !telecaller || selectedRowKeys.length === 0
+                      ? "not-allowed"
+                      : "pointer",
+                }}
+              >
+                Assign Leads
+              </button>
             </div>
             <TablePagination
               component="div"

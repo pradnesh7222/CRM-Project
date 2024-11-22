@@ -106,7 +106,8 @@ class Enquiry_Leads(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     course=models.ForeignKey(Course,on_delete=models.CASCADE,null=True)
     assigned=models.BooleanField(null=True,blank=True)
-    lead_source = models.ForeignKey(LeadSource, on_delete=models.SET_NULL, null=True, related_name='leads')
+    #lead_source = models.ForeignKey(LeadSource, on_delete=models.CASCADE, null=True, related_name='leads')
+    lead_source=models.CharField(default='website',max_length=100)
     def __str__(self):
         return f"Lead: {self.name} "
 
@@ -332,4 +333,4 @@ class Remarks(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Remark for {self.enquiry_lead.name} on {self.created_at.strftime('%Y-%m-%d %H:%M')}"
+        return f"Remark for {self.created_at.strftime('%Y-%m-%d %H:%M')}"
