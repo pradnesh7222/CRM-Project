@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Communication.scss";
 import Navbar from "../../components/navbar/NavBar";
 import Email from "../../components/Email/Email";
@@ -7,16 +7,36 @@ import Phone from "../../components/Phone/Phone";
 import Message from "../../components/Message/Message";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import Box from '@mui/material/Box';
+
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import { Alert } from 'antd';
 
 const Communication = () => {
-  const [displayComponent, setDisplayComponent] = useState(null);
+  const [displayComponent, setDisplayComponent] = useState("phone");
   const [leadData, setLeadData] = useState(null); // State to store lead data
   const token = localStorage.getItem('authToken'); // Retrieve token
   const { id } = useParams(); // Get id from URL params
 
+  const phoneNumberRef = useRef(null);
+  const dateTimeRef = useRef(null);
+
+
+  const steps = [
+    'Enquiry',
+    'contacted',
+    'followupUp',
+    'enrolled',
+    'payment',
+    'training start',
+    'completed',
+
+  ];
   // Fetch lead data when the component mounts or id changes
   useEffect(() => {
-    console.log("Lead ID:", id); // Check if id is correctly received
+    // console.log("Lead ID:", id); // Check if id is correctly received
     axios
     .get(`http://127.0.0.1:8000/leads/${id}/`, {
       headers: {
@@ -37,7 +57,10 @@ const Communication = () => {
   };
 
   const handleComponentButtonClick = () => {
-    setDisplayComponent(null);
+    console.log(phoneNumberRef.current.value);
+    
+    phoneNumberRef.current.value = null;
+    dateTimeRef.current.value = null;
   };
 
   const handleConvertLeadToStudent = () => {
@@ -85,11 +108,11 @@ const Communication = () => {
             </div>
             <h1>{leadData ? leadData.name : "Loading..."}</h1>
             <div className="com_left_profile_iconCont">
-              <i className="ri-phone-fill" onClick={() => handleIconClick(<Phone />)}></i>
-              <i className="ri-mail-line" onClick={() => handleIconClick(<Email />)}></i>
-              <i className="ri-message-2-line" onClick={() => handleIconClick(<Message />)}></i>
-              <a href="https://wa.me/918904116759" target="_blank">
-                <button className="ri-whatsapp-fill"></button>
+              <i className="ri-phone-fill" onClick={() => setDisplayComponent("phone")}></i>
+              <i className="ri-mail-line" onClick={() => setDisplayComponent("Email")}></i>
+              <i className="ri-message-2-line" onClick={() => setDisplayComponent("msg")}></i>
+              <a href="https://wa.me/918904116759" target="blank">
+                <i className="ri-whatsapp-line"></i>
               </a>
             </div>
             <button onClick={handleConvertLeadToStudent}>Convert Lead to student</button>
@@ -117,14 +140,31 @@ const Communication = () => {
         <div className="com_right">
           <div className="com_right_up">
             <div className="com_right_up_action">
-              {displayComponent && <button onClick={handleComponentButtonClick}>Clear</button>}
-              {displayComponent}
+              <button onClick={handleComponentButtonClick}>Clear</button>
+              {displayComponent === "phone" && <Phone handleComponentButtonClick={handleComponentButtonClick} phoneNumberRef={phoneNumberRef} dateTimeRef={dateTimeRef}/>}
+              {displayComponent === "Email" && <Email />}
+              {displayComponent === "msg" && <Message />}
             </div>
             <div className="com_right_up_reminder">
               <h1>Reminder</h1>
+              <Alert message="Success Text" type="success" />
+              <Alert message="Success Text" type="success" />
+              <Alert message="Success Text" type="success" />
+              <Alert message="Success Text" type="success" />
             </div>
           </div>
-          <div className="com_right_history"></div>
+          <div className="com_right_history" style={{padding:'2vw'}}>
+          <h1>Progress Tracking</h1>
+          <Box sx={{ width: '100%' }}>
+          <Stepper activeStep={3} alternativeLabel>
+           {steps.map((label) => (
+          <Step key={label}>
+            <StepLabel>{label}</StepLabel>
+          </Step>
+        ))}
+      </Stepper>
+    </Box>
+          </div>
         </div>
       </div>
     </>

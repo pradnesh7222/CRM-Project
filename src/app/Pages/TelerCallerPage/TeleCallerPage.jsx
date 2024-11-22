@@ -182,15 +182,14 @@ const TeleCallerPage = () => {
           <Table columns={columns} data={mergedData} />
         </div>
         <div className="telecaller_pagination">
-          <TablePagination
-            component="div"
-            count={totalCount}
-            page={page}
-            onPageChange={handleChangePage}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            rowsPerPageOptions={[10, 15, 25]} // Options for rows per page
-          />
+        <TablePagination
+         component="div"
+         count={100}
+         page={page}
+         onPageChange={handleChangePage}
+         rowsPerPage={rowsPerPage}
+         onRowsPerPageChange={handleChangeRowsPerPage}
+/>
         </div>
         <Drawer title="Add Remark" onClose={onClose} open={open}>
           <div className="form-body">

@@ -22,16 +22,21 @@ const EnquiryTele = () => {
     }
   }, [numberOfLeads, data, manualSelection]);
   
-  const handleSelectLead = (index) => {
-    setManualSelection(true); // Set manual selection flag
-    let newSelectedRowKeys = [...selectedRowKeys];
-    if (newSelectedRowKeys.includes(index)) {
-      newSelectedRowKeys = newSelectedRowKeys.filter((key) => key !== index);
-    } else if (newSelectedRowKeys.length < numberOfLeads) {
-      newSelectedRowKeys.push(index);
-    }
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
+  // const handleSelectLead = (index) => {
+  //   let newSelectedRowKeys = [...selectedRowKeys];
+  //   let updatedNumberOfLeads = numberOfLeads;
+  
+  //   if (newSelectedRowKeys.includes(index)) {
+  //     newSelectedRowKeys = newSelectedRowKeys.filter((key) => key !== index);
+  //     updatedNumberOfLeads = Math.max(0, updatedNumberOfLeads - 1); // Decrease the count but ensure it doesn't go below 0
+  //   } else if (newSelectedRowKeys.length < numberOfLeads) {
+  //     newSelectedRowKeys.push(index);
+  //   }
+  
+  //   setSelectedRowKeys(newSelectedRowKeys);
+  //   setNumberOfLeads(updatedNumberOfLeads); // Update the input box value
+  // };
+  
   
 
   useEffect(() => {
@@ -67,21 +72,31 @@ const EnquiryTele = () => {
       });
   }, []);
 
-  const handleSelectAll = (e) => {
-    const isChecked = e.target.checked;
-    const keys = data.slice(0, numberOfLeads).map((_, index) => index);
-    setSelectedRowKeys(isChecked ? keys : []);
-  };
-
-  // const handleSelectLead = (index) => {
-  //   let newSelectedRowKeys = [...selectedRowKeys];
-  //   if (newSelectedRowKeys.includes(index)) {
-  //     newSelectedRowKeys = newSelectedRowKeys.filter((key) => key !== index);
-  //   } else if (newSelectedRowKeys.length < numberOfLeads) {
-  //     newSelectedRowKeys.push(index);
-  //   }
-  //   setSelectedRowKeys(newSelectedRowKeys);
+  // const handleSelectAll = (e) => {
+  //   const isChecked = e.target.checked;
+  //   const keys = data.slice(0, numberOfLeads).map((_, index) => index);
+  //   setSelectedRowKeys(isChecked ? keys : []);
   // };
+
+  const handleSelectLead = (index) => {
+    let newSelectedRowKeys = [...selectedRowKeys];
+    let updatedNumberOfLeads = numberOfLeads;
+  
+    if (newSelectedRowKeys.includes(index)) {
+      // Deselect action
+      newSelectedRowKeys = newSelectedRowKeys.filter((key) => key !== index);
+      updatedNumberOfLeads = Math.max(0, updatedNumberOfLeads - 1); // Decrease count but ensure it doesn't go below 0
+    } else if (newSelectedRowKeys.length < numberOfLeads + 1) {
+      // Select action
+      newSelectedRowKeys.push(index);
+      updatedNumberOfLeads += 1; // Increase the count
+    }
+  
+    setSelectedRowKeys(newSelectedRowKeys);
+    setNumberOfLeads(updatedNumberOfLeads); // Update the input box value
+  };
+  
+  
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -159,12 +174,13 @@ const EnquiryTele = () => {
               <thead>
                 <tr>
                   <th>
-                    <input
+                    select
+                    {/* <input
                       type="checkbox"
                       name="select-all"
                       id="select-all"
                       onChange={handleSelectAll}
-                    />
+                    /> */}
                   </th>
                   <th>Name</th>
                   <th>Course</th>
@@ -175,6 +191,7 @@ const EnquiryTele = () => {
               <tbody>
                 {data.length > 0 ? (
                   data.map((item, index) => (
+                    
                     <tr key={item.id}>
                       <td>
                         <input
