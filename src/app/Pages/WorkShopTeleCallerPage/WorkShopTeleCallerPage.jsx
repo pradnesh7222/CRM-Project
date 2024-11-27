@@ -48,7 +48,7 @@ const WorkShopTeleCallerPage = () => {
       title: "Name",
       dataIndex: "lead_name",
       render: (text, record) => (
-        <Link to={`/Communication/${record.id}/`}
+        <Link to={`/Communication_Workshop/${record.id}/`}
         style={{ textDecoration: "none", color: "#007BFF", cursor: "pointer" }}
         >{text}</Link> // Pass the 'id' of the student/lead in the URL
       ),

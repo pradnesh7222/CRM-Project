@@ -180,7 +180,25 @@ const SideBar = () => {
           <i className="ri-pen-nib-line"></i>
           {!isCollapsed && <Link to="/EnrolleTable">Enrolled</Link>}
         </div>
+        <div className="link1">
+  <div className="dropdown" onClick={() => toggleSubmenu("assignedLeads")}>
+    <div className="dropdown-inner">
+      <i className="ri-customer-service-2-line"></i>
+      <button className="dropbtn">Assigned Leads</button>
+      <i className="ri-arrow-down-wide-line"></i>
+    </div>
+    <div
+      className={`dropdown-content ${submenuActive["assignedLeads"] ? "active" : ""}`}
+    >
+     
+      <Link to="/TeleCallerPage">Assigned Enquiry Leads</Link>
+      <Link to="/WorkshopTelecallerPage">Assigned Workshop Leads</Link>
+    </div>
+  </div>
+</div>
+
       </div>
+      
 
       <Drawer 
         title="Create Telecaller"

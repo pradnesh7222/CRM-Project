@@ -21,6 +21,7 @@ import AddCourse from "../Pages/AddCourse/AddCourse";
 import EnrolleTable from "../components/EnrolleTable/EnrolleTable";
 import EnrollForm from "../components/EnrollForm/EnrollForm";
 import Communication from "../Pages/Communication/Communication";
+import Communication_Workshop from "../Pages/Communication_Workshop/Communication_Workshop";
 import Phone from "../components/Phone/Phone";
 import Email from "../components/Email/Email";
 import Message from "../components/Message/Message";
@@ -61,6 +62,7 @@ const RouterComponent = () => {
         <Route path="/EnrolleTable" element={<EnrolleTable/>}/>
         <Route path="/EnrollForm" element={<EnrollForm/>}/>
         <Route path="/Communication/:id"  element={<Communication/>}/>
+        <Route path="/Communication_Workshop/:id"  element={<Communication_Workshop/>}/>
         <Route path="/Phone" element={<Phone/>}/>
         <Route path="/Message" element={<Message/>}/>
         <Route path="/Email" element={<Email/>}/>

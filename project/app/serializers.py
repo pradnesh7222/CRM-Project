@@ -17,7 +17,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
-from .models import Communication, CommunicationHistory, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, LeadAssignment, LeadSource, Remarks, Roles, Users, Student, Workshop_Leads, WorkshopTelecaller
+from .models import Communication, CommunicationHistory, Contact, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, LeadAssignment, LeadSource, Remarks, Roles, Users, Student, Workshop_Leads, WorkshopTelecaller
 
 from rest_framework import serializers
 from django.contrib.auth.forms import PasswordResetForm
@@ -270,16 +270,46 @@ class EnquiryLeadsSerializer(serializers.ModelSerializer):
         fields = ['name', 'email', 'phone_number', 'assigned_telecaller','remarks']
 
 class WorkshopLeadSerializer(serializers.ModelSerializer):
-    assigned_telecaller = WorkshopSerializer(many=True, read_only=True)
-    print(assigned_telecaller,"asbbbbbbbbbb")
-    remarks=RemarksSerializer(many=True, read_only=True)
+    assigned_workshop_lead = WorkshopSerializer(many=True, read_only=True)  # Fetch related Workshop_Leads
+    remarks = RemarksSerializer(many=True, read_only=True)  # Fetch related Remarks
+
+    # Fields for customer data
+    customer_name = serializers.SerializerMethodField()
+    customer_number = serializers.SerializerMethodField()
+    customer_email = serializers.SerializerMethodField()
+
     class Meta:
         model = EnquiryTelecaller
-        fields = ['name', 'email', 'phone_number', 'assigned_telecaller','remarks']
+        fields = ['name', 'email', 'phone_number', 'assigned_workshop_lead', 'remarks', 'customer_name', 'customer_number', 'customer_email']
 
-        
+    # Method to fetch customerName from related Workshop_Leads (assigned_workshop_lead)
+    def get_customer_name(self, obj):
+        # Fetching the customerName from the first related workshop lead
+        if obj.assigned_workshop_lead.exists():
+            return obj.assigned_workshop_lead.first().customerName
+        return None
+
+    # Method to fetch customerNumber from related Workshop_Leads (assigned_workshop_lead)
+    def get_customer_number(self, obj):
+        # Fetching the customerNumber from the first related workshop lead
+        if obj.assigned_workshop_lead.exists():
+            return obj.assigned_workshop_lead.first().customerNumber
+        return None
+
+    # Method to fetch customerEmail from related Workshop_Leads (assigned_workshop_lead)
+    def get_customer_email(self, obj):
+        # Fetching the customerEmail from the first related workshop lead
+        if obj.assigned_workshop_lead.exists():
+            return obj.assigned_workshop_lead.first().customerEmail
+        return None
 
 class LeadSourceserializer(serializers.ModelSerializer):
     class Meta:
         model = LeadSource
         fields = '__all__'
+
+
+class ContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact
+        fields = ['id', 'phone_number', 'date']

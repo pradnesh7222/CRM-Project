@@ -7,7 +7,7 @@ from rest_framework import generics
 from app.serializers import LoginSerializer, RegistrationSerializer
 from rest_framework import viewsets
 from .models import   Communication, CommunicationHistory, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, LeadAssignment, LeadSource, Remarks,  Roles, Student, Users, Workshop_Leads, WorkshopTelecaller
-from .serializers import  ChangePasswordSerializer, CommunicationHistorySerializer, CommunicationSerializer, CourseSerializer, EnquiryLeadsSerializer, EnquiryTelecallerSerializer, EnrollmentSerializer, InstallmentSerializer, LeadAssignmentSerializer, LeadSerializer, LeadSourceserializer, RemarkSerializer, RemarksSerializer, RoleSerializer, StudentSerializer, UsersSerializer, WorkshopLeadSerializer, WorkshopSerializer, WorkshopTelecallerSerializer
+from .serializers import  ChangePasswordSerializer, CommunicationHistorySerializer, CommunicationSerializer, ContactSerializer, CourseSerializer, EnquiryLeadsSerializer, EnquiryTelecallerSerializer, EnrollmentSerializer, InstallmentSerializer, LeadAssignmentSerializer, LeadSerializer, LeadSourceserializer, RemarkSerializer, RemarksSerializer, RoleSerializer, StudentSerializer, UsersSerializer, WorkshopLeadSerializer, WorkshopSerializer, WorkshopTelecallerSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.decorators import api_view, permission_classes
@@ -417,6 +417,21 @@ class EnquiryTelecallerViewSet(viewsets.ModelViewSet):
     queryset = EnquiryTelecaller.objects.all()
     serializer_class = EnquiryTelecallerSerializer
 
+class RemarksViewSet(viewsets.ModelViewSet):
+    queryset =Remarks.objects.all()
+    serializer_class =RemarksSerializer
+    @action(detail=False, methods=['get'])
+    def by_enquiry_lead(self, request):
+        enquiry_lead_id = request.query_params.get('enquiry_lead', None)
+        if not enquiry_lead_id:
+            return Response(
+                {"error": "enquiry_lead parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        remarks = self.queryset.filter(enquiry_lead_id=enquiry_lead_id)
+        serializer = self.get_serializer(remarks, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 class create_enquiry_telecaller(APIView):
 
     def post(self, request, *args, **kwargs):
@@ -811,7 +826,7 @@ class EnquiryLeadsList(APIView):
                 # Extract the first remark
                 first_remark = remarks_data[0]
                 lead['status'] = first_remark.get('status', "None")
-                lead['followup_date'] = first_remark.get('created_at', "NULL")
+                lead['followup_date'] = first_remark.get('updated_at', "NULL")
             else:
                 # Default values if no remarks
                 lead['status'] = "None"
@@ -823,52 +838,51 @@ class EnquiryLeadsList(APIView):
         return Response(data, status=status.HTTP_200_OK)
     
 class WorkshopLeadsList(APIView):
-    def get(self, request):
-        # Fetch leads with prefetch_related for optimization
-        leads = Workshop_Leads.objects.prefetch_related('workshop_telecaller_leads', 'Workshop_Leads_remarks').filter(assigned=True)
-        #print(leads)
-        for i in leads:
-            print(i.customerName)
+    def get(self, request, *args, **kwargs):
+        # Fetching the EnquiryTelecaller instance based on the provided ID in URL parameters
+        telecaller_id = kwargs.get('id')  # Assuming you're passing the id as a URL parameter
+        try:
+            query_telecaller = EnquiryTelecaller.objects.get(id=telecaller_id)  # Correctly fetch by id
+        except EnquiryTelecaller.DoesNotExist:
+            return Response({"detail": "EnquiryTelecaller not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        leads = EnquiryTelecaller.objects.all()
-        for lead in leads:
-            print(lead.assigned_workshop_lead.all())
-        # Serialize leads data
-        lead_serializer = WorkshopLeadSerializer(leads, many=True)
-        print(lead_serializer.data, "asbbbbbbbbbb") 
-        data = lead_serializer.data
-        #print(data)
-        # Customize response to include status and followup_date directly
-        for lead in data:
-            # Process assigned_telecaller
-            telecaller_data = lead.get('workshop_telecaller_leads')
-            if telecaller_data and isinstance(telecaller_data, list) and telecaller_data:
-                lead['workshop_telecaller_leads'] = telecaller_data[0].get('customerName', None)
-            else:
-                lead['workshop_telecaller_leads'] = "NULL"
+        # Fetching leads that are assigned to the telecaller
+        leads = Workshop_Leads.objects.filter(assigned=True)
 
+        # Filtering leads based on the assigned telecaller
+        assigned_leads = query_telecaller.assigned_workshop_lead.all()  # Assuming it's a related field
 
-            # Process remarks to extract the first remark's status and followup_date
-            remarks_data = lead.get('remarks')
-            if remarks_data and isinstance(remarks_data, list) and len(remarks_data) > 0:
-                # Extract the first remark
-                first_remark = remarks_data[0]
-                lead['status'] = first_remark.get('status', "None")
-                lead['followup_date'] = first_remark.get('followup_date', "NULL")
-            else:
-                # Default values if no remarks
-                lead['status'] = "None"
-                lead['followup_date'] = "NULL"
+        leads_data = []
+        for lead in assigned_leads:  # Iterate over the leads assigned to this telecaller
+            # Fetch remarks related to each lead
+            lead_remarks = Remarks.objects.filter(workshop_lead=lead)
 
-            # Rename fields for consistency in response
-            lead['name'] = lead.pop('customerName', None)  # Rename customerName to Name
-            lead['email'] = lead.pop('customerEmail', None)  # Rename customerEmail to Email
-            lead['phone_number'] = lead.pop('customerNumber', None)  # Rename customerNumber to Phone
-            lead['assigned_telecaller'] = lead.pop('workshop_telecaller_leads', "NULL")  # Rename assigned_telecaller to Assigned_to
-            lead['status'] = lead.pop('status', "None")  # Rename status to Lead Status
-            lead['followup_date'] = lead.pop('followup_date', "NULL")  # Rename followup_date to Follow up date
+            # Collect remarks for each lead
+            remarks_data = []
+            for remark in lead_remarks:
+                leads_data.append({
+                    "status": remark.status,
+                    "remark_text": remark.remark_text,
+                    "updated_at": remark.updated_at,
+                "id": lead.id,
+                "name": lead.customerName,
+                "email": lead.customerEmail,
+                "phone_number": lead.customerNumber,
+                "order_id": lead.orderId,
+                 # Adding the status of the lead
+                 # If available directly on the lead
+               # If available
+                 # Including remarks in the response
+                "assigned_telecaller": query_telecaller.name,  # Adding the name of the telecaller
+            })
 
-            # Remove the remarks key as it's no longer needed
-            lead.pop('remarks', None)
+        # Returning response with telecaller details and assigned leads
+        return Response(leads_data, status=status.HTTP_200_OK)
 
-        return Response(data, status=status.HTTP_200_OK)
+class ContactCreateView(APIView):
+    def post(self, request):
+        serializer = ContactSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

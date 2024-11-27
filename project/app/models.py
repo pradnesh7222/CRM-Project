@@ -331,6 +331,14 @@ class Remarks(models.Model):
     workshop_lead=models.ForeignKey(Workshop_Leads,null=True, on_delete=models.CASCADE, related_name='Workshop_Leads_remarks')
     remark_text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at=models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Remark for {self.created_at.strftime('%Y-%m-%d %H:%M')}"
+        return f"Remark for {self.updated_at.strftime('%H:%M')}"
+
+class Contact(models.Model):
+    phone_number = models.CharField(max_length=15)
+    date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return self.phone_number

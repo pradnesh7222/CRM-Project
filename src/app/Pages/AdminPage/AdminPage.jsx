@@ -24,8 +24,30 @@ const AdminPage = () => {
         { title: "Phone", dataIndex: "phone_number" },
         { title: "Assigned_to", dataIndex: "assigned_telecaller" },
         { title: "Lead Status", dataIndex: "status" },
-        { title: "Follow up date", dataIndex: "followup_date" },
-    ];
+            {
+              title: "Follow up date",
+              dataIndex: "updated_at",
+              render: (updated_at) => {
+                if (!updated_at) return ""; // Handle null or undefined values
+                const date = new Date(updated_at); // Convert to Date object
+          
+                // Format the date
+                const year = date.getFullYear();
+                const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are 0-indexed
+                const day = date.getDate().toString().padStart(2, "0");
+          
+                // Format the time
+                const hours = date.getHours(); // Use `getUTCHours()` for UTC
+                const minutes = date.getMinutes().toString().padStart(2, "0");
+          
+                // Combine date and time
+                return `${year}-${month}-${day} ${hours}:${minutes}`;
+              },
+            },
+        ];
+          
+          
+  
 
     const TypeOfLeads = [
         { value: 'Select an option', label: 'Select an option' },
@@ -42,7 +64,7 @@ const AdminPage = () => {
 
         // Construct the correct API URL based on the lead type
         const apiUrl = leadType === 'WL' 
-            ? 'http://127.0.0.1:8000/api/workshopleadsAdminpage/' // API for Workshop Leads
+            ? 'http://127.0.0.1:8000/api/workshopleadsAdminpage/1/' // API for Workshop Leads
             : 'http://127.0.0.1:8000/api/leads/'; // Default API for other lead types
 
         axios
@@ -53,7 +75,9 @@ const AdminPage = () => {
                     Authorization: `Bearer ${token}`,
                 },
             })
+            
             .then((response) => {
+                console.log(response)
                 setLeadData(response.data); // Update the state with the fetched leads data
             })
             .catch((error) => {

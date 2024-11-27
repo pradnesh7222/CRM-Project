@@ -21,7 +21,7 @@ const StudentTable = () => {
   const totalPages = Math.ceil(students.length / studentsPerPage);
   const [orderField, setOrderField] = useState("first_name");
   const [orderDirection, setOrderDirection] = useState("asc");
-
+  const token = localStorage.getItem("authToken");
   useEffect(() => {
     fetchStudents();
   }, [filter, searchQuery, orderField, orderDirection]);
@@ -29,13 +29,17 @@ const StudentTable = () => {
   const fetchStudents = async () => {
     try {
       const url = `http://127.0.0.1:8000/students/?search=${encodeURIComponent(searchQuery)}&ordering=${orderDirection === "asc" ? orderField : `-${orderField}`}`;
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Add the token here
+          "Content-Type": "application/json", // Optional: Specify the content type
+        },
+      });
       const data = await response.json();
 
-      const filteredStudents = data.results.filter(student => 
-        Object.keys(filter).every(key => student[key] === filter[key])
-      );
-      setStudents(filteredStudents);
+  
+      
+      setStudents(data);
     } catch (error) {
       console.error("Error fetching students:", error);
     }
@@ -53,7 +57,9 @@ const StudentTable = () => {
       try {
         const response = await fetch(
           `http://127.0.0.1:8000/students/${studentId}/`,
-          { method: "DELETE", headers: { "Content-Type": "application/json" } }
+          { method: "DELETE", headers: { "Content-Type": "application/json" ,
+            Authorization: `Bearer ${token}`,
+          } }
         );
         if (response.ok) {
           setStudents(students.filter((student) => student.id !== studentId));
@@ -104,7 +110,7 @@ const StudentTable = () => {
                   <th>Sr.</th>
                   
                   <th onClick={() => handleSort("first_name")}>First Name</th>
-                  <th onClick={() => handleSort("last_name")}>Last Name</th>
+                
                   <th onClick={() => handleSort("email")}>Email</th>
                   <th onClick={() => handleSort("phone_number")}>Phone</th>
                   <th>DOB</th>
@@ -121,7 +127,7 @@ const StudentTable = () => {
                     <tr key={student.id}>
                       <td>{index + indexOfFirstStudent + 1}</td>
                       <td>{student.first_name}</td>
-                      <td>{student.last_name}</td>
+                     
                       <td>{student.email}</td>
                       <td>{student.phone_number}</td>
                       <td>{student.date_of_birth}</td>
