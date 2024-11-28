@@ -103,7 +103,7 @@ const WorkShopTeleCallerPage = () => {
   // Fetch lead data
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/WorkshopTelecallerPageView/", {
+      .get("http://127.0.0.1:8000/Get/AssignedWorkshopTelecaller/", {
         headers: {
           accept: "application/json",
           Authorization: `Bearer ${token}`,

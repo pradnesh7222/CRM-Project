@@ -90,7 +90,7 @@ const WorkshopLeads = () => {
   const handleDownloadExcel = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/workshop_leads/", // Correct endpoint for Excel file
+        "http://127.0.0.1:8000/api/WorkshopLeads/DownloadExcel/", // Correct endpoint for Excel file
         {
           method: "GET",
           headers: {

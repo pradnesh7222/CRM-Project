@@ -24,7 +24,7 @@ const Home = () => {
         if (!hasFetchedData.current) {
             const fetchData = async () => {
                 try {
-                    const response = await fetch('http://127.0.0.1:8000/conversion_rate/', {
+                    const response = await fetch('http://127.0.0.1:8000/PercentageOfConversionofLeadToStudents /', {
                         method: 'GET', // Optional as GET is default, but included for clarity
                         headers: {
                             'Authorization': `Bearer ${token}`,  // Add the token to the Authorization header

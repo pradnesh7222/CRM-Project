@@ -63,7 +63,7 @@ const Dashboard = () => {
     try {
       const courseName = order.course;
 
-      const courseResponse = await fetch("http://127.0.0.1:8000/create-lead/", {
+      const courseResponse = await fetch("http://127.0.0.1:8000/api/FetchCourseId/", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -145,7 +145,7 @@ const Dashboard = () => {
   const handleDownloadExcel = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/download-excel/",
+        "http://127.0.0.1:8000/api/EnquiryLeads/DownloadExcel/",
         {
           method: "GET",
           headers: {

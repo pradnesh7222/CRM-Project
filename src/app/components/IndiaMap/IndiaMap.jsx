@@ -93,7 +93,7 @@ const IndiaMap = () => {
   useEffect(() => {
     const fetchLeadsPerState = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/leads-per-state/", {
+        const response = await fetch("http://127.0.0.1:8000/api/Home/Graph/NumberOfLeadsInAState/", {
           method: "GET", // Specify the method if necessary (GET is the default)
           headers: {
             'Authorization': `Bearer ${token}`,

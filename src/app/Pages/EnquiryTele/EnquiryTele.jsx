@@ -64,7 +64,7 @@ const EnquiryTele = () => {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/get_unassigned_enquiry_telecaller/", {
+      .get("http://127.0.0.1:8000/Get/UnassignedEnquiryTelecaller/", {
         headers: {
           accept: "application/json",
           Authorization: `Bearer ${token}`,
@@ -114,7 +114,7 @@ const EnquiryTele = () => {
     };
 
     axios
-      .post("http://127.0.0.1:8000/get_leads_by_telecaller/", payload, {
+      .post("http://127.0.0.1:8000/Get/EnquiryLeadsOnTelecaller/", payload, {
         headers: {
           accept: "application/json",
           Authorization: `Bearer ${token}`,

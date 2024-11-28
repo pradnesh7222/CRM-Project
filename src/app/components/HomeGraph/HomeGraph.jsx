@@ -26,7 +26,7 @@ const HomeGraph = () => {
   useEffect(() => {
     const fetchMonthlyLeads = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/monthly-leads/');
+        const response = await fetch('http://127.0.0.1:8000/api/Home/Graph/NumberOfLeadsInAMonth/');
         const data = await response.json();
 
         // Create a new data array matching the allMonths order

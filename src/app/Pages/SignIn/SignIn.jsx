@@ -44,7 +44,7 @@ const SignIn = () => {
 
     try {
       console.log('Sending request with data:', formData);
-      const response = await fetch('http://127.0.0.1:8000/register/', {
+      const response = await fetch('http://127.0.0.1:8000/UserRegister/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -81,7 +81,7 @@ const SignIn = () => {
 
     try {
       console.log('Sending sign-in request with data:', { username: formData.username, password: formData.password });
-      const response = await fetch('http://127.0.0.1:8000/login/', {
+      const response = await fetch('http://127.0.0.1:8000/UserLogin/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

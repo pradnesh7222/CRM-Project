@@ -33,7 +33,7 @@ const WorkShopTele = () => {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/get_unassigned_workshop_telecaller/", {
+      .get("http://127.0.0.1:8000/Get/UnassignedWorkshopTelecaller/", {
         headers: {
           accept: "application/json",
           Authorization: `Bearer ${token}`,
@@ -83,7 +83,7 @@ const WorkShopTele = () => {
     };
 
     axios
-      .post("http://127.0.0.1:8000/get_workshopleads_by_telecaller/", payload, {
+      .post("http://127.0.0.1:8000/Get/WorkshopleadsOnTelecaller/", payload, {
         headers: {
           accept: "application/json",
           Authorization: `Bearer ${token}`,

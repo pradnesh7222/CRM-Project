@@ -113,7 +113,7 @@ const TeleCallerPage = () => {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/TelecallerPageView", {
+      .get("http://127.0.0.1:8000/Get/AssignedEnquiryTelecaller/", {
         headers: {
           accept: "application/json",
           Authorization: `Bearer ${token}`,

@@ -75,7 +75,7 @@ const Communication = () => {
     };
 
     axios
-      .post("http://127.0.0.1:8000/Convert_lead_to_student/", data, {
+      .post("http://127.0.0.1:8000/ConversionofLeadToStudents/", data, {
         headers: {
           Authorization: `Bearer ${token}`, // Authorization header
         },
@@ -225,7 +225,7 @@ const Communication = () => {
               {displayComponent === "msg" && <Message />}
             </div>
             <div className="com_right_up_reminder">
-  <h1 style={{ textAlign: "center" }}>Reminder</h1>
+  <h1 >Reminder</h1>
   <div className="alarm-container">
     <div className="alarm-bell">
       <div className="bell-top"></div>

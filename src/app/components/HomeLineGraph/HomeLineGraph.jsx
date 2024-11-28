@@ -12,7 +12,7 @@ const HomeLineGraph = () => {
     useEffect(() => {
         const fetchMonthlyActiveStudents = async () => {
             try {
-                const response = await fetch("http://127.0.0.1:8000/api/active-students-per-month/", {
+                const response = await fetch("http://127.0.0.1:8000/api/ActiveStudentsPerMonth/", {
                     method: 'GET', // You can also specify the method, which is GET by default
                     headers: {
                         'Authorization': `Bearer ${token}`,  // Add the token to the Authorization header
