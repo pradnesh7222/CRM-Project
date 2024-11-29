@@ -35,7 +35,7 @@ const Dashboard = () => {
       };
 
       const response = await fetch(
-        "https://development1.promena.in/api/Admin/GetAllEnquiryForms/",
+        "https://training.promena.in/api/Admin/GetAllEnquiryForms/",
         {
           method: "POST",
           headers: {

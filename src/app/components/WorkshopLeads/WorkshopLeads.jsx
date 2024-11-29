@@ -26,7 +26,7 @@ const WorkshopLeads = () => {
         toDate: null,
       };
 
-      const response = await fetch("https://development1.promena.in/api/Admin/GetAllOrderDetails?companyTypeId=1", {
+      const response = await fetch("https://training.promena.in/api/Admin/GetAllOrderDetails?companyTypeId=1", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

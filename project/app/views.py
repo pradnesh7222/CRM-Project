@@ -379,7 +379,8 @@ class EmailSendViewSet(APIView):
         print(request.data)
         subject = "Scheduled Email"
         message = request.data.get("message")
-        recipient_list = request.data.get("recipient_list")
+        recipient_list = request.data.get("to")
+        print(recipient_list)
         if isinstance(recipient_list, str):
             recipient_list = [recipient_list]
 
@@ -805,7 +806,8 @@ def download_excel_workshop(request):
 class EnquiryLeadsList(APIView):
     def get(self, request):
         # Fetch leads with prefetch_related for optimization
-        leads = Enquiry_Leads.objects.prefetch_related('assigned_telecaller', 'remarks').all()
+        leads = Enquiry_Leads.objects.filter(assigned=True).prefetch_related('assigned_telecaller', 'remarks')
+
         
         # Serialize leads data
         lead_serializer = EnquiryLeadsSerializer(leads, many=True)
@@ -863,7 +865,7 @@ class WorkshopLeadsList(APIView):
                 leads_data.append({
                     "status": remark.status,
                     "remark_text": remark.remark_text,
-                    "updated_at": remark.updated_at,
+                    "followup_date": remark.updated_at,
                 "id": lead.id,
                 "name": lead.customerName,
                 "email": lead.customerEmail,
@@ -886,3 +888,14 @@ class ContactCreateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_role(request):
+    object=request.user
+    print(object.id)
+    user = Users.objects.get(user=object.id) 
+    #role_name = user.role.role_name if user.role else None
+    print(user.role) 
+    role = user.role.role_name if user.role else None
+    return Response({"role": role})

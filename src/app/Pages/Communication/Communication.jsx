@@ -182,7 +182,7 @@ const Communication = () => {
                 className="ri-message-2-line"
                 onClick={() => setDisplayComponent("msg")}
               ></i>
-              <a href="https://wa.me/91{leadData.phone_number}" target="blank">
+              <a href="https://wa.me/918904116759" target="blank">
                 <i className="ri-whatsapp-line"></i>
               </a>
             </div>

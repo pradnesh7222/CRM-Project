@@ -26,7 +26,7 @@ const AdminPage = () => {
         { title: "Lead Status", dataIndex: "status" },
             {
               title: "Follow up date",
-              dataIndex: "updated_at",
+              dataIndex: "followup_date",
               render: (updated_at) => {
                 if (!updated_at) return ""; // Handle null or undefined values
                 const date = new Date(updated_at); // Convert to Date object

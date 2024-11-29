@@ -76,6 +76,7 @@ urlpatterns = [
        path('api/workshopleadsAdminpage/<int:id>/', WorkshopLeadsList.as_view(), name='enquiry-leads-list'),
         path('api/WorkshopLeads/DownloadExcel/', views.download_excel_workshop, name='download_excel_workshop'),
         path('contacts/', ContactCreateView.as_view(), name='create_contact'),
+        path('Get/UserRole/', views.get_user_role, name='get_user_role'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
 

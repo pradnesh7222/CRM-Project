@@ -15,11 +15,16 @@ const Courses = () => {
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState(""); // State to store the search query
     const [courses, setCourses] = useState([]); // State to store fetched courses
-
+    const token = localStorage.getItem("authToken");
     const fetchCourses = async () => {
         try {
-            const response = await fetch("http://127.0.0.1:8000/courses/");
-            console.log("API Response:", response);
+            const response = await fetch("http://127.0.0.1:8000/courses/", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`, // Add the token here
+                    "Content-Type": "application/json", // Optional, but good practice
+                },
+            });
             if (!response.ok) {
                 throw new Error("Network response was not ok");
             }
