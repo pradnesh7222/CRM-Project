@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from simple_history.models import HistoricalRecords
 class Roles(models.Model):
     role_name = models.CharField(max_length=100)
     permissions = models.JSONField()  
@@ -332,6 +332,18 @@ class Remarks(models.Model):
     remark_text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
+    def save(self, *args, **kwargs):
+        if self.pk:  # If updating an existing remark
+            old_remark = Remarks.objects.get(pk=self.pk)
+            if old_remark.remark_text != self.remark_text or old_remark.status != self.status:  
+                # Save history only if remark text or status changes
+                RemarksHistory.objects.create(
+                    remarks=self,  # Store the full Remark object
+                    status=old_remark.status,
+                    remark_text=old_remark.remark_text,
+                )
+        super().save(*args, **kwargs)
+
 
     def __str__(self):
         return f"Remark for {self.updated_at.strftime('%H:%M')}"
@@ -342,3 +354,12 @@ class Contact(models.Model):
 
     def __str__(self):
         return self.phone_number
+    
+class RemarksHistory(models.Model):
+    remarks = models.ForeignKey('Remarks', on_delete=models.CASCADE, related_name="history")
+    status = models.CharField(max_length=100)
+    remark_text = models.TextField()
+    updated_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"History of {self.remarks} at {self.updated_at.strftime('%H:%M')}"

@@ -9,6 +9,7 @@ from django.contrib.auth.hashers import make_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 import re
+
 from django.core.validators import EmailValidator
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.auth import update_session_auth_hash
@@ -17,7 +18,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
-from .models import Communication, CommunicationHistory, Contact, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, LeadAssignment, LeadSource, Remarks, Roles, Users, Student, Workshop_Leads, WorkshopTelecaller
+from .models import Communication, CommunicationHistory, Contact, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, LeadAssignment, LeadSource, Remarks, RemarksHistory, Roles, Users, Student, Workshop_Leads, WorkshopTelecaller
 
 from rest_framework import serializers
 from django.contrib.auth.forms import PasswordResetForm
@@ -313,3 +314,23 @@ class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
         fields = ['id', 'phone_number', 'date']
+
+class RemarksHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RemarksHistory
+        fields = '__all__'
+
+class RemarkHistorySerializer(serializers.ModelSerializer):
+    changed_by = serializers.SerializerMethodField()
+    change_reason = serializers.SerializerMethodField()
+    history_date = serializers.DateTimeField()
+
+    class Meta:
+        model = Remarks.history  # Access the history model
+        fields = ['id', 'lead', 'comment', 'history_date', 'changed_by', 'change_reason']
+
+    def get_changed_by(self, obj):
+        return obj.history_user.username if obj.history_user else "Unknown"
+
+    def get_change_reason(self, obj):
+        return obj.history_change_reason or "No reason provided"
