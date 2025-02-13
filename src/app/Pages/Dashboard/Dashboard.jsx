@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import TablePagination from "@mui/material/TablePagination";
 import "./Dashboard.scss";
-import CustomLayout from "../../components/CustomLayout/CustomLayout";
+// import CustomLayout from "../../components/CustomLayout/CustomLayout";
+import SideBar from "../../components/SideBar/SideBar";
 
 const Dashboard = () => {
   const [orders, setOrders] = useState([]);
@@ -40,7 +41,7 @@ const Dashboard = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-           'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlY2hlbnRyeUB5b3BtYWlsLmNvbSIsIm5hbWVpZCI6IjIiLCJ1bmlxdWVfbmFtZSI6IlRlY2hFbnRyeUFkbWluIiwicm9sZSI6IjIiLCJuYmYiOjE3MzA3ODYzNzcsImV4cCI6MTczNDM4NjM3NywiaWF0IjoxNzMwNzg2Mzc3LCJpc3MiOiJUZWNoRW50cnkuY29tIiwiYXVkIjoiVGVjaEVudHJ5LmNvbSJ9.7tuhMMh_5Nzc1woXHPPrG3lbT-PmWkQ98at5_ccqg6M',
+           'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlY2hlbnRyeUB5b3BtYWlsLmNvbSIsIm5hbWVpZCI6IjIiLCJ1bmlxdWVfbmFtZSI6IlRlY2hFbnRyeUFkbWluIiwicm9sZSI6IjIiLCJuYmYiOjE3Mzc3MjE3ODYsImV4cCI6MTc0MTMyMTc4NiwiaWF0IjoxNzM3NzIxNzg2LCJpc3MiOiJUZWNoRW50cnkuY29tIiwiYXVkIjoiVGVjaEVudHJ5LmNvbSJ9.Y0dqOOeKGOMbn1CRxasg1qxrf7-OkB-lbr8ukyzYxQ8',
           },
           body: JSON.stringify(payload),
         }
@@ -172,7 +173,7 @@ const Dashboard = () => {
     }
   };
   useEffect(()=>{
-    handleLeadSource()
+    handleLeadSource();
   })
 
   useEffect(() => {
@@ -180,8 +181,12 @@ const Dashboard = () => {
   }, [currentPage, ordersPerPage, searchQuery]); // Add searchQuery as a dependency
 
   return (
-    <CustomLayout>
+    <>
+   
       <div className="dashboard">
+        <div className="dashboard_left">
+        <SideBar/>
+        </div>
         <div className="dashboard_right">
           <div className="dashboard_right_upper">
             <div className="search-btn">
@@ -242,7 +247,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-    </CustomLayout>
+      </>
   );
 };
 

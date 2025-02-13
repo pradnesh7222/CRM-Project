@@ -14,6 +14,28 @@ const SideBar = () => {
   const token = localStorage.getItem('authToken');
   const [submenuActive, setSubmenuActive] = useState({});
   const [role, setRole] = useState(null);
+  const [openDropdown, setOpenDropdown] = useState(null);
+
+
+  useEffect(() => {
+    const handleResize = () => {
+        if (window.innerWidth < 800) {
+            setIsCollapsed(true);
+        }
+        else {
+          setIsCollapsed(false); // Expand when screen is large
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+}, []);
+
+
+  const toggleDropdown = (dropdownName) => {
+    setOpenDropdown(openDropdown === dropdownName ? null : dropdownName);
+  };
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -26,11 +48,15 @@ const SideBar = () => {
     phone_number: "",
     location: "",
   });
-
   const toggleSidebar = () => {
+    if (window.innerWidth < 800) {
+        setIsCollapsed(true); // Automatically collapse on small screens
+    } else {
+        setIsCollapsed(!isCollapsed); // Toggle normally on larger screens
+    }
     setIsCollapsed(!isCollapsed);
     setActiveSidebar(activeSidebar === "" ? "toggleSidebar" : "");
-  };
+};
 
   const toggleSubmenu = (submenu) => {
     setSubmenuActive((prevState) => ({
@@ -38,6 +64,7 @@ const SideBar = () => {
       [submenu]: !prevState[submenu],
     }));
   };
+
 
   const showLoading = () => {
     setOpen(true);
@@ -97,7 +124,7 @@ const SideBar = () => {
 
     setLoading(true);
     try {
-      const response = await fetch("http://127.0.0.1:8000/create_enquiry_telecaller/", {
+      const response = await fetch("http://127.0.0.1:8000/create/NewTelecaller/", {
         method: "POST",
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -164,7 +191,7 @@ const SideBar = () => {
     }, [token]);
 
     return (
-      <Link to="/EnquiryTele" onClick={handleLinkClick}>
+      <Link to="/EnquiryTele">
         Enquiry Telecaller
       </Link>
     );
@@ -181,14 +208,14 @@ const SideBar = () => {
         </div>
 
         <div className="link1">
-          <div className="dropdown" onClick={() => toggleSubmenu("leads")}>
+          <div className="dropdown" onClick={() => toggleSubmenu("leads")} >
             <div className="dropdown-inner">
               <i className="ri-customer-service-line"></i>
               <button className="dropbtn">Leads</button>
               <i className="ri-arrow-down-wide-line"></i>
             </div>
             <div className={`dropdown-content ${submenuActive["leads"] ? "active" : ""}`}>
-              <Link to="/Dashboard">Enquiry Leads</Link>
+              <Link to="/dashboard">Enquiry Leads</Link>
               <Link to="/WorkshopLeads">Workshop Leads</Link>
             </div>
           </div>
@@ -203,7 +230,7 @@ const SideBar = () => {
             </div>
             <div className={`dropdown-content ${submenuActive["telecaller"] ? "active" : ""}`}>
               <div className="addTeleDrawer" onClick={showLoading}>Add Telecaller</div>
-              <EnquiryTeleLink role={role} />
+              <Link to="/EnquiryTele">Enquiry Telecaller</Link>
               <Link to="/WorkShopTele">Workshop Telecaller</Link>
             </div>
           </div>

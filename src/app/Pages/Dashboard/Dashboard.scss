@@ -1,18 +1,16 @@
 .dashboard {
   width: 100%;
   display: flex;
-  // margin-left: 1.5vw;
-  
+  justify-content: space-between;
 
-  // &_left, &_lefttoggleSidebar {
-  //   width: 15%;
-  //   display: flex;
-  //   flex-direction: column;
-  //   justify-content: start;
-  //   align-items: start;
-  //   gap: 2vw;
-  //   padding-top: 40vw;
-   
+  &_left{
+    width: 15%;
+
+    @media (max-width: 800px) {
+      width: 5%;
+    
+  }
+  }
 
     .link1 {
       padding-block: 10px;
@@ -33,20 +31,14 @@
   }
 
   &_right  {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    // margin-top: 1.5vw;
+    width: 85%;
     padding: 1vw;
 
-      // &_righttoggleSidebar{
-      //   width: 100%;
-      //   display: flex;
-      //   flex-direction: column;
-      //   align-items: center;
-      //   margin-top: 1.5vw;
-      // }
+    @media (max-width: 800px) {
+      width: 95%; 
+  }
+
+     
 
 
     &_upper {
@@ -105,13 +97,14 @@
       overflow:scroll;
       width: 100%;
       box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-      margin-top: 2vw;
+      margin-top: 1vh;
       border-radius: 10px;
 
 
       table {
-        width: 100%;
+        width: 100vw;
         overflow:scroll;
+        margin: 0 .3vw;
         scrollbar-width: none;
         border-radius: 10px;
 
@@ -130,11 +123,14 @@
         }
 
         th {
+          font-size: 1vw;
+
           background-color:#e4e4e4;
         }
 
         td {
-          border: 1px solid rgba(0, 0, 0, 0.1);
+          font-size: 14px;
+          // border: 0px solid rgba(0, 0, 0, 0.1);
 
           .actions {
             display: flex;

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./WorkshopLeads.scss";
 import TablePagination from '@mui/material/TablePagination';
 import CustomLayout from "../CustomLayout/CustomLayout";
+import SideBar from "../SideBar/SideBar";
 
 const WorkshopLeads = () => {
   const [enrolledStudents, setEnrolledStudents] = useState([]);
@@ -30,11 +31,10 @@ const WorkshopLeads = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlY2hlbnRyeUB5b3BtYWlsLmNvbSIsIm5hbWVpZCI6IjIiLCJ1bmlxdWVfbmFtZSI6IlRlY2hFbnRyeUFkbWluIiwicm9sZSI6IjIiLCJuYmYiOjE3MzA3ODYzNzcsImV4cCI6MTczNDM4NjM3NywiaWF0IjoxNzMwNzg2Mzc3LCJpc3MiOiJUZWNoRW50cnkuY29tIiwiYXVkIjoiVGVjaEVudHJ5LmNvbSJ9.7tuhMMh_5Nzc1woXHPPrG3lbT-PmWkQ98at5_ccqg6M",
+          Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlY2hlbnRyeUB5b3BtYWlsLmNvbSIsIm5hbWVpZCI6IjIiLCJ1bmlxdWVfbmFtZSI6IlRlY2hFbnRyeUFkbWluIiwicm9sZSI6IjIiLCJuYmYiOjE3Mzc5NTQ1NDYsImV4cCI6MTc0MTU1NDU0NiwiaWF0IjoxNzM3OTU0NTQ2LCJpc3MiOiJUZWNoRW50cnkuY29tIiwiYXVkIjoiVGVjaEVudHJ5LmNvbSJ9.0nT9RUWqQ3SvC0mJviWz1FwYuAlx6TZnPsV4KIq6smU",
         },
         body: JSON.stringify(payload),
       });
-
       const data = await response.json();
       if (data) {
         setEnrolledStudents(Array.isArray(data.data) ? data.data : []);
@@ -132,8 +132,11 @@ const WorkshopLeads = () => {
   };
 
   return (
-    <CustomLayout>
+  
       <div className="workshopLead">
+        <div className="workshopLead_left">
+         <SideBar/>
+        </div>
         <div className="workshopLead_right">
           <div className="workshopLead_right_upper">
             <div className="search-btn">
@@ -201,7 +204,7 @@ const WorkshopLeads = () => {
           </div>
         </div>
       </div>
-    </CustomLayout>
+   
   );
 };
 

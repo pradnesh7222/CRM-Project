@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "./EnquiryTele.scss";
-import CustomLayout from "../../components/CustomLayout/CustomLayout";
+// import CustomLayout from "../../components/CustomLayout/CustomLayout";
+// import Navbar from "../../components/navbar/NavBar";
+import SideBar from "../../components/SideBar/SideBar";
 import TablePagination from "@mui/material/TablePagination";
+import TeleCallerPage from "../TelerCallerPage/TeleCallerPage";
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import "react-tabs/style/react-tabs.css";
 import { message } from "antd";
 import axios from "axios";
 
@@ -12,30 +17,9 @@ const EnquiryTele = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [data, setData] = useState([]);
   const token = localStorage.getItem("authToken");
-  const [numberOfLeads, setNumberOfLeads] = useState(0);
+  const [numberOfLeads, setNumberOfLeads] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [manualSelection, setManualSelection] = useState(false);
-
-  // useEffect(() => {
-  //   if (!manualSelection) {
-  //     setSelectedRowKeys(data.slice(0, numberOfLeads).map((_, index) => index));
-  //   }
-  // }, [numberOfLeads, data, manualSelection]);
-
-  // const handleSelectLead = (index) => {
-  //   let newSelectedRowKeys = [...selectedRowKeys];
-  //   let updatedNumberOfLeads = numberOfLeads;
-
-  //   if (newSelectedRowKeys.includes(index)) {
-  //     newSelectedRowKeys = newSelectedRowKeys.filter((key) => key !== index);
-  //     updatedNumberOfLeads = Math.max(0, updatedNumberOfLeads - 1); // Decrease the count but ensure it doesn't go below 0
-  //   } else if (newSelectedRowKeys.length < numberOfLeads) {
-  //     newSelectedRowKeys.push(index);
-  //   }
-
-  //   setSelectedRowKeys(newSelectedRowKeys);
-  //   setNumberOfLeads(updatedNumberOfLeads); // Update the input box value
-  // };
 
   const handleNumberOfLeadsChange = (e) => {
     const numLeads = Number(e.target.value);
@@ -130,114 +114,126 @@ const EnquiryTele = () => {
   };
 
   return (
-    <CustomLayout>
-      <div className="enquiryTele">
-        <div className="enquiryTele_right">
-          <div className="enquiryTele_right_up">
-            <div className="enquiryTele_right_up_form" onSubmit={handleSubmit}>
-              <div className="assignTeleCont1">
-                <label htmlFor="telecaller">Select Telecaller</label>
-                <select
-                  name="telecaller"
-                  id="telecaller"
-                  value={telecaller}
-                  onChange={(e) => setTelecaller(e.target.value)}
-                >
-                  <option value="">Select Telecaller</option>
-                  {Array.isArray(telecaller) &&
-                    telecaller.map((tc) => (
-                      <option key={tc.id} value={tc.name}>
-                        {tc.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
-              <div className="assignTeleCont2">
-                <label htmlFor="numberOfLeads">Number of leads</label>
-                <input
-                  type="number"
-                  id="numberOfLeads"
-                  placeholder="Number of Leads"
-                  value={numberOfLeads}
-                  onChange={handleNumberOfLeadsChange}
-                />
-                ;
-              </div>
-            </div>
-          </div>
-          <div className="enquiryTele_right_leadTable">
-            <table>
-              <thead>
-                <tr>
-                  <th>
-                    select
-                    {/* <input
-                      type="checkbox"
-                      name="select-all"
-                      id="select-all"
-                      onChange={handleSelectAll}
-                    /> */}
-                  </th>
-                  <th>Name</th>
-                  <th>Course</th>
-                  <th>Phone</th>
-                  <th>Email</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.length > 0 ? (
-                  data.map((item, index) => (
-                    <tr key={item.id}>
-                      <td>
-                        <input
-                          type="checkbox"
-                          checked={selectedRowKeys.includes(index)}
-                          onChange={() => handleRowSelection(index)}
-                        />
-                      </td>
-                      <td>{item.name}</td>
-                      <td>{item.course_name}</td>
-                      <td>{item.phone_number}</td>
-                      <td>{item.email}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="6">No leads found</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-          <div className="enquiryTele_right_pagination">
-            <div className="submit-button">
-              <button
-                type="submit"
-                onClick={handleSubmit}
-                style={{
-                  opacity:
-                    !telecaller || selectedRowKeys.length === 0 ? 0.5 : 1,
-                  cursor:
-                    !telecaller || selectedRowKeys.length === 0
-                      ? "not-allowed"
-                      : "pointer",
-                }}
+    <>
+    <Tabs>
+  <div className="enquiryTele">
+    {/* Sidebar (Left Section) */}
+    <div className="enquiryTele_left">
+      <SideBar />
+    </div>
+
+    {/* Right Section with Tabs & Content */}
+    <div className="enquiryTele_right">
+      <TabList>
+        <Tab>Enquiry TeleCaller</Tab>
+        <Tab>Assigned Leads</Tab>
+      </TabList>
+
+      <TabPanel>
+        <div className="enquiryTele_right_up">
+          <div className="enquiryTele_right_up_form" onSubmit={handleSubmit}>
+            <div className="assignTeleCont1">
+              <select
+                name="telecaller"
+                id="telecaller"
+                value={telecaller}
+                onChange={(e) => setTelecaller(e.target.value)}
               >
-                Assign Leads
-              </button>
+                <option value="">Select Telecaller</option>
+                {Array.isArray(telecaller) &&
+                  telecaller.map((tc) => (
+                    <option key={tc.id} value={tc.name}>
+                      {tc.name}
+                    </option>
+                  ))}
+              </select>
             </div>
-            <TablePagination
-              component="div"
-              count={totalCount}
-              page={page}
-              onPageChange={handleChangePage}
-              rowsPerPage={rowsPerPage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+            <div className="assignTeleCont2">
+              <input
+                type="number"
+                id="numberOfLeads"
+                placeholder="Number of Leads"
+                value={numberOfLeads}
+                onChange={handleNumberOfLeadsChange}
+              />
+            </div>
           </div>
         </div>
-      </div>
-    </CustomLayout>
+
+        <div className="enquiryTele_right_leadTable">
+          <table>
+            <thead>
+              <tr>
+                <th>Select</th>
+                <th>Name</th>
+                <th>Course</th>
+                <th>Phone</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.length > 0 ? (
+                data.map((item, index) => (
+                  <tr key={item.id}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={selectedRowKeys.includes(index)}
+                        onChange={() => handleRowSelection(index)}
+                      />
+                    </td>
+                    <td>{item.name}</td>
+                    <td>{item.course_name}</td>
+                    <td>{item.phone_number}</td>
+                    <td>{item.email}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5">No leads found</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="enquiryTele_right_pagination">
+          <div className="submit-button">
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              style={{
+                opacity:
+                  !telecaller || selectedRowKeys.length === 0 ? 0.5 : 1,
+                cursor:
+                  !telecaller || selectedRowKeys.length === 0
+                    ? "not-allowed"
+                    : "pointer",
+              }}
+            >
+              Assign Leads
+            </button>
+          </div>
+          <TablePagination
+            component="div"
+            count={totalCount}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </div>
+      </TabPanel>
+
+      <TabPanel>
+        <TeleCallerPage />
+      </TabPanel>
+    </div>
+  </div>
+</Tabs>
+
+     
+      </>
   );
 };
 

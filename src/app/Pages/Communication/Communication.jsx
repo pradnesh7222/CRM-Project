@@ -1,38 +1,64 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Communication.scss";
 import Navbar from "../../components/navbar/NavBar";
-import Email from "../../components/Email/Email";
 import virat from "../../Assets/viratDPjpg.jpg";
+import axios from "axios";
+
 import Phone from "../../components/Phone/Phone";
 import Message from "../../components/Message/Message";
-import axios from "axios";
-import { Steps } from "antd";
 import { useParams } from "react-router-dom";
+import { Segmented } from "antd";
+import Email from "../../components/Email/Email";
+import { Divider, Steps } from 'antd';
 
-import { Alert } from "antd";
-import {  notification } from "antd";
-const description = "";
+import { notification } from "antd";
 const Communication = () => {
   const [progress, setProgress] = useState([]);
-  const [currentStatus, setCurrentStatus] = useState(null);
-  const [displayComponent, setDisplayComponent] = useState("phone");
   const [leadData, setLeadData] = useState(null); // State to store lead data
   const token = localStorage.getItem("authToken"); // Retrieve token
   const { id } = useParams(); // Get id from URL params
-  const statusMapping = {
-    "Pending": 0,
-    "Contacted": 1,
-    "Follow Up": 2,
-    "Converted": 3,
-    "Closed": 4,
-  };
+  const [remarks, setRemarks] = useState([]);
+
+
+  const [change, setChange] = useState("Call");
+
   const phoneNumberRef = useRef(null);
   const dateTimeRef = useRef(null);
-  const progressSteps = Object.values(progress);  // Convert the object to an array of values
 
-  // Fetch lead data when the component mounts or id changes
+  
+  console.log( "Remarks", remarks);
+
+  const fetchRemarks = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/Get/Leads/1/Remarks/History/", {
+        method: "GET",
+        headers: {
+          'Authorization': `Bearer ${token}`, 
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+  
+      const data = await response.json();
+      setRemarks(data);
+    } catch (error) {
+      console.error("Error fetching remarks:", error);
+    }
+  };
+  
   useEffect(() => {
-    // console.log("Lead ID:", id); // Check if id is correctly received
+    fetchRemarks();
+  }, [token]);  // Added dependencies if they change dynamically
+  
+
+
+
+
+
+  useEffect(() => {
     axios
       .get(`http://127.0.0.1:8000/leads/${id}/`, {
         headers: {
@@ -40,17 +66,13 @@ const Communication = () => {
         },
       })
       .then((response) => {
-        setLeadData(response.data); // Store the lead data in state
+        setLeadData(response.data);
         console.log("Lead Data:", response.data);
       })
       .catch((error) => {
         console.error("Error fetching lead data:", error);
       });
-  }, [id]); // Run the effect when id changes
-
-  const handleIconClick = (component) => {
-    setDisplayComponent(component);
-  };
+  }, [id]);
 
   const handleComponentButtonClick = () => {
     console.log(phoneNumberRef.current.value);
@@ -62,7 +84,7 @@ const Communication = () => {
   const handleConvertLeadToStudent = () => {
     if (!leadData) {
       console.error("Lead data not available.");
-      return; // Prevent sending data if leadData is not yet loaded
+      return;
     }
 
     const data = {
@@ -88,7 +110,6 @@ const Communication = () => {
         console.error("Error converting lead:", error);
       });
   };
-  
 
   // Fetch lead data and progress tracking data
   useEffect(() => {
@@ -107,57 +128,43 @@ const Communication = () => {
 
     // Fetch progress data
     axios
-      .get(`http://127.0.0.1:8000/remarks-detail/by_enquiry_lead/?enquiry_lead=${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      .get(
+        `http://127.0.0.1:8000/remarks-detail/by_enquiry_lead/?enquiry_lead=${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((response) => {
-        console.log(response.data)
-        
+        console.log(response.data);
+
         setProgress(response.data[0]); // Set progress data
         if (response.data[0].status) {
-          setCurrentStatus(response.data[0].status); // Update current status
+          // setCurrentStatus(response.data[0].status); // Update current status
         }
       })
       .catch((error) => {
         console.error("Error fetching progress data:", error);
       });
   }, [id]);
+
   const getDateForStatus = (status) => {
     if (Array.isArray(progress)) {
       const remark = progress.find((remark) => remark.status === status);
       return remark ? new Date(remark.updated_at).toLocaleDateString() : "N/A";
     } else if (progress && progress.status === status) {
       // If progress is an object with a status field
-      return progress.updated_at ? new Date(progress.updated_at).toLocaleDateString() : "N/A";
+      return progress.updated_at
+        ? new Date(progress.updated_at).toLocaleDateString()
+        : "N/A";
     }
     return "N/A";
   };
-  
-  const showReminders = () => {
-    const reminders = [
-      `Follow up with lead on ${
-        progress && progress.updated_at
-          ? new Date(progress.updated_at).toLocaleDateString()
-          : "an unspecified date"
-      }`,
-    ];
-    
 
-    reminders.forEach((reminder, index) => {
-      setTimeout(() => {
-        notification.info({
-          message: "Reminder",
-          description: reminder,
-          placement: "topRight",
-        });
-      }, index * 1000);
-    });
-  };
   return (
     <>
-      <Navbar />
+      
       <div className="com">
         <div className="com_left">
           <div className="top">
@@ -170,18 +177,9 @@ const Communication = () => {
             </div>
             <h1>{leadData ? leadData.name : "Loading..."}</h1>
             <div className="com_left_profile_iconCont">
-              <i
-                className="ri-phone-fill"
-                onClick={() => setDisplayComponent("phone")}
-              ></i>
-              <i
-                className="ri-mail-line"
-                onClick={() => setDisplayComponent("Email")}
-              ></i>
-              <i
-                className="ri-message-2-line"
-                onClick={() => setDisplayComponent("msg")}
-              ></i>
+              <i className="ri-phone-fill"></i>
+              <i className="ri-mail-line"></i>
+              <i className="ri-message-2-line"></i>
               <a href="https://wa.me/918904116759" target="blank">
                 <i className="ri-whatsapp-line"></i>
               </a>
@@ -191,7 +189,7 @@ const Communication = () => {
             </button>
           </div>
           <div className="com_left_info">
-            <h3>Lead Info</h3>  
+            <h3>Lead Info</h3>
             <div className="bind">
               <label htmlFor="email">Email</label>
               <h4>{leadData ? leadData.email : "Loading..."}</h4>
@@ -209,74 +207,38 @@ const Communication = () => {
               <h4>{leadData ? leadData.course_name : "Not provided"}</h4>
             </div>
           </div>
-        </div>  
+        </div>
         <div className="com_right">
-          <div className="com_right_up">
-            <div className="com_right_up_action">
-              <button onClick={handleComponentButtonClick}>Clear</button>
-              {displayComponent === "phone" && (
-                <Phone
-                  handleComponentButtonClick={handleComponentButtonClick}
-                  phoneNumberRef={phoneNumberRef}
-                  dateTimeRef={dateTimeRef}
-                />
-              )}
-              {displayComponent === "Email" && <Email />}
-              {displayComponent === "msg" && <Message />}
-            </div>
-            <div className="com_right_up_reminder">
-  <h1 >Reminder</h1>
-  <div className="alarm-container">
-    <div className="alarm-bell">
-      <div className="bell-top"></div>
-      <div className="bell-body"></div>
-      <div className="bell-clapper"></div>
-    </div>
-  </div>
-  <Alert
-    message="Show Reminder"
-    type="success"
-    onClick={showReminders}
-    style={{ width: "70%", textAlign: "center", margin: "auto" }}
-  />
-</div>
-
-          </div>
-          <div className="com_right_history" style={{ padding: "2vw" }}>
-  <h1>Progress Tracking</h1>
-      {currentStatus ? (
-        <Steps
-          direction="horizontal"
-          size="large"
-          current={statusMapping[currentStatus]} // Map status to step
-          items={[
-            {
-              title: "Pending",
-              description: getDateForStatus("Pending"),
-            },
-            {
-              title: "Contacted",
-              description: getDateForStatus("Contacted"),
-            },
-            {
-              title: "Follow Up",
-              description: getDateForStatus("Follow Up"),
-            },
-            {
-              title: "Converted",
-              description: getDateForStatus("Converted"),
-            },
-            {
-              title: "Closed",
-              description: getDateForStatus("Closed"),
-            },
-          ]}
-        />
-      ) : (
-        <p>Loading progress...</p>
-      )}
-</div>
-     </div>
+          <h1>Student Progress Tracker</h1>
+        <Divider />
+    <Steps
+      progressDot
+      current={1}
+      direction="vertical"
+      items={[
+        {
+          title: 'Finished',
+          description: 'This is a description. This is a description.',
+        },
+        {
+          title: 'Finished',
+          description: 'This is a description. This is a description.',
+        },
+        {
+          title: 'In Progress',
+          description: 'This is a description. This is a description.',
+        },
+        {
+          title: 'Waiting',
+          description: 'This is a description.',
+        },
+        {
+          title: 'Waiting',
+          description: 'This is a description.',
+        },
+      ]}
+    />
+        </div>
       </div>
     </>
   );

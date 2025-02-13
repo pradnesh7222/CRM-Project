@@ -6,8 +6,8 @@ from django.db.models import Q
 from rest_framework import generics
 from app.serializers import LoginSerializer, RegistrationSerializer
 from rest_framework import viewsets
-from .models import   Communication, CommunicationHistory, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, LeadAssignment, LeadSource, Remarks,  Roles, Student, Users, Workshop_Leads, WorkshopTelecaller
-from .serializers import  ChangePasswordSerializer, CommunicationHistorySerializer, CommunicationSerializer, ContactSerializer, CourseSerializer, EnquiryLeadsSerializer, EnquiryTelecallerSerializer, EnrollmentSerializer, InstallmentSerializer, LeadAssignmentSerializer, LeadSerializer, LeadSourceserializer, RemarkSerializer, RemarksSerializer, RoleSerializer, StudentSerializer, UsersSerializer, WorkshopLeadSerializer, WorkshopSerializer, WorkshopTelecallerSerializer
+from .models import   Communication, CommunicationHistory, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, LeadAssignment, LeadSource, Remarks, RemarksHistory,  Roles, Student, Users, Workshop_Leads, WorkshopTelecaller
+from .serializers import  ChangePasswordSerializer, CommunicationHistorySerializer, CommunicationSerializer, ContactSerializer, CourseSerializer, EnquiryLeadsSerializer, EnquiryTelecallerSerializer, EnrollmentSerializer, InstallmentSerializer, LeadAssignmentSerializer, LeadSerializer, LeadSourceserializer, RemarkHistorySerializer, RemarkSerializer, RemarksSerializer, RoleSerializer, StudentSerializer, UsersSerializer, WorkshopLeadSerializer, WorkshopSerializer, WorkshopTelecallerSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.decorators import api_view, permission_classes
@@ -53,6 +53,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import AllowAny
+from rest_framework.generics import ListAPIView
 class UserRegistrationView(APIView):
     permission_classes = [AllowAny]
     def post(self,request):
@@ -899,3 +900,15 @@ def get_user_role(request):
     print(user.role) 
     role = user.role.role_name if user.role else None
     return Response({"role": role})
+
+class RemarksHistoryAPIView(ListAPIView):
+    serializer_class = RemarkHistorySerializer
+
+    def get_queryset(self):
+        lead_id = self.kwargs['lead_id']
+        
+        # Get all remarks linked to the lead (either enquiry or workshop)
+        remarks = Remarks.objects.filter(enquiry_lead_id=lead_id) | Remarks.objects.filter(workshop_lead_id=lead_id)
+        
+        # Get history linked to those remarks
+        return RemarksHistory.objects.filter(remarks__in=remarks).order_by('-updated_at')
