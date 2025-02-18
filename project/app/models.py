@@ -327,26 +327,28 @@ class Remarks(models.Model):
         ],
         default='Pending'
     )
-    enquiry_lead = models.ForeignKey(Enquiry_Leads, on_delete=models.CASCADE, related_name="remarks",null=True)
-    workshop_lead=models.ForeignKey(Workshop_Leads,null=True, on_delete=models.CASCADE, related_name='Workshop_Leads_remarks')
+    enquiry_lead = models.ForeignKey(Enquiry_Leads, on_delete=models.CASCADE, related_name="remarks", null=True)
+    workshop_lead = models.ForeignKey(Workshop_Leads, null=True, on_delete=models.CASCADE, related_name='Workshop_Leads_remarks')
     remark_text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at=models.DateTimeField(auto_now=True)
-    def save(self, *args, **kwargs):
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):  # Correct argument order
         if self.pk:  # If updating an existing remark
             old_remark = Remarks.objects.get(pk=self.pk)
-            if old_remark.remark_text != self.remark_text or old_remark.status != self.status:  
+            if old_remark.remark_text != self.remark_text or old_remark.status != self.status:
                 # Save history only if remark text or status changes
                 RemarksHistory.objects.create(
                     remarks=self,  # Store the full Remark object
                     status=old_remark.status,
                     remark_text=old_remark.remark_text,
                 )
-        super().save(*args, **kwargs)
-
+        super().save(*args, **kwargs)  # Call the superclass save method
 
     def __str__(self):
         return f"Remark for {self.updated_at.strftime('%H:%M')}"
+
+
 
 class Contact(models.Model):
     phone_number = models.CharField(max_length=15)
@@ -354,7 +356,6 @@ class Contact(models.Model):
 
     def __str__(self):
         return self.phone_number
-    
 class RemarksHistory(models.Model):
     remarks = models.ForeignKey('Remarks', on_delete=models.CASCADE, related_name="history")
     status = models.CharField(max_length=100)

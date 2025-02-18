@@ -6,7 +6,7 @@ from django.db.models import Q
 from rest_framework import generics
 from app.serializers import LoginSerializer, RegistrationSerializer
 from rest_framework import viewsets
-from .models import   Communication, CommunicationHistory, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, LeadAssignment, LeadSource, Remarks,  Roles, Student, Users, Workshop_Leads, WorkshopTelecaller
+from .models import   Communication, CommunicationHistory, Course, Enquiry_Leads, EnquiryTelecaller, Enrollment, Installment, LeadAssignment, LeadSource, Remarks, RemarksHistory,  Roles, Student, Users, Workshop_Leads, WorkshopTelecaller
 from .serializers import  ChangePasswordSerializer, CommunicationHistorySerializer, CommunicationSerializer, ContactSerializer, CourseSerializer, EnquiryLeadsSerializer, EnquiryTelecallerSerializer, EnrollmentSerializer, InstallmentSerializer, LeadAssignmentSerializer, LeadSerializer, LeadSourceserializer, RemarkHistorySerializer, RemarkSerializer, RemarksSerializer, RoleSerializer, StudentSerializer, UsersSerializer, WorkshopLeadSerializer, WorkshopSerializer, WorkshopTelecallerSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
@@ -18,7 +18,7 @@ from datetime import datetime
 import pandas as pd
 from rest_framework.generics import ListAPIView
 from app.models import RemarksHistory
-from app.serializers import RemarksHistorySerializer
+
 from django.http import HttpResponse
 import io
 from django.views.decorators.csrf import csrf_exempt
@@ -56,6 +56,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import AllowAny
+from rest_framework.generics import ListAPIView
 class UserRegistrationView(APIView):
     permission_classes = [AllowAny]
     def post(self,request):
@@ -903,16 +904,8 @@ def get_user_role(request):
     role = user.role.role_name if user.role else None
     return Response({"role": role})
 
-
-class LeadRemarksHistoryAPIView(generics.ListAPIView):
-    serializer_class = RemarkHistorySerializer
-
-    def get_queryset(self):
-        lead_id = self.kwargs.get("lead_id")
-        return Remarks.history.filter(lead__id=lead_id).order_by("-history_date")
-    
 class RemarksHistoryAPIView(ListAPIView):
-    serializer_class = RemarksHistorySerializer
+    serializer_class = RemarkHistorySerializer
 
     def get_queryset(self):
         lead_id = self.kwargs['lead_id']

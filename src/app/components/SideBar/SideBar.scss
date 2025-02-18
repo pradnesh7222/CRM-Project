@@ -3,9 +3,8 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 15vw;
+  // width: 15vw;
   height: 100vh;
-  padding-top: 5vw;
   background-color: #f0f0f0;
   transition: width 0.3s ease;
 
@@ -50,12 +49,11 @@
       display: flex;
       align-items: center;
       width: 100%;
-      padding: 8px;
+      padding: 4px;
       color: #6e2e6a;
       font-weight: 700;
       font-size: 1.3vw;
       border-radius: 5px;
-      // text-decoration: none;
       transition: background-color 0.3s ease, color 0.3s ease;
 
       a{

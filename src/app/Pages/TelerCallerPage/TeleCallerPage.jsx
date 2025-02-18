@@ -209,7 +209,8 @@ const TeleCallerPage = () => {
   
 
   return (
-    <CustomLayout>
+    
+      <>
       <div className="telecaller">
         <div className="telecaller_table">
           <Table columns={columns} data={leadData} />
@@ -269,7 +270,8 @@ const TeleCallerPage = () => {
           </div>
         </Drawer>
       </div>
-    </CustomLayout>
+      </>
+    
   );
 };
 

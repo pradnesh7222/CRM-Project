@@ -184,7 +184,8 @@ const WorkShopTeleCallerPage = () => {
   };
 
   return (
-    <CustomLayout>
+    // <CustomLayout>
+      <>
       <div className="workshopTelecaller">
         <div className="workshopTelecaller_table">
           <Table columns={columns} data={leadData} />
@@ -253,7 +254,8 @@ const WorkShopTeleCallerPage = () => {
           </div>
         </Drawer>
       </div>
-    </CustomLayout>
+      </>
+
   );
 };
 

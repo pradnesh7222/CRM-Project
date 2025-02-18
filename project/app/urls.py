@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     ActiveStudents, AssignLeadView, ChangePasswordView, CommunicationHistoryViewSet, CommunicationViewSet, ContactCreateView, Convert_lead_to_student,
     CourseIdView, CourseViewSet, EmailSendViewSet, EnquiryLeadsList, EnquiryTelecallerViewSet, EnrollStudentView,
-    EnrollmentViewSet, InstallmentViewSet, LeadRemarksHistoryAPIView, LeadsSourceViewSet, LogoutView, PlacedStudents, RemarkViewSet, RemarkWorkshopLeadViewSet, RemarksHistoryAPIView,  RemarksViewSet, SendSMSView, TelecallerPageView, UserLoginView,
+    EnrollmentViewSet, InstallmentViewSet, LeadsSourceViewSet, LogoutView, PlacedStudents, RemarkViewSet, RemarkWorkshopLeadViewSet, RemarksHistoryAPIView, RemarksViewSet, SendSMSView, TelecallerPageView, UserLoginView,
     UserRegistrationView, WorkshopLeadViewSet, WorkshopLeadsList, WorkshopTelecallerPageView, WorkshopTelecallerViewSet, conversion_rate,
     UsersViewSet, LeadViewSet, StudentViewSet, RolesViewSet, monthly_leads_count,
     LeadsPerStateView, StudentsPerCourseView, MonthlyActiveStudentsView,create_enquiry_telecaller,get_leads_by_telecaller
@@ -77,8 +77,10 @@ urlpatterns = [
         path('api/WorkshopLeads/DownloadExcel/', views.download_excel_workshop, name='download_excel_workshop'),
         path('contacts/', ContactCreateView.as_view(), name='create_contact'),
         path('Get/UserRole/', views.get_user_role, name='get_user_role'),
-        #path('Get/Leads/<int:lead_id>/Remarks/History/', LeadRemarksHistoryAPIView.as_view(), name='lead-remarks-history'),
-         path('Get/Leads/<int:lead_id>/Remarks/History/', RemarksHistoryAPIView.as_view(), name='remarks-history'),
+        path('Get/Leads/<int:lead_id>/Remarks/History/', RemarksHistoryAPIView.as_view(), name='remarks-history'),
+
+
+
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
 

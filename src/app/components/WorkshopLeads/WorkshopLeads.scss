@@ -1,19 +1,29 @@
-
 .workshopLead{
     width: 100%;
     display: flex;
     // margin-left: 1vh;
     display: flex;
     align-items: center;
-    justify-content: space-between
+    justify-content: space-between;
+
 
     &_left{
-        width: 15vw;
+        width: 15%;
+
+        @media (max-width: 800px) {
+          width: 5%;
+        
+      }
     }
 
     &_right{
-        width: 100%;
+        width: 85%;
         padding: 1vw;
+
+        @media (max-width: 800px) {
+          width: 95%;
+        
+      }
 
         &_upper{
             width: 100%;
@@ -75,13 +85,14 @@
 
       table {
         width: 100%;
+        height: 60vh;
         overflow:scroll;
         scrollbar-width: none;
         border-radius: 10px;
 
         th,
         td {
-          font-size: 1vw;
+          font-size: 12px;
           padding: 5px 10px;
           text-align: center;
           color: rgba(0, 0, 0, 0.662);  
@@ -98,7 +109,7 @@
         }
 
         td {
-          border: 1px solid rgba(0, 0, 0, 0.1);
+          border: 0px solid rgba(0, 0, 0, 0.1);
 
           .actions {
             display: flex;

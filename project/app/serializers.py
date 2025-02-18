@@ -315,22 +315,10 @@ class ContactSerializer(serializers.ModelSerializer):
         model = Contact
         fields = ['id', 'phone_number', 'date']
 
-class RemarksHistorySerializer(serializers.ModelSerializer):
+class RemarkHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = RemarksHistory
-        fields = '__all__'
+        fields = ['status', 'remark_text', 'updated_at']
 
-class RemarkHistorySerializer(serializers.ModelSerializer):
-    changed_by = serializers.SerializerMethodField()
-    change_reason = serializers.SerializerMethodField()
-    history_date = serializers.DateTimeField()
 
-    class Meta:
-        model = Remarks.history  # Access the history model
-        fields = ['id', 'lead', 'comment', 'history_date', 'changed_by', 'change_reason']
 
-    def get_changed_by(self, obj):
-        return obj.history_user.username if obj.history_user else "Unknown"
-
-    def get_change_reason(self, obj):
-        return obj.history_change_reason or "No reason provided"

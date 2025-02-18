@@ -2,14 +2,18 @@ import React, { useState, useEffect } from "react";
 import "./WorkShopTele.scss";
 import { message } from "antd";
 import TablePagination from "@mui/material/TablePagination";
-import CustomLayout from "../../components/CustomLayout/CustomLayout";
+// import CustomLayout from "../../components/CustomLayout/CustomLayout";
+import SideBar from "../../components/SideBar/SideBar";
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import WorkShopTeleCallerPage from "../WorkShopTeleCallerPage/WorkShopTeleCallerPage";
+import "react-tabs/style/react-tabs.css";
 import axios from "axios";
 
 const WorkShopTele = () => {
   const [telecaller, setTelecaller] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [totalCount, setTotalCount] = useState(0);
+  const [totalCount, setTotalCount] = useState("");
   const [data, setData] = useState([]);
   const [numberOfLeads, setNumberOfLeads] = useState(0);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -101,115 +105,131 @@ const WorkShopTele = () => {
   };
 
   return (
-    <CustomLayout>
-      <div className="workShopTele">
-        <div className="workShopTele_right">
-          <div className="workShopTele_right_up">
-            <form
-              className="workShopTele_right_up_form"
-              onSubmit={handleSubmit}
-            >
-              <div className="workShopTele_right_up_form_assignTeleCont1">
-                <label htmlFor="telecaller">Select Telecaller</label>
-                <select
-                  name="telecaller"
-                  id="telecaller"
-                  value={telecaller}
-                  onChange={(e) => setTelecaller(e.target.value)}
+    <>
+      <Tabs>
+        <div className="workShopTele">
+          <div className="workShopTele_left">
+            <SideBar />
+          </div>
+
+          <div className="workShopTele_right">
+            <TabList>
+              <Tab>Work Shop TeleCaller</Tab>
+              <Tab>Assigned Leads</Tab>
+            </TabList>
+            <TabPanel>
+              <div className="workShopTele_right_up">
+                <form
+                  className="workShopTele_right_up_form"
+                  onSubmit={handleSubmit}
                 >
-                  <option value="">Select Telecaller</option>
-                  {Array.isArray(telecaller) &&
-                    telecaller.map((tc) => (
-                      <option key={tc.id} value={tc.name}>
-                        {tc.name}
-                      </option>
-                    ))}
-                </select>
+                  <div className="workShopTele_right_up_form_assignTeleCont1">
+                    {/* <label htmlFor="telecaller">Select Telecaller</label> */}
+                    <select
+                      name="telecaller"
+                      id="telecaller"
+                      value={telecaller}
+                      onChange={(e) => setTelecaller(e.target.value)}
+                    >
+                      <option value="">Select Telecaller</option>
+                      {Array.isArray(telecaller) &&
+                        telecaller.map((tc) => (
+                          <option key={tc.id} value={tc.name}>
+                            {tc.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                  <div className="workShopTele_right_up_form_assignTeleCont2">
+                    {/* <label htmlFor="numberOfLeads">Number of leads</label> */}
+                    <input
+                      type="number"
+                      id="numberOfLeads"
+                      placeholder="Number of Leads"
+                      value={numberOfLeads}
+                      onChange={handleNumberOfLeadsChange}
+                    />
+                  </div>
+                </form>
               </div>
-              <div className="workShopTele_right_up_form_assignTeleCont2">
-                <label htmlFor="numberOfLeads">Number of leads</label>
-                <input
-                  type="number"
-                  id="numberOfLeads"
-                  placeholder="Number of Leads"
-                  value={numberOfLeads}
-                  onChange={handleNumberOfLeadsChange}
-                />
-                ;
-              </div>
-            </form>
-          </div>
-          <div className="workShopTele_right_leadTable">
-            <table>
-              <thead>
-                <tr>
-                  <th>Select</th>
-                  <th>Name</th>
-                  <th>Order Date</th>
-                  <th>Phone</th>
-                  <th>Email</th>
-                  <th>Location</th>
-                  <th>Amount</th>
-                  <th>Payment Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.length > 0 ? (
-                  data.map((item, index) => (
-                    <tr key={item.id}>
-                      <td>
-                        <input
-                          type="checkbox"
-                          checked={selectedRowKeys.includes(index)}
-                          onChange={() => handleRowSelection(index)}
-                        />
-                      </td>
-                      <td>{item.customerName}</td>
-                      <td>{item.orderDate}</td>
-                      <td>{item.customerNumber}</td>
-                      <td>{item.customerEmail}</td>
-                      <td>{item.location}</td>
-                      <td>{item.amount}</td>
-                      <td>{item.paymentStatus}</td>
+              <div className="workShopTele_right_leadTable">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Select</th>
+                      <th>Name</th>
+                      <th>Order Date</th>
+                      <th>Phone</th>
+                      <th>Email</th>
+                      <th>Location</th>
+                      <th>Amount</th>
+                      <th>Payment Status</th>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="8">No leads found</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-          <div className="workShopTele_right_pagination">
-            <div className="submit-button">
-              <button
-                type="submit"
-                onClick={handleSubmit}
-                style={{
-                  opacity:
-                    !telecaller || selectedRowKeys.length === 0 ? 0.5 : 1,
-                  cursor:
-                    !telecaller || selectedRowKeys.length === 0
-                      ? "not-allowed"
-                      : "pointer",
-                }}
-              >
-                Assign Leads
-              </button>
-            </div>
-            <TablePagination
-              component="div"
-              count={totalCount}
-              page={page}
-              onPageChange={handleChangePage}
-              rowsPerPage={rowsPerPage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+                  </thead>
+                  <tbody>
+                    {data.length > 0 ? (
+                      data.map((item, index) => (
+                        <tr key={item.id}>
+                          <td>
+                            <input
+                              type="checkbox"
+                              checked={selectedRowKeys.includes(index)}
+                              onChange={() => handleRowSelection(index)}
+                            />
+                          </td>
+                          <td>{item.customerName}</td>
+                          <td>{item.orderDate}</td>
+                          <td>{item.customerNumber}</td>
+                          <td>{item.customerEmail}</td>
+                          <td>{item.location}</td>
+                          <td>{item.amount}</td>
+                          <td>{item.paymentStatus}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="8">No leads found</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              <div className="workShopTele_right_pagination">
+                <div className="submit-button">
+                  <button
+                    type="submit"
+                    onClick={handleSubmit}
+                    style={{
+                      opacity:
+                        !telecaller || selectedRowKeys.length === 0 ? 0.5 : 1,
+                      cursor:
+                        !telecaller || selectedRowKeys.length === 0
+                          ? "not-allowed"
+                          : "pointer",
+                    }}
+                  >
+                    Assign Leads
+                  </button>
+                </div>
+                <TablePagination
+                  component="div"
+                  count={totalCount}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  rowsPerPage={rowsPerPage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+              </div>
+            </TabPanel>
+          
+
+          <TabPanel>
+            <WorkShopTeleCallerPage />
+          </TabPanel>
           </div>
         </div>
-      </div>
-    </CustomLayout>
+      </Tabs>
+    </>
   );
 };
 

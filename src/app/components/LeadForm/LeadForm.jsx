@@ -13,7 +13,7 @@ const LeadForm = ({ isVisible, setIsVisible, lead }) => {
     last_name: "",
     email: "",
     phone_number: "",
-    address: "",
+    address: "  ",
     states: "",
     lead_score: "",
     status: "",

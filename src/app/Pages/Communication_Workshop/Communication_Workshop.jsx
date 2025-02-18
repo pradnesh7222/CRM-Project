@@ -161,19 +161,19 @@ function Communication_Workshop() {
   return (
     <>
       <Navbar />
-      <div className="com">
-        <div className="com_left">
+      <div className="comWorkShop">
+        <div className="comWorkShop_left">
           <div className="top">
             <i className="ri-arrow-left-s-line"></i>
             <i className="ri-notification-fill"></i>
           </div>
-          <div className="com_left_profile">
-            <div className="com_left_profile_dp">
+          <div className="comWorkShop_left_profile">
+            <div className="comWorkShop_left_profile_dp">
               <img src={virat} alt="DP.img" />
             </div>
             <h1>{leadData ? leadData.customerName
  : "Loading..."}</h1>
-            <div className="com_left_profile_iconCont">
+            <div className="comWorkShop_left_profile_iconCont">
               <i
                 className="ri-phone-fill"
                 onClick={() => setDisplayComponent("phone")}
@@ -224,9 +224,9 @@ function Communication_Workshop() {
             </div>
           </div>
         </div>  
-        <div className="com_right">
-          <div className="com_right_up">
-            <div className="com_right_up_action">
+        <div className="comWorkShop_right">
+          <div className="comWorkShop_right_up">
+            <div className="comWorkShop_right_up_action">
               <button onClick={handleComponentButtonClick}>Clear</button>
               {displayComponent === "phone" && (
                 <Phone
@@ -247,7 +247,7 @@ function Communication_Workshop() {
               />
             </div>
           </div>
-          <div className="com_right_history" style={{ padding: "2vw" }}>
+          <div className="comWorkShop_right_history" style={{ padding: "2vw" }}>
   <h1>Progress Tracking</h1>
       {currentStatus ? (
         <Steps
